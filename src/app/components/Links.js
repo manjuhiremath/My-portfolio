@@ -149,11 +149,11 @@ const Links = () => {
         >
           <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-black mb-4 sm:mb-6">
             <span className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
-              Let's Create Magic
+              {`Let's Create Magic`}
             </span>
           </h2>
           <p className="text-lg sm:text-xl text-gray-400 max-w-3xl mx-auto px-4">
-            Ready to transform ideas into digital reality? Let's connect and build something extraordinary!
+            {`Ready to transform ideas into digital reality? Let's connect and build something extraordinary!`}
           </p>
         </motion.div>
         
@@ -228,8 +228,8 @@ const Links = () => {
               </span>
             </h3>
             <p className="text-gray-400 text-sm sm:text-base mb-4">
-              Open to freelance opportunities, collaborations, and exciting projects. 
-              Let's discuss how we can work together!
+              {`Open to freelance opportunities, collaborations, and exciting projects. 
+              Let's discuss how we can work together!`}
             </p>
             <motion.div 
               className="flex flex-wrap justify-center gap-4 text-sm sm:text-base"
