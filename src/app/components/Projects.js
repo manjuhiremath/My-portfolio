@@ -9,85 +9,141 @@ import { fadeInUp, staggerContainer } from '../lib/animations';
 const Projects = () => {
   const [imageErrors, setImageErrors] = useState({});
 
-  const projects = [
-    {
-      name: 'Vedims - eLearning Platform',
-      description: 'Scalable platform for schools and students with role-based login, progress tracking, and certification.',
-      tech: 'Next.js, Tailwind CSS, Node.js, Express.js, MySQL, Firebase Auth, AWS',
-      link: 'https://vedims.com/',
-      github: 'https://github.com/manjuhiremath/vedims', // Add if available
-      image: '/images/projects/vedims-preview.png',
-      gradient: 'from-blue-600 via-purple-600 to-cyan-500',
-      icon: '📚',
-      type: 'website'
-    },
-    {
-      name: 'Neuronexa Labs',
-      description: 'Company website with modern features and responsive design.',
-      tech: 'Next.js, React, Tailwind CSS',
-      link: 'https://neuronexalabs.com/',
-      github: 'https://github.com/manjuhiremath/neuronexa-labs',
-      image: '/images/projects/neuronexa-preview.png',
-      gradient: 'from-purple-600 via-pink-600 to-red-500',
-      icon: '🧠',
-      type: 'website'
-    },
-    {
-      name: 'GYS Technologies',
-      description: 'Full-stack application for scalable web solutions and business automation.',
-      tech: 'Next.js, MERN Stack, AWS',
-      link: 'https://www.gystechnologies.in/',
-      github: 'https://github.com/manjuhiremath/gys-technologies',
-      image: '/images/projects/gys-preview.png',
-      gradient: 'from-green-600 via-teal-600 to-cyan-500',
-      icon: '🚀',
-      type: 'website'
-    },
-    {
-      name: 'Samsara Studio',
-      description: 'Creative studio website with responsive UI and modern design patterns.',
-      tech: 'Next.js, Framer Motion, Tailwind CSS',
-      link: 'https://www.samsarastudio.co/',
-      github: 'https://github.com/manjuhiremath/samsara-studio',
-      image: '/images/projects/samsara-preview.png',
-      gradient: 'from-orange-600 via-red-600 to-pink-500',
-      icon: '🎨',
-      type: 'website'
-    },
-    {
-      name: 'River Tiger Resort',
-      description: 'Resort booking and management system with real-time availability.',
-      tech: 'Next.js, Node.js, MongoDB',
-      link: 'https://www.rivertigerresort.com/',
-      github: 'https://github.com/manjuhiremath/river-tiger-resort',
-      image: '/images/projects/river-tiger-preview.png',
-      gradient: 'from-indigo-600 via-blue-600 to-cyan-500',
-      icon: '🏨',
-      type: 'website'
-    },
-    {
-      name: 'Group Chat Application',
-      description: 'Real-time group chat with admin features and message encryption.',
-      tech: 'React.js, Node.js, Express.js, MongoDB',
-      link: 'https://github.com/manjuhiremath/group-chat',
-      github: 'https://github.com/manjuhiremath/group-chat',
-      image: '/images/projects/group-chat-preview.png',
-      gradient: 'from-yellow-600 via-orange-600 to-red-500',
-      icon: '💬',
-      type: 'github'
-    },
-    {
-      name: 'Music AI',
-      description: 'Chatbot-based music recommender using advanced NLP and emotion detection.',
-      tech: 'Rasa, JavaScript, React.js, Spotify API',
-      link: 'https://github.com/manjuhiremath/Songbot',
-      github: 'https://github.com/manjuhiremath/Songbot',
-      image: '/images/projects/music-ai-preview.png',
-      gradient: 'from-pink-600 via-purple-600 to-indigo-500',
-      icon: '🎵',
-      type: 'github'
-    }
-  ];
+const projects = [
+  {
+    name: 'Vedims - eLearning Platform',
+    description: 'Scalable platform for schools and students with role-based login, progress tracking, and certification.',
+    tech: 'Next.js, Tailwind CSS, Node.js, Express.js, MySQL, Firebase Auth, AWS',
+    link: 'https://vedims.com/',
+    github: 'https://github.com/manjuhiremath/vedims',
+    image: '/images/projects/vedims-preview.png',
+    gradient: 'from-blue-600 via-purple-600 to-cyan-500',
+    icon: '📚',
+    type: 'website'
+  },
+  {
+    name: 'Neuronexa Labs',
+    description: 'Company website with modern features and responsive design.',
+    tech: 'Next.js, React, Tailwind CSS',
+    link: 'https://neuronexalabs.com/',
+    github: 'https://github.com/manjuhiremath/neuronexa-labs',
+    image: '/images/projects/neuronexa-preview.png',
+    gradient: 'from-purple-600 via-pink-600 to-red-500',
+    icon: '🧠',
+    type: 'website'
+  },
+  {
+    name: 'GYS Technologies',
+    description: 'Full-stack application for scalable web solutions and business automation.',
+    tech: 'Next.js, MERN Stack, AWS',
+    link: 'https://www.gystechnologies.in/',
+    github: 'https://github.com/manjuhiremath/gys-technologies',
+    image: '/images/projects/gys-preview.png',
+    gradient: 'from-green-600 via-teal-600 to-cyan-500',
+    icon: '🚀',
+    type: 'website'
+  },
+  {
+    name: 'HR Policy Assistant',
+    description: 'AI-powered HR policy automation with FastAPI, FAISS vector database, and Gemini API for intelligent document search.',
+    tech: 'FastAPI, Python, FAISS, Gemini API, Pinecone',
+    link: 'https://hragent.manjuhiremath.in/',
+    github: 'https://github.com/manjuhiremath/HR-Policy-Chatbot',
+    image: '/images/projects/hr-agent-preview.png',
+    gradient: 'from-blue-600 via-indigo-600 to-purple-500',
+    icon: '🤖',
+    type: 'website'
+  },
+  {
+    name: 'Samsara Studio',
+    description: 'Creative studio website with responsive UI and modern design patterns.',
+    tech: 'Next.js, Framer Motion, Tailwind CSS',
+    link: 'https://www.samsarastudio.co/',
+    github: 'https://github.com/manjuhiremath/samsara-studio',
+    image: '/images/projects/samsara-preview.png',
+    gradient: 'from-orange-600 via-red-600 to-pink-500',
+    icon: '🎨',
+    type: 'website'
+  },
+  {
+    name: 'Samsara Adventures',
+    description: 'Adventure tourism platform with booking system and trip management features.',
+    tech: 'Next.js, React, Node.js, MongoDB',
+    link: 'https://www.samsaraadventures.com/',
+    github: 'https://github.com/manjuhiremath/samsara-adventures',
+    image: '/images/projects/samsara-adventures-preview.png',
+    gradient: 'from-teal-600 via-green-600 to-emerald-500',
+    icon: '🏔️',
+    type: 'website'
+  },
+  {
+    name: 'River Tiger Resort',
+    description: 'Resort booking and management system with real-time availability.',
+    tech: 'Next.js, Node.js, MongoDB',
+    link: 'https://www.rivertigerresort.com/',
+    github: 'https://github.com/manjuhiremath/river-tiger-resort',
+    image: '/images/projects/river-tiger-preview.png',
+    gradient: 'from-indigo-600 via-blue-600 to-cyan-500',
+    icon: '🏨',
+    type: 'website'
+  },
+  {
+    name: 'Tunify Pro',
+    description: 'Music streaming platform with playlist management and user recommendations.',
+    tech: 'Next.js, React, Node.js, Express.js, MongoDB',
+    link: 'https://www.tunifypro.com/',
+    github: 'https://github.com/manjuhiremath/tunify-pro',
+    image: '/images/projects/tunify-preview.png',
+    gradient: 'from-violet-600 via-purple-600 to-fuchsia-500',
+    icon: '🎧',
+    type: 'website'
+  },
+  {
+    name: 'TeamPulse - Admin Dashboard',
+    description: 'Modern admin dashboard with ShadCN UI components for team management and analytics.',
+    tech: 'React.js, ShadCN UI, Tailwind CSS, Node.js',
+    link: 'https://github.com/manjuhiremath/teampulse',
+    github: 'https://github.com/manjuhiremath/teampulse',
+    image: '/images/projects/teampulse-preview.png',
+    gradient: 'from-cyan-600 via-blue-600 to-indigo-500',
+    icon: '📊',
+    type: 'github'
+  },
+  {
+    name: 'Node.js TypeScript Template',
+    description: 'Production-ready Node.js boilerplate with TypeScript, Express.js, and MongoDB integration.',
+    tech: 'Node.js, TypeScript, Express.js, MongoDB',
+    link: 'https://github.com/manjuhiremath/node-ts-express-template',
+    github: 'https://github.com/manjuhiremath/node-ts-express-template',
+    image: '/images/projects/node-template-preview.png',
+    gradient: 'from-green-600 via-emerald-600 to-teal-500',
+    icon: '⚙️',
+    type: 'github'
+  },
+  {
+    name: 'Group Chat Application',
+    description: 'Real-time group chat with admin features and message encryption.',
+    tech: 'React.js, Node.js, Express.js, MongoDB',
+    link: 'https://github.com/manjuhiremath/group-chat',
+    github: 'https://github.com/manjuhiremath/group-chat',
+    image: '/images/projects/group-chat-preview.png',
+    gradient: 'from-yellow-600 via-orange-600 to-red-500',
+    icon: '💬',
+    type: 'github'
+  },
+  {
+    name: 'Music AI',
+    description: 'Chatbot-based music recommender using advanced NLP and emotion detection.',
+    tech: 'Rasa, JavaScript, React.js, Spotify API',
+    link: 'https://github.com/manjuhiremath/Songbot',
+    github: 'https://github.com/manjuhiremath/Songbot',
+    image: '/images/projects/music-ai-preview.png',
+    gradient: 'from-pink-600 via-purple-600 to-indigo-500',
+    icon: '🎵',
+    type: 'github'
+  }
+];
+
 
   const handleImageError = (projectIndex) => {
     setImageErrors(prev => ({

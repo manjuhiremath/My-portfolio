@@ -7,7 +7,7 @@ import Hero from './components/Hero';
 import Skills from './components/Skills';
 import Projects from './components/Projects';
 import Links from './components/Links';
-
+import { Metadata } from 'next';
 const pageVariants = {
   initial: { opacity: 0 },
   animate: {
@@ -35,6 +35,7 @@ const sectionVariants = {
     },
   },
 };
+
 
 export default function Home() {
   const containerRef = useRef(null);
