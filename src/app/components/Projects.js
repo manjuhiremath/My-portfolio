@@ -53,6 +53,17 @@ const projects = [
     gradient: 'from-blue-600 via-indigo-600 to-purple-500',
     icon: '🤖',
     type: 'website'
+  }, 
+   {
+    name: 'NotebookLM Clone Assistant',
+    description: 'AI-powered NotebookLM clone assistant with FastAPI, FAISS vector database, and Gemini API for intelligent document search.',
+    tech: 'FastAPI, Python, FAISS, Gemini API, Pinecone',
+    link: 'https://hragent.manjuhiremath.in/',
+    github: 'https://github.com/manjuhiremath/HR-Policy-Chatbot',
+    image: '/images/projects/hr-agent-preview.png',
+    gradient: 'from-blue-600 via-indigo-600 to-purple-500',
+    icon: '🤖',
+    type: 'website'
   },
   {
     name: 'Samsara Studio',
@@ -98,17 +109,7 @@ const projects = [
     icon: '🎧',
     type: 'website'
   },
-  {
-    name: 'TeamPulse - Admin Dashboard',
-    description: 'Modern admin dashboard with ShadCN UI components for team management and analytics.',
-    tech: 'React.js, ShadCN UI, Tailwind CSS, Node.js',
-    link: 'https://github.com/manjuhiremath/teampulse',
-    github: 'https://github.com/manjuhiremath/teampulse',
-    image: '/images/projects/teampulse-preview.png',
-    gradient: 'from-cyan-600 via-blue-600 to-indigo-500',
-    icon: '📊',
-    type: 'github'
-  },
+
   {
     name: 'Node.js TypeScript Template',
     description: 'Production-ready Node.js boilerplate with TypeScript, Express.js, and MongoDB integration.',
