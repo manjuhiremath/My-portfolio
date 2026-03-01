@@ -1,9 +1,27 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #1a1a1a;
+  /* Minimalism + Soft UI Evolution Colors */
+  --background: #FFFFFF;
+  --foreground: #1E293B;
+  --primary: #334155;
+  --secondary: #64748B;
+  --cta: #0F172A;
+  --accent-soft-1: #87CEEB;
+  --accent-soft-2: #FFB6C1;
+  --accent-soft-3: #90EE90;
+
+  /* Soft UI Evolution Effects */
+  --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.06);
+  --shadow-soft-hover: 0 4px 16px rgba(0, 0, 0, 0.08), 0 8px 32px rgba(0, 0, 0, 0.12);
+  --shadow-soft-active: 0 1px 4px rgba(0, 0, 0, 0.06);
+  --border-radius-soft: 12px;
+  --transition-soft: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Minimalist Spacing */
+  --section-padding: 2rem 0;
+  --content-max-width: 1200px;
 }
 
 * {
@@ -14,12 +32,294 @@ html {
   scroll-behavior: smooth;
 }
 
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-cta: var(--cta);
+  --font-sans: 'Inter', sans-serif;
+  --font-mono: 'Fira Code', monospace;
+}
+
+/* Soft UI Evolution Base Classes */
+.soft-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: var(--border-radius-soft);
+  box-shadow: var(--shadow-soft);
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  transition: var(--transition-soft);
+}
+
+.soft-card:hover {
+  box-shadow: var(--shadow-soft-hover);
+  transform: translateY(-2px);
+}
+
+.soft-button {
+  background: var(--background);
+  border-radius: var(--border-radius-soft);
+  box-shadow: var(--shadow-soft);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  transition: var(--transition-soft);
+  font-weight: 500;
+}
+
+.soft-button:hover {
+  box-shadow: var(--shadow-soft-hover);
+  transform: translateY(-1px);
+  background: rgba(248, 250, 252, 0.8);
+}
+
+.soft-button:active {
+  box-shadow: var(--shadow-soft-active);
+  transform: translateY(0);
+}
+
+/* Minimalist Feature Showcase */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  padding: var(--section-padding);
+}
+
+.feature-card {
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 12px 32px rgba(0, 0, 0, 0.08);
+}
+
+.feature-card .image-container {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+}
+
+.feature-card .content {
+  padding: 1rem;
+}
+
+.feature-card .category-tag {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+}
+
+.feature-card h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin-bottom: 0.5rem;
+  color: var(--foreground);
+}
+
+.feature-card p {
+  font-size: 0.875rem;
+  color: var(--secondary);
+  line-height: 1.5;
+}
+
+.feature-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 0.5rem;
+  background: linear-gradient(135deg, var(--accent-soft-1), var(--accent-soft-2));
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+}
+
+/* Minimalist Typography */
+.minimal-heading {
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--foreground);
+  margin-bottom: 0.5rem;
+}
+
+.minimal-subheading {
+  font-size: clamp(0.875rem, 2vw, 1rem);
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--secondary);
+  margin-bottom: 1rem;
+  max-width: 600px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  :root {
+    --section-padding: 1.5rem 0;
+    --border-radius-soft: 8px;
+  }
+
+  .feature-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 1rem 0;
+  }
+
+  .soft-card:hover,
+  .soft-button:hover,
+  .feature-card:hover {
+    transform: none;
+  }
+}
+
+/* Accessibility & Motion Preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .soft-card,
+  .soft-button,
+  .feature-card {
+    transition: none !important;
+  }
+
+  .soft-card:hover,
+  .soft-button:hover,
+  .feature-card:hover {
+    transform: none !important;
+    box-shadow: var(--shadow-soft) !important;
+  }
+}
+
+/* Focus States for Accessibility */
+.soft-card:focus-visible,
+.soft-button:focus-visible,
+.feature-card:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: 'Inter', sans-serif;
+  line-height: 1.6;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Blog Content Styles */
+.blog-content {
+  font-size: 1.125rem;
+  line-height: 1.8;
+}
+
+.blog-content h1,
+.blog-content h2,
+.blog-content h3,
+.blog-content h4,
+.blog-content h5,
+.blog-content h6 {
+  font-weight: 700;
+  color: var(--foreground);
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  line-height: 1.3;
+}
+
+.blog-content p {
+  margin-bottom: 1.25rem;
+}
+
+.blog-content a {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.blog-content a:hover {
+  color: var(--cta);
+}
+
+.blog-content ul,
+.blog-content ol {
+  margin-bottom: 1.25rem;
+  padding-left: 1.5rem;
+}
+
+.blog-content li {
+  margin-bottom: 0.5rem;
+}
+
+.blog-content blockquote {
+  border-left: 4px solid var(--primary);
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  color: var(--secondary);
+}
+
+.blog-content pre {
+  background: #1e293b;
+  color: #e2e8f0;
+  padding: 1rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+}
+
+.blog-content code {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.9em;
+}
+
+.blog-content hr {
+  border: none;
+  border-top: 1px solid #e2e8f0;
+  margin: 2rem 0;
+}
+
+.blog-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+}
+
+.blog-content th,
+.blog-content td {
+  border: 1px solid #e2e8f0;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.blog-content th {
+  background: #f8fafc;
+  font-weight: 600;
 }
 
 /* Hide scrollbar for navigation */
@@ -34,7 +334,6 @@ body {
 
 /* Print styles for PDF export */
 @media print {
-
   nav,
   footer,
   button[title="Export as PDF"] {
