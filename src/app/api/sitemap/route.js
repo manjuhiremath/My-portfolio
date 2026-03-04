@@ -2,6 +2,17 @@ import { connectDB } from "@/lib/mongodb";
 import Blog from "@/models/Blog";
 import Category from "@/models/Category";
 
+// Escape XML special characters
+function escapeXml(str) {
+  if (!str) return '';
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
 export async function GET() {
   try {
     await connectDB();
@@ -27,9 +38,9 @@ export async function GET() {
       url += `/${blog.slug}`;
 
       return {
-        url,
+        url: escapeXml(url),
         lastModified: blog.updatedAt || blog.createdAt,
-        changeFrequency: 'weekly',
+        changeFrequency: 'daily',
         priority: 0.8,
         type: 'blog'
       };
@@ -40,9 +51,9 @@ export async function GET() {
     const subcategories = categories.filter(c => c.parent);
 
     const categoryUrls = parentCategories.map(cat => ({
-      url: `/blog/${cat.slug}`,
+      url: escapeXml(`/blog/${cat.slug}`),
       lastModified: cat.updatedAt || cat.createdAt,
-      changeFrequency: 'weekly',
+      changeFrequency: 'daily',
       priority: 0.7,
       type: 'category'
     }));
@@ -50,9 +61,9 @@ export async function GET() {
     const subcategoryUrls = subcategories.map(sub => {
       const parent = parentCategories.find(p => p._id.toString() === sub.parent?.toString());
       return {
-        url: `/blog/${parent?.slug || 'uncategorized'}/${sub.slug}`,
+        url: escapeXml(`/blog/${parent?.slug || 'uncategorized'}/${sub.slug}`),
         lastModified: sub.updatedAt || sub.createdAt,
-        changeFrequency: 'weekly',
+        changeFrequency: 'daily',
         priority: 0.6,
         type: 'subcategory'
       };
@@ -62,15 +73,15 @@ export async function GET() {
     const staticPages = [
       { url: '/', priority: 1.0, changeFrequency: 'daily' },
       { url: '/blog', priority: 0.9, changeFrequency: 'daily' },
-      { url: '/about', priority: 0.7, changeFrequency: 'monthly' },
-      { url: '/contact', priority: 0.6, changeFrequency: 'monthly' },
-      { url: '/projects', priority: 0.8, changeFrequency: 'weekly' },
-      { url: '/experience', priority: 0.7, changeFrequency: 'monthly' },
-      { url: '/skills', priority: 0.7, changeFrequency: 'monthly' },
+      { url: '/about', priority: 0.7, changeFrequency: 'daily' },
+      { url: '/contact', priority: 0.6, changeFrequency: 'daily' },
+      { url: '/projects', priority: 0.8, changeFrequency: 'daily' },
+      { url: '/experience', priority: 0.7, changeFrequency: 'daily' },
+      { url: '/skills', priority: 0.7, changeFrequency: 'daily' },
     ];
 
     const staticUrls = staticPages.map(page => ({
-      url: page.url,
+      url: escapeXml(page.url),
       lastModified: new Date(),
       changeFrequency: page.changeFrequency,
       priority: page.priority,
