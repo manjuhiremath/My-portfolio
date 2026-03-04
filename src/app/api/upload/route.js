@@ -1,10 +1,4 @@
-import { v2 as cloudinary } from 'cloudinary';
-
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+import { cloudinary } from '@/lib/cloudinary';
 
 export async function POST(req) {
   try {
@@ -39,6 +33,13 @@ export async function POST(req) {
     });
   } catch (error) {
     console.error('Upload error:', error);
+    const message = String(error?.message || '');
+    if (message.toLowerCase().includes('cloud_name')) {
+      return Response.json(
+        { error: 'Invalid Cloudinary config. Update CLOUDINARY_CLOUD_NAME in .env.local (use your real Cloudinary cloud name).' },
+        { status: 500 }
+      );
+    }
     return Response.json({ error: 'Upload failed' }, { status: 500 });
   }
 }

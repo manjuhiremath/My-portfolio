@@ -1,6 +1,7 @@
 import {connectDB} from "@/lib/mongodb"
 import Blog from "@/models/Blog"
 import mongoose from "mongoose"
+import { normalizeFeaturedImageUrl } from "@/lib/cloudinary"
 
 function isValidObjectId(id) {
   return mongoose.Types.ObjectId.isValid(id) && new mongoose.Types.ObjectId(id).toString() === id
@@ -15,11 +16,15 @@ export async function GET(req,{params}){
     let blog
 
     if (isValidObjectId(params.slug)) {
-      // It's an ID, find by ID
       blog = await Blog.findById(params.slug)
+      if (blog) {
+        await Blog.findByIdAndUpdate(params.slug, { $inc: { views: 1 } })
+      }
     } else {
-      // It's a slug, find by slug
-      blog = await Blog.findOne({slug: params.slug})
+      blog = await Blog.findOne({ slug: params.slug })
+      if (blog) {
+        await Blog.findOneAndUpdate({ slug: params.slug }, { $inc: { views: 1 } })
+      }
     }
 
     if (!blog) {
@@ -44,10 +49,23 @@ export async function PUT(req,{params}){
 
     const data = await req.json()
 
-    const blog = await Blog.findByIdAndUpdate(params.slug, data, {
-      new: true,
-      runValidators: true
-    })
+    if (data.featuredImage) {
+      data.featuredImage = await normalizeFeaturedImageUrl(data.featuredImage, "blog-featured")
+    }
+
+    if (data.published === true) {
+      data.publishedAt = new Date()
+    } else if (data.published === false) {
+      data.publishedAt = null
+    }
+
+    let blog
+    
+    if (isValidObjectId(params.slug)) {
+      blog = await Blog.findByIdAndUpdate(params.slug, data, { returnDocument: "after", runValidators: true })
+    } else {
+      blog = await Blog.findOneAndUpdate({ slug: params.slug }, data, { returnDocument: "after", runValidators: true })
+    }
 
     if (!blog) {
       return Response.json({error: "Blog not found"}, {status: 404})

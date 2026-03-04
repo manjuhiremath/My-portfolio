@@ -4,6 +4,145 @@ import Image from 'next/image'
 import Link from 'next/link'
 import Navigation from '@/components/Navigation'
 
+function escapeHtml(text = '') {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function formatInlineMarkdown(text = '') {
+  let formatted = escapeHtml(text);
+
+  formatted = formatted.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+  formatted = formatted.replace(/`([^`]+)`/g, '<code>$1</code>');
+  formatted = formatted.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  formatted = formatted.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+
+  return formatted;
+}
+
+function formatPlainTextToHtml(content = '') {
+  const normalized = content.replace(/\r\n/g, '\n').trim();
+  if (!normalized) return '';
+
+  const lines = normalized.split('\n');
+  const html = [];
+  let inUl = false;
+  let inOl = false;
+  let inPre = false;
+  const codeBuffer = [];
+
+  const closeLists = () => {
+    if (inUl) {
+      html.push('</ul>');
+      inUl = false;
+    }
+    if (inOl) {
+      html.push('</ol>');
+      inOl = false;
+    }
+  };
+
+  for (const rawLine of lines) {
+    const line = rawLine.trimEnd();
+    const trimmed = line.trim();
+
+    if (!trimmed) {
+      closeLists();
+      if (inPre) codeBuffer.push('');
+      continue;
+    }
+
+    if (/^```/.test(trimmed)) {
+      closeLists();
+      if (!inPre) {
+        inPre = true;
+        codeBuffer.length = 0;
+      } else {
+        html.push(`<pre><code>${escapeHtml(codeBuffer.join('\n'))}</code></pre>`);
+        inPre = false;
+      }
+      continue;
+    }
+
+    if (inPre) {
+      codeBuffer.push(line);
+      continue;
+    }
+
+    const ulMatch = trimmed.match(/^[-*]\s+(.*)$/);
+    if (ulMatch) {
+      if (!inUl) {
+        if (inOl) {
+          html.push('</ol>');
+          inOl = false;
+        }
+        html.push('<ul>');
+        inUl = true;
+      }
+      html.push(`<li>${escapeHtml(ulMatch[1])}</li>`);
+      continue;
+    }
+
+    const olMatch = trimmed.match(/^\d+\.\s+(.*)$/);
+    if (olMatch) {
+      if (!inOl) {
+        if (inUl) {
+          html.push('</ul>');
+          inUl = false;
+        }
+        html.push('<ol>');
+        inOl = true;
+      }
+      html.push(`<li>${escapeHtml(olMatch[1])}</li>`);
+      continue;
+    }
+
+    closeLists();
+
+    const headingMatch = trimmed.match(/^(#{1,6})\s+(.*)$/);
+    if (headingMatch) {
+      const level = headingMatch[1].length;
+      const headingText = formatInlineMarkdown(headingMatch[2]);
+      html.push(`<h${level}>${headingText}</h${level}>`);
+      continue;
+    }
+
+    const blockquoteMatch = trimmed.match(/^>\s?(.*)$/);
+    if (blockquoteMatch) {
+      html.push(`<blockquote><p>${formatInlineMarkdown(blockquoteMatch[1])}</p></blockquote>`);
+      continue;
+    }
+
+    if (
+      (trimmed.startsWith('{') && trimmed.endsWith('}')) ||
+      (trimmed.startsWith('[') && trimmed.endsWith(']'))
+    ) {
+      html.push(`<pre><code>${escapeHtml(trimmed)}</code></pre>`);
+      continue;
+    }
+
+    html.push(`<p>${formatInlineMarkdown(trimmed)}</p>`);
+  }
+
+  closeLists();
+
+  if (inPre) {
+    html.push(`<pre><code>${escapeHtml(codeBuffer.join('\n'))}</code></pre>`);
+  }
+
+  return html.join('\n');
+}
+
+function getRenderableContent(content = '') {
+  const looksLikeHtml = /<([a-z][\w-]*)(\s[^>]*)?>/i.test(content);
+  if (looksLikeHtml) return content;
+  return formatPlainTextToHtml(content);
+}
+
 function slugify(text) {
   return text
     .toLowerCase()
@@ -59,11 +198,15 @@ export async function generateMetadata({ params }) {
 export default async function BlogPage({ params }) {
   try {
     await connectDB()
-    const blog = await Blog.findOne({ slug: params.slug })
+    const blog = await Blog.findOneAndUpdate(
+      { slug: params.slug },
+      { $inc: { views: 1 } },
+      { returnDocument: 'after' }
+    )
 
     if (!blog) {
       return (
-        <div className="min-h-screen bg-background">
+        <div className="min-h-screen bg-background overflow-x-hidden">
           <Navigation />
           <div className="max-w-4xl mx-auto px-4 py-16 text-center">
             <h1 className="text-2xl font-bold text-foreground">Blog not found</h1>
@@ -85,11 +228,13 @@ export default async function BlogPage({ params }) {
       published: true
     }).limit(3)
 
+    const renderableContent = getRenderableContent(blog.content || '')
+
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background overflow-x-hidden">
         <Navigation />
         
-        <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 overflow-x-hidden">
           {/* Breadcrumb */}
           <nav className="flex items-center gap-2 text-xs sm:text-sm text-secondary mb-8 flex-wrap">
             <Link href="/" className="hover:text-primary transition-colors">Home</Link>
@@ -139,10 +284,11 @@ export default async function BlogPage({ params }) {
           )}
 
           {/* Content */}
-          <div className="prose prose-lg max-w-none mb-12">
-            <div 
-              className="blog-content text-secondary leading-relaxed"
-              dangerouslySetInnerHTML={{ __html: blog.content }}
+          <div className="prose max-w-none mb-12">
+            <div
+              className="blog-content leading-snug"
+              style={{ color: '#444444' }}
+              dangerouslySetInnerHTML={{ __html: renderableContent }}
             />
           </div>
 
@@ -218,7 +364,7 @@ export default async function BlogPage({ params }) {
   } catch (error) {
     console.error('Error loading blog:', error)
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background overflow-x-hidden">
         <Navigation />
         <div className="max-w-4xl mx-auto px-4 py-16 text-center">
           <h1 className="text-2xl font-bold text-foreground">Error loading blog</h1>

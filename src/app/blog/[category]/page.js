@@ -5,6 +5,8 @@ import Blog from '@/models/Blog';
 import Category from '@/models/Category';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
+import BlogCard from '@/components/blog/BlogCard';
+import Pagination from '@/components/Pagination';
 
 function slugify(text) {
   return text
@@ -17,6 +19,8 @@ function slugify(text) {
 function capitalize(text) {
   return text.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 }
+
+const POSTS_PER_PAGE = 6;
 
 export async function generateMetadata({ params }) {
   try {
@@ -66,7 +70,7 @@ export async function generateMetadata({ params }) {
   }
 }
 
-async function getCategoryAndBlogs(categorySlug) {
+async function getCategoryAndBlogs(categorySlug, page = 1) {
   try {
     await connectDB();
 
@@ -74,20 +78,41 @@ async function getCategoryAndBlogs(categorySlug) {
     
     const category = await Category.findOne({ name: categoryName });
     
+    const skip = (page - 1) * POSTS_PER_PAGE;
+    
     const blogs = await Blog.find({
       category: { $regex: new RegExp(categoryName, 'i') },
       published: true
-    }).sort({ createdAt: -1 });
+    })
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(POSTS_PER_PAGE);
 
-    return { categoryName, categorySlug, blogs, categoryColor: category?.color || '#6366f1' };
+    const totalBlogs = await Blog.countDocuments({
+      category: { $regex: new RegExp(categoryName, 'i') },
+      published: true
+    });
+
+    const totalPages = Math.ceil(totalBlogs / POSTS_PER_PAGE);
+
+    return { 
+      categoryName, 
+      categorySlug, 
+      blogs, 
+      categoryColor: category?.color || '#6366f1',
+      currentPage: page,
+      totalPages,
+      totalBlogs
+    };
   } catch (error) {
     console.error('Error fetching category and blogs:', error);
     return null;
   }
 }
 
-export default async function CategoryPage({ params }) {
-  const { categoryName, categorySlug, blogs, categoryColor } = await getCategoryAndBlogs(params.category) || {};
+export default async function CategoryPage({ params, searchParams }) {
+  const page = parseInt(searchParams?.page) || 1;
+  const { categoryName, categorySlug, blogs, categoryColor, currentPage, totalPages, totalBlogs } = await getCategoryAndBlogs(params.category, page) || {};
 
   if (!categoryName) {
     return (
@@ -134,50 +159,23 @@ export default async function CategoryPage({ params }) {
             <p className="text-secondary">No blogs found in this category yet.</p>
           </div>
         ) : (
-          <div className="feature-grid">
-            {blogs.map(blog => (
-              <Link
-                key={blog._id}
-                href={`/blog/${slugify(blog.category)}/${slugify(blog.subcategory)}/${blog.slug}`}
-                className="feature-card group cursor-pointer"
-              >
-                <div className="image-container">
-                  <Image
-                    src={blog.featuredImage || '/placeholder-image.jpg'}
-                    alt={blog.title}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
+          <>
+            <div className="feature-grid">
+              {blogs.map(blog => (
+                <div key={blog._id}>
+                  <BlogCard blog={blog} categoryColor={categoryColor} />
                 </div>
-
-                <div className="content">
-                  <span 
-                    className="category-tag"
-                    style={{ 
-                      backgroundColor: `${categoryColor}15`,
-                      color: categoryColor,
-                      border: `1px solid ${categoryColor}30`
-                    }}
-                  >
-                    {blog.category}
-                  </span>
-
-                  <h2 className="group-hover:opacity-80 transition-colors">
-                    {blog.title}
-                  </h2>
-
-                  <p className="line-clamp-2">
-                    {blog.excerpt}
-                  </p>
-
-                  <div className="flex items-center justify-between text-xs text-secondary mt-3 pt-2 border-t border-gray-100">
-                    <span>{blog.subcategory}</span>
-                    <span>{new Date(blog.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
+              ))}
+            </div>
+            
+            {totalPages > 1 && (
+              <Pagination 
+                currentPage={currentPage} 
+                totalPages={totalPages} 
+                baseUrl={`/blog/${categorySlug}`} 
+              />
+            )}
+          </>
         )}
       </div>
 
