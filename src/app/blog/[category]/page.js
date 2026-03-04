@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import { connectDB } from '@/lib/mongodb';
 import Blog from '@/models/Blog';
@@ -7,6 +6,8 @@ import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 import BlogCard from '@/components/blog/BlogCard';
 import Pagination from '@/components/Pagination';
+
+export const revalidate = 3600;
 
 function slugify(text) {
   return text

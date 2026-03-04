@@ -87,7 +87,13 @@ export async function DELETE(req,{params}){
 
     await connectDB()
 
-    const blog = await Blog.findByIdAndDelete(params.slug)
+    let blog
+
+    if (isValidObjectId(params.slug)) {
+      blog = await Blog.findByIdAndDelete(params.slug)
+    } else {
+      blog = await Blog.findOneAndDelete({ slug: params.slug })
+    }
 
     if (!blog) {
       return Response.json({error: "Blog not found"}, {status: 404})

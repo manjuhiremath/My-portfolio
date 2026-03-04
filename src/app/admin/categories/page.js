@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Archivo, Space_Grotesk } from 'next/font/google';
+import { toast } from 'sonner';
 
 const archivo = Archivo({
   subsets: ['latin'],
@@ -61,13 +62,18 @@ export default function AdminCategories() {
       if (res.ok) {
         setNewCategory({ name: '', parent: '', color: '#6366f1' });
         setShowForm(false);
+        toast.success('Category added successfully');
         fetchCategories();
       } else {
         const errorData = await res.json();
-        setError(errorData.message || 'Failed to add category');
+        const message = errorData.message || 'Failed to add category';
+        setError(message);
+        toast.error(message);
       }
     } catch (error) {
-      setError('An error occurred while adding the category');
+      const message = 'An error occurred while adding the category';
+      setError(message);
+      toast.error(message);
     } finally {
       setAdding(false);
     }
@@ -75,18 +81,22 @@ export default function AdminCategories() {
 
   const handleDeleteCategory = async (id) => {
     if (!confirm('Are you sure you want to delete this category? This may affect existing blogs.')) {
+      toast.warning('Delete cancelled');
       return;
     }
 
     try {
       const res = await fetch(`/api/categories/${id}`, { method: 'DELETE' });
       if (res.ok) {
+        toast.success('Category deleted successfully');
         fetchCategories();
       } else {
         setError('Failed to delete category');
+        toast.error('Failed to delete category');
       }
     } catch (error) {
       setError('An error occurred while deleting the category');
+      toast.error('An error occurred while deleting the category');
     }
   };
 

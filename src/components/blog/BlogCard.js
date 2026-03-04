@@ -20,9 +20,11 @@ export default function BlogCard({ blog, categoryColor = '#6366f1' }) {
     >
       <div className="image-container relative h-48 overflow-hidden">
         <Image
-          src={blog.featuredImage || '/placeholder-image.jpg'}
+          src={blog.featuredImage || '/placeholder-image.svg'}
           alt={blog.title || 'Blog Post'}
           fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          loading="lazy"
           className="object-cover group-hover:scale-105 transition-transform duration-300"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
