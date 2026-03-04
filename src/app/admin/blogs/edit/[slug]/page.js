@@ -35,6 +35,115 @@ function generateTableHTML(rows, cols) {
   return html;
 }
 
+function SearchableDropdown({ label, value, onChange, options, placeholder, disabled, onCreateNew, createLabel }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+        setSearchTerm('');
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const filteredOptions = options.filter(option =>
+    option.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const showCreateOption = searchTerm && !filteredOptions.some(opt =>
+    opt.name.toLowerCase() === searchTerm.toLowerCase()
+  );
+
+  const handleSelect = (optionValue) => {
+    onChange(optionValue);
+    setIsOpen(false);
+    setSearchTerm('');
+  };
+
+  const handleCreateNew = () => {
+    onCreateNew(searchTerm);
+    setIsOpen(false);
+    setSearchTerm('');
+  };
+
+  return (
+    <div className="relative" ref={dropdownRef}>
+      {label && (
+        <label className="block text-sm font-archivo font-medium text-[#18181B] mb-2">
+          {label}
+        </label>
+      )}
+      <div
+        className={`w-full px-3 py-1.5 border border-[#3F3F46]/20 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2563EB] font-space-grotesk bg-white cursor-pointer flex items-center justify-between ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+        onClick={() => !disabled && setIsOpen(!isOpen)}
+      >
+        <span className={value ? 'text-[#18181B] text-sm' : 'text-[#3F3F46] text-sm'}>
+          {value || placeholder}
+        </span>
+        <svg className={`w-4 h-4 text-[#3F3F46] transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </div>
+
+      {isOpen && !disabled && (
+        <div className="absolute z-50 w-full mt-1 bg-white border border-[#3F3F46]/20 rounded-md shadow-lg max-h-60 overflow-auto">
+          <div className="p-2 border-b border-[#3F3F46]/10">
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search..."
+              className="w-full px-3 py-1.5 border border-[#3F3F46]/20 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2563EB] text-sm"
+              onClick={(e) => e.stopPropagation()}
+              autoFocus
+            />
+          </div>
+
+          <div className="py-1">
+            {filteredOptions.length === 0 && !showCreateOption ? (
+              <div className="px-4 py-3 text-sm text-[#3F3F46] text-center">
+                No options found
+              </div>
+            ) : (
+              <>
+                {filteredOptions.map((option) => (
+                  <button
+                    key={option._id}
+                    type="button"
+                    onClick={() => handleSelect(option.name)}
+                    className={`w-full px-4 py-2 text-left text-sm hover:bg-[#2563EB]/10 transition-colors ${
+                      value === option.name ? 'bg-[#2563EB]/10 text-[#2563EB] font-medium' : 'text-[#18181B]'
+                    }`}
+                  >
+                    {option.name}
+                  </button>
+                ))}
+                {showCreateOption && onCreateNew && (
+                  <button
+                    type="button"
+                    onClick={handleCreateNew}
+                    className="w-full px-4 py-3 text-left text-sm text-[#2563EB] hover:bg-[#2563EB]/10 border-t border-[#3F3F46]/10 font-medium flex items-center gap-2"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                    {createLabel || `Create "${searchTerm}"`}
+                  </button>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function EditBlog() {
   const router = useRouter();
   const params = useParams();
@@ -62,9 +171,24 @@ export default function EditBlog() {
   const [error, setError] = useState('');
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState('');
+  const [categories, setCategories] = useState([]);
+  const [subcategories, setSubcategories] = useState([]);
+  const [createModal, setCreateModal] = useState({ isOpen: false, type: '', name: '', loading: false });
 
-  // Fetch blog data on mount
+  // Fetch categories and blog data on mount
   useEffect(() => {
+    async function fetchCategories() {
+      try {
+        const res = await fetch('/api/categories');
+        if (res.ok) {
+          const cats = await res.json();
+          setCategories(cats);
+        }
+      } catch (error) {
+        console.error('Failed to fetch categories');
+      }
+    }
+
     async function fetchBlog() {
       try {
         const res = await fetch(`/api/blogs/${slug}`);
@@ -93,10 +217,63 @@ export default function EditBlog() {
       }
     }
 
-    if (id) {
+    fetchCategories();
+    if (slug) {
       fetchBlog();
     }
-  }, [id]);
+  }, [slug]);
+
+  // Update subcategories when category changes
+  useEffect(() => {
+    if (formData.category && categories.length > 0) {
+      const parentCat = categories.find(c => c.name === formData.category && !c.parent);
+      if (parentCat) {
+        const subs = categories.filter(c => c.parent?.toString() === parentCat._id.toString());
+        setSubcategories(subs);
+      } else {
+        setSubcategories([]);
+      }
+    } else {
+      setSubcategories([]);
+    }
+  }, [formData.category, categories]);
+
+  const handleCreateCategory = async (name, parentId = null) => {
+    setCreateModal(prev => ({ ...prev, loading: true }));
+    try {
+      const res = await fetch('/api/categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: name.trim(),
+          slug: name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, ''),
+          parent: parentId,
+        }),
+      });
+
+      if (!res.ok) throw new Error('Failed to create category');
+
+      const newCategory = await res.json();
+      await fetchCategories();
+
+      if (parentId) {
+        setFormData(prev => ({ ...prev, subcategory: newCategory.name }));
+      } else {
+        setFormData(prev => ({ ...prev, category: newCategory.name, subcategory: '' }));
+      }
+
+      setCreateModal({ isOpen: false, type: '', name: '', loading: false });
+    } catch (err) {
+      console.error('Failed to create category:', err);
+      setCreateModal(prev => ({ ...prev, loading: false }));
+    }
+  };
+
+  const openCreateModal = (type, name) => {
+    setCreateModal({ isOpen: true, type, name, loading: false });
+  };
+
+  const parentCategories = categories.filter(c => !c.parent);
 
   // Auto-generate slug from title
   useEffect(() => {
@@ -298,24 +475,16 @@ export default function EditBlog() {
   }
 
   return (
-    <div className={`${archivo.variable} ${spaceGrotesk.variable} min-h-screen bg-[#FAFAFA] p-8`}>
+    <div className={`${archivo.variable} ${spaceGrotesk.variable}`}>
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-4xl font-archivo font-bold text-[#18181B]">Edit Blog</h1>
-          <div className="flex space-x-4">
-            <button
-              onClick={() => router.push('/admin/blogs')}
-              className="text-[#2563EB] hover:text-[#1d4ed8] font-space-grotesk cursor-pointer transition-colors duration-200"
-            >
-              ← Back to Blogs
-            </button>
-            <button
-              onClick={handleDelete}
-              className="text-red-600 hover:text-red-800 font-space-grotesk cursor-pointer transition-colors duration-200"
-            >
-              Delete Blog
-            </button>
-          </div>
+          <button
+            onClick={handleDelete}
+            className="text-red-600 hover:text-red-800 font-space-grotesk cursor-pointer transition-colors duration-200"
+          >
+            Delete Blog
+          </button>
         </div>
 
         {error && (
@@ -336,7 +505,7 @@ export default function EditBlog() {
                 value={formData.title}
                 onChange={handleChange}
                 required
-                className="w-full px-3 py-2 border border-[#3F3F46]/20 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent font-space-grotesk"
+                className="w-full px-3 py-1.5 border border-[#3F3F46]/20 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent font-space-grotesk"
               />
             </div>
 
@@ -350,87 +519,91 @@ export default function EditBlog() {
                 value={formData.slug}
                 onChange={handleChange}
                 required
-                className="w-full px-3 py-2 border border-[#3F3F46]/20 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent font-space-grotesk"
+                className="w-full px-3 py-1.5 border border-[#3F3F46]/20 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent font-space-grotesk"
               />
             </div>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-archivo font-medium text-[#18181B] mb-2">
-                Category *
-              </label>
-              <input
-                type="text"
-                name="category"
+              <SearchableDropdown
+                label="Category *"
                 value={formData.category}
-                onChange={handleChange}
-                required
-                className="w-full px-3 py-2 border border-[#3F3F46]/20 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent font-space-grotesk"
+                onChange={(val) => setFormData(prev => ({ ...prev, category: val, subcategory: '' }))}
+                options={parentCategories}
+                placeholder="Select or create category"
+                onCreateNew={(name) => openCreateModal('category', name)}
+              />
+            </div>
+
+            <div>
+              <SearchableDropdown
+                label="Subcategory"
+                value={formData.subcategory}
+                onChange={(val) => setFormData(prev => ({ ...prev, subcategory: val }))}
+                options={subcategories}
+                placeholder={formData.category ? (subcategories.length === 0 ? 'No subcategories - create one' : 'Select or create subcategory') : 'Select Category first'}
+                disabled={!formData.category}
+                onCreateNew={formData.category ? (name) => openCreateModal('subcategory', name) : null}
               />
             </div>
 
             <div>
               <label className="block text-sm font-archivo font-medium text-[#18181B] mb-2">
-                Subcategory
+                Featured Image URL
+              </label>
+              <div className="space-y-3">
+                <input
+                  type="url"
+                  name="featuredImage"
+                  value={formData.featuredImage}
+                  onChange={handleChange}
+                  className="w-full px-3 py-1.5 border border-[#3F3F46]/20 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent font-space-grotesk"
+                  placeholder="https://example.com/image.jpg"
+                />
+                {formData.featuredImage && (
+                  <div className="mt-2">
+                    <img
+                      src={formData.featuredImage}
+                      alt="Featured preview"
+                      className="h-32 w-auto rounded-md border border-[#3F3F46]/20"
+                      onError={(e) => { e.target.style.display = 'none'; }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setFormData(prev => ({ ...prev, featuredImage: '' }))}
+                      className="mt-2 text-sm text-red-600 hover:text-red-800 font-space-grotesk cursor-pointer"
+                    >
+                      Remove Image
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-archivo font-medium text-[#18181B] mb-2">
+                Tags
               </label>
               <input
                 type="text"
-                name="subcategory"
-                value={formData.subcategory}
+                name="tags"
+                value={formData.tags}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-[#3F3F46]/20 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent font-space-grotesk"
+                className="w-full px-3 py-1.5 border border-[#3F3F46]/20 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent font-space-grotesk"
               />
             </div>
-          </div>
 
-          <div>
-            <label className="block text-sm font-archivo font-medium text-[#18181B] mb-2">
-              Featured Image
-            </label>
-            <div className="space-y-3">
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageUpload}
-                disabled={uploading}
-                className="w-full px-3 py-2 border border-[#3F3F46]/20 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent font-space-grotesk disabled:opacity-50"
+            <div className="md:col-span-2">
+              <label className="block text-sm font-archivo font-medium text-[#18181B] mb-2">
+                Excerpt
+              </label>
+              <textarea
+                name="excerpt"
+                value={formData.excerpt}
+                onChange={handleChange}
+                rows={3}
+                className="w-full px-3 py-1.5 border border-[#3F3F46]/20 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent font-space-grotesk"
               />
-              {uploading && <p className="text-sm text-[#2563EB]">Uploading...</p>}
-              {uploadError && <p className="text-sm text-red-600">{uploadError}</p>}
-              {formData.featuredImage && (
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="url"
-                    name="featuredImage"
-                    value={formData.featuredImage}
-                    onChange={handleChange}
-                    className="flex-1 px-3 py-2 border border-[#3F3F46]/20 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent font-space-grotesk"
-                    placeholder="Image URL"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setFormData(prev => ({ ...prev, featuredImage: '' }))}
-                    className="px-3 py-2 text-red-600 hover:text-red-800 font-space-grotesk cursor-pointer"
-                  >
-                    Remove
-                  </button>
-                </div>
-              )}
             </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-archivo font-medium text-[#18181B] mb-2">
-              Excerpt
-            </label>
-            <textarea
-              name="excerpt"
-              value={formData.excerpt}
-              onChange={handleChange}
-              rows={3}
-              className="w-full px-3 py-2 border border-[#3F3F46]/20 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent font-space-grotesk"
-            />
           </div>
 
           <div>
@@ -468,19 +641,6 @@ export default function EditBlog() {
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-archivo font-medium text-[#18181B] mb-2">
-              Tags
-            </label>
-            <input
-              type="text"
-              name="tags"
-              value={formData.tags}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-[#3F3F46]/20 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent font-space-grotesk"
-            />
-          </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-archivo font-medium text-[#18181B] mb-2">
@@ -491,7 +651,7 @@ export default function EditBlog() {
                 name="seoTitle"
                 value={formData.seoTitle}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-[#3F3F46]/20 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent font-space-grotesk"
+                className="w-full px-3 py-1.5 border border-[#3F3F46]/20 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent font-space-grotesk"
               />
             </div>
 
@@ -504,7 +664,7 @@ export default function EditBlog() {
                 name="seoDescription"
                 value={formData.seoDescription}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-[#3F3F46]/20 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent font-space-grotesk"
+                className="w-full px-3 py-1.5 border border-[#3F3F46]/20 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent font-space-grotesk"
               />
             </div>
           </div>
@@ -581,6 +741,57 @@ export default function EditBlog() {
                   className="px-4 py-2 bg-[#2563EB] text-white rounded-md hover:bg-[#1d4ed8] transition-colors cursor-pointer"
                 >
                   Insert
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Create Category Modal */}
+        {createModal.isOpen && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl">
+              <h3 className="text-lg font-semibold text-[#18181B] mb-2">
+                Create New {createModal.type === 'subcategory' ? 'Subcategory' : 'Category'}
+              </h3>
+              <p className="text-sm text-[#3F3F46] mb-4">
+                Create &quot;<span className="font-medium text-[#18181B]">{createModal.name}</span>&quot; as a new {createModal.type === 'subcategory' ? 'subcategory' : 'category'}.
+              </p>
+
+              {createModal.type === 'subcategory' && formData.category && (
+                <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+                  <span className="text-xs text-[#3F3F46] uppercase tracking-wide">Parent Category</span>
+                  <p className="font-medium text-[#18181B]">{formData.category}</p>
+                </div>
+              )}
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setCreateModal({ isOpen: false, type: '', name: '', loading: false })}
+                  className="flex-1 py-2 px-4 border border-[#3F3F46]/20 text-[#18181B] rounded-lg hover:bg-gray-50 transition-colors"
+                  disabled={createModal.loading}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    const parentCategory = categories.find(c => c.name === formData.category);
+                    handleCreateCategory(createModal.name, createModal.type === 'subcategory' ? parentCategory?._id : null);
+                  }}
+                  disabled={createModal.loading}
+                  className="flex-1 py-2 px-4 bg-[#2563EB] text-white rounded-lg hover:bg-[#1d4ed8] disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
+                >
+                  {createModal.loading ? (
+                    <>
+                      <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                      </svg>
+                      Creating...
+                    </>
+                  ) : (
+                    <>Create {createModal.type === 'subcategory' ? 'Subcategory' : 'Category'}</>
+                  )}
                 </button>
               </div>
             </div>

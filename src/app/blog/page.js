@@ -1,32 +1,48 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
+import BlogCard from '@/components/blog/BlogCard';
 
-export default function BlogPage() {
+function BlogContent() {
+  const searchParams = useSearchParams();
+  const initialCategory = searchParams.get('category') || 'all';
+  
   const [blogs, setBlogs] = useState([]);
   const [categories, setCategories] = useState([]);
   const [filteredBlogs, setFilteredBlogs] = useState([]);
-  const [activeFilter, setActiveFilter] = useState('all');
+  const [activeFilter, setActiveFilter] = useState(initialCategory);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const categoryFromUrl = searchParams.get('category');
+    if (categoryFromUrl) {
+      setActiveFilter(categoryFromUrl);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
     async function fetchData() {
+      setLoading(true);
       try {
+        const categoryParam = activeFilter !== 'all' ? `&category=${encodeURIComponent(activeFilter)}` : '';
         const [blogsRes, categoriesRes] = await Promise.all([
-          fetch('/api/blogs'),
+          fetch(`/api/blogs?published=true${categoryParam}`),
           fetch('/api/categories')
         ]);
         const blogsData = await blogsRes.json();
         const categoriesData = await categoriesRes.json();
         
-        setBlogs(blogsData);
-        setFilteredBlogs(blogsData);
-        setCategories(categoriesData);
+        const blogsArray = Array.isArray(blogsData) ? blogsData : (blogsData.blogs || []);
+        
+        setBlogs(blogsArray);
+        setFilteredBlogs(blogsArray);
+        setCategories(Array.isArray(categoriesData) ? categoriesData : []);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -34,7 +50,7 @@ export default function BlogPage() {
       }
     }
     fetchData();
-  }, []);
+  }, [activeFilter]);
 
   useEffect(() => {
     if (activeFilter === 'all') {
@@ -51,7 +67,11 @@ export default function BlogPage() {
     return category?.color || '#6366f1';
   };
 
-  const categoryList = ['all', ...new Set(blogs.map(blog => blog.category))];
+  const topLevelCategories = categories
+    .filter(cat => !cat.parent)
+    .map(cat => cat.name);
+  
+  const categoryList = ['all', ...topLevelCategories];
   
   const featuredBlogs = blogs.slice(0, 4);
 
@@ -62,7 +82,12 @@ export default function BlogPage() {
     }, 5000);
     return () => clearInterval(timer);
   }, [featuredBlogs.length]);
-  const recentBlogs = blogs.slice(0, 6);
+
+  const handleFilterClick = (category) => {
+    setActiveFilter(category);
+    const url = category === 'all' ? '/blog' : `/blog?category=${encodeURIComponent(category)}`;
+    window.history.pushState({}, '', url);
+  };
 
   if (loading) {
     return (
@@ -207,7 +232,7 @@ export default function BlogPage() {
           {categoryList.map(category => (
             <button
               key={category}
-              onClick={() => setActiveFilter(category)}
+              onClick={() => handleFilterClick(category)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                 activeFilter === category
                   ? 'bg-orange-500 text-white'
@@ -244,44 +269,9 @@ export default function BlogPage() {
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {categoryBlogs.map(blog => (
-                    <Link
-                      key={blog._id}
-                      href={`/blog/${blog.category.toLowerCase().replace(/\s+/g, '-').replace(/[^\w\-]+/g, '')}/${blog.subcategory.toLowerCase().replace(/\s+/g, '-').replace(/[^\w\-]+/g, '')}/${blog.slug}`}
-                      className="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-200"
-                    >
-                      <div className="relative h-48 overflow-hidden">
-                        <Image
-                          src={blog.featuredImage || '/placeholder-image.jpg'}
-                          alt={blog.title}
-                          fill
-                          className="object-cover group-hover:scale-110 transition-transform duration-500"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        <div className="absolute bottom-3 left-3">
-                          <span 
-                            className="px-2 py-1 rounded-md text-xs font-medium text-white"
-                            style={{ backgroundColor: categoryColor }}
-                          >
-                            {blog.category}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="p-5">
-                        <h3 className="text-lg font-bold text-foreground mb-2 group-hover:text-orange-500 transition-colors line-clamp-2">
-                          {blog.title}
-                        </h3>
-
-                        <p className="text-secondary text-sm line-clamp-2 mb-4">
-                          {blog.excerpt}
-                        </p>
-
-                        <div className="flex items-center justify-between text-xs text-secondary">
-                          <span>{blog.subcategory}</span>
-                          <span>{new Date(blog.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
-                        </div>
-                      </div>
-                    </Link>
+                    <div key={blog._id}>
+                      <BlogCard blog={blog} categoryColor={categoryColor} />
+                    </div>
                   ))}
                 </div>
               </div>
@@ -292,5 +282,25 @@ export default function BlogPage() {
 
       <Footer />
     </div>
+  );
+}
+
+function BlogPageFallback() {
+  return (
+    <div className="min-h-screen bg-background">
+      <Navigation />
+      <div className="max-w-7xl mx-auto px-4 py-16 text-center">
+        <p className="text-secondary">Loading...</p>
+      </div>
+      <Footer />
+    </div>
+  );
+}
+
+export default function BlogPage() {
+  return (
+    <Suspense fallback={<BlogPageFallback />}>
+      <BlogContent />
+    </Suspense>
   );
 }

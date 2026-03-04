@@ -238,6 +238,17 @@ body {
 .blog-content {
   font-size: 1.125rem;
   line-height: 1.8;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  max-width: 100%;
+}
+
+.blog-content img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1.5rem 0;
 }
 
 .blog-content h1,
@@ -254,7 +265,7 @@ body {
 }
 
 .blog-content p {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
 }
 
 .blog-content a {
@@ -270,6 +281,14 @@ body {
 .blog-content ol {
   margin-bottom: 1.25rem;
   padding-left: 1.5rem;
+}
+
+.blog-content ul {
+  list-style-type: disc;
+}
+
+.blog-content ol {
+  list-style-type: decimal;
 }
 
 .blog-content li {
@@ -290,7 +309,11 @@ body {
   padding: 1rem;
   border-radius: 8px;
   overflow-x: auto;
+  overflow-y: auto;
+  max-width: 100%;
   margin-bottom: 1.5rem;
+  white-space: pre;
+  word-wrap: normal;
 }
 
 .blog-content code {
@@ -308,6 +331,8 @@ body {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 1.5rem;
+  display: block;
+  overflow-x: auto;
 }
 
 .blog-content th,
@@ -315,6 +340,7 @@ body {
   border: 1px solid #e2e8f0;
   padding: 0.75rem;
   text-align: left;
+  min-width: 120px;
 }
 
 .blog-content th {

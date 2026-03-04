@@ -89,11 +89,6 @@ export default function Footer() {
           <p className="text-sm text-slate-500">
             © {currentYear} Manjunath M. All rights reserved.
           </p>
-          <div className="flex items-center gap-4">
-            <Link href="/admin/dashboard" className="text-xs text-slate-400 hover:text-slate-600 transition-colors">
-              Admin
-            </Link>
-          </div>
         </div>
       </div>
     </footer>

@@ -5,6 +5,8 @@ import Blog from '@/models/Blog';
 import Category from '@/models/Category';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
+import BlogCard from '@/components/blog/BlogCard';
+import Pagination from '@/components/Pagination';
 
 function slugify(text) {
   return text
@@ -17,6 +19,8 @@ function slugify(text) {
 function capitalize(text) {
   return text.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 }
+
+const POSTS_PER_PAGE = 6;
 
 export async function generateMetadata({ params }) {
   try {
@@ -71,7 +75,7 @@ export async function generateMetadata({ params }) {
   }
 }
 
-async function getSubcategoryAndBlogs(categorySlug, subcategorySlug) {
+async function getSubcategoryAndBlogs(categorySlug, subcategorySlug, page = 1) {
   try {
     await connectDB();
 
@@ -80,11 +84,24 @@ async function getSubcategoryAndBlogs(categorySlug, subcategorySlug) {
     
     const category = await Category.findOne({ name: categoryName });
     
+    const skip = (page - 1) * POSTS_PER_PAGE;
+    
     const blogs = await Blog.find({
       category: { $regex: new RegExp(categoryName, 'i') },
       subcategory: { $regex: new RegExp(subcategoryName, 'i') },
       published: true
-    }).sort({ createdAt: -1 });
+    })
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(POSTS_PER_PAGE);
+
+    const totalBlogs = await Blog.countDocuments({
+      category: { $regex: new RegExp(categoryName, 'i') },
+      subcategory: { $regex: new RegExp(subcategoryName, 'i') },
+      published: true
+    });
+
+    const totalPages = Math.ceil(totalBlogs / POSTS_PER_PAGE);
 
     return { 
       categoryName, 
@@ -92,7 +109,10 @@ async function getSubcategoryAndBlogs(categorySlug, subcategorySlug) {
       subcategoryName, 
       subcategorySlug, 
       blogs,
-      categoryColor: category?.color || '#6366f1'
+      categoryColor: category?.color || '#6366f1',
+      currentPage: page,
+      totalPages,
+      totalBlogs
     };
   } catch (error) {
     console.error('Error fetching subcategory and blogs:', error);
@@ -100,9 +120,10 @@ async function getSubcategoryAndBlogs(categorySlug, subcategorySlug) {
   }
 }
 
-export default async function SubcategoryPage({ params }) {
-  const { categoryName, categorySlug, subcategoryName, subcategorySlug, blogs, categoryColor } = 
-    await getSubcategoryAndBlogs(params.category, params.subcategory) || {};
+export default async function SubcategoryPage({ params, searchParams }) {
+  const page = parseInt(searchParams?.page) || 1;
+  const { categoryName, categorySlug, subcategoryName, subcategorySlug, blogs, categoryColor, currentPage, totalPages, totalBlogs } = 
+    await getSubcategoryAndBlogs(params.category, params.subcategory, page) || {};
 
   if (!subcategoryName) {
     return (
@@ -154,50 +175,23 @@ export default async function SubcategoryPage({ params }) {
             <p className="text-secondary">No blogs found in this subcategory yet.</p>
           </div>
         ) : (
-          <div className="feature-grid">
-            {blogs.map(blog => (
-              <Link
-                key={blog._id}
-                href={`/blog/${slugify(blog.category)}/${slugify(blog.subcategory)}/${blog.slug}`}
-                className="feature-card group cursor-pointer"
-              >
-                <div className="image-container">
-                  <Image
-                    src={blog.featuredImage || '/placeholder-image.jpg'}
-                    alt={blog.title}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
+          <>
+            <div className="feature-grid">
+              {blogs.map(blog => (
+                <div key={blog._id}>
+                  <BlogCard blog={blog} categoryColor={categoryColor} />
                 </div>
-
-                <div className="content">
-                  <span 
-                    className="category-tag"
-                    style={{ 
-                      backgroundColor: `${categoryColor}15`,
-                      color: categoryColor,
-                      border: `1px solid ${categoryColor}30`
-                    }}
-                  >
-                    {blog.category}
-                  </span>
-
-                  <h2 className="group-hover:opacity-80 transition-colors">
-                    {blog.title}
-                  </h2>
-
-                  <p className="line-clamp-2">
-                    {blog.excerpt}
-                  </p>
-
-                  <div className="flex items-center justify-between text-xs text-secondary mt-3 pt-2 border-t border-gray-100">
-                    <span>{blog.subcategory}</span>
-                    <span>{new Date(blog.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
+              ))}
+            </div>
+            
+            {totalPages > 1 && (
+              <Pagination 
+                currentPage={currentPage} 
+                totalPages={totalPages} 
+                baseUrl={`/blog/${categorySlug}/${subcategorySlug}`} 
+              />
+            )}
+          </>
         )}
       </div>
 

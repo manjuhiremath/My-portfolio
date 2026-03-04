@@ -20,7 +20,7 @@ const CategorySchema=new mongoose.Schema({
  seoDescription:String,
  keywords:[String],
 
-})
+},{ timestamps: true });
 
 export default mongoose.models.Category ||
 mongoose.model("Category",CategorySchema)
