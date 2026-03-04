@@ -5,7 +5,7 @@ export default function robots() {
     rules: [
       {
         userAgent: '*',
-        allow: '/',
+        allow: '/blog/',
         disallow: [
           '/admin/',
           '/api/',
@@ -15,11 +15,11 @@ export default function robots() {
       },
       {
         userAgent: 'Googlebot',
-        allow: '/',
+        allow: '/blog/',
         disallow: ['/admin/', '/api/'],
       },
     ],
-    sitemap: `${baseUrl}/sitemap.xml`,
+    sitemap: `${baseUrl}/blog/sitemap.xml`,
     host: baseUrl,
   };
 }

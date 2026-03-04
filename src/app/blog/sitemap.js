@@ -5,7 +5,7 @@ export default async function sitemap() {
 
   try {
     // Fetch all URLs from API
-    const res = await fetch(`${baseUrl}/api/sitemap`, {
+    const res = await fetch(`${baseUrl}/blog/api/sitemap`, {
       next: { revalidate: 3600 } // Revalidate every hour
     });
 
