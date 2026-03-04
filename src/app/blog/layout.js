@@ -2,6 +2,9 @@ export const metadata = {
   title: 'Blog | Tech, Design & Business Insights',
   description: 'Explore insightful articles on technology, web development, AI, UI/UX design, and business. Get the latest tips, tutorials, and trends from industry experts.',
   keywords: ['blog', 'technology', 'web development', 'AI', 'design', 'business', 'tutorials', 'insights', 'programming'],
+  verification: {
+    google: '2JGk2Vu-1qinl19o3imuPSwhZHcSP7i0zt4ovjzcIpc',
+  },
   openGraph: {
     title: 'Blog | Tech, Design & Business Insights',
     description: 'Explore insightful articles on technology, web development, AI, UI/UX design, and business.',
