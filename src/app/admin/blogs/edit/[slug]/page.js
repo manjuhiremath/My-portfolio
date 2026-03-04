@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
+import Image from 'next/image';
 import { Archivo, Space_Grotesk } from 'next/font/google';
 
 const archivo = Archivo({
@@ -561,11 +562,13 @@ export default function EditBlog() {
                 />
                 {formData.featuredImage && (
                   <div className="mt-2">
-                    <img
+                    <Image
                       src={formData.featuredImage}
                       alt="Featured preview"
+                      width={256}
+                      height={128}
+                      loading="lazy"
                       className="h-32 w-auto rounded-md border border-[#3F3F46]/20"
-                      onError={(e) => { e.target.style.display = 'none'; }}
                     />
                     <button
                       type="button"

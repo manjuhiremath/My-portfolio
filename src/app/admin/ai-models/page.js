@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Space_Grotesk } from 'next/font/google';
 import Link from 'next/link';
+import { toast } from 'sonner';
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -70,10 +71,13 @@ export default function AIModelsPage() {
       if (res.ok) {
         setModels(data.models || []);
       } else {
-        setError(data.error || 'Failed to fetch models');
+        const message = data.error || 'Failed to fetch models';
+        setError(message);
+        toast.error(message);
       }
     } catch (err) {
       setError('Failed to fetch models');
+      toast.error('Failed to fetch models');
     } finally {
       setLoading(false);
     }
@@ -97,9 +101,11 @@ export default function AIModelsPage() {
           });
         }
         fetchModels();
+        toast.success('Ollama models synced successfully');
       }
     } catch (err) {
       console.error('Failed to fetch Ollama models:', err);
+      toast.error('Failed to sync Ollama models');
     }
   };
 
@@ -128,18 +134,25 @@ export default function AIModelsPage() {
         setEditingModel(null);
         resetForm();
         fetchModels();
+        toast.success(editingModel ? 'AI model updated successfully' : 'AI model added successfully');
       } else {
-        setError(data.error || 'Failed to save model');
+        const message = data.error || 'Failed to save model';
+        setError(message);
+        toast.error(message);
       }
     } catch (err) {
       setError('Failed to save model');
+      toast.error('Failed to save model');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleDelete = async (id) => {
-    if (!confirm('Are you sure you want to delete this model?')) return;
+    if (!confirm('Are you sure you want to delete this model?')) {
+      toast.warning('Delete cancelled');
+      return;
+    }
 
     try {
       const res = await fetch(`/api/ai/models/${id}`, {
@@ -148,12 +161,16 @@ export default function AIModelsPage() {
 
       if (res.ok) {
         fetchModels();
+        toast.success('AI model deleted successfully');
       } else {
         const data = await res.json();
-        setError(data.error || 'Failed to delete model');
+        const message = data.error || 'Failed to delete model';
+        setError(message);
+        toast.error(message);
       }
     } catch (err) {
       setError('Failed to delete model');
+      toast.error('Failed to delete model');
     }
   };
 
@@ -231,9 +248,11 @@ export default function AIModelsPage() {
 
       if (res.ok) {
         fetchModels();
+        toast.success('Default model updated successfully');
       }
     } catch (err) {
       console.error('Failed to set default:', err);
+      toast.error('Failed to set default model');
     }
   };
 
@@ -247,9 +266,11 @@ export default function AIModelsPage() {
 
       if (res.ok) {
         fetchModels();
+        toast.success(`Model ${model.isActive ? 'deactivated' : 'activated'} successfully`);
       }
     } catch (err) {
       console.error('Failed to toggle active:', err);
+      toast.error('Failed to update model status');
     }
   };
 

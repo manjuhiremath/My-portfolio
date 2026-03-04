@@ -59,9 +59,10 @@ export default function Navigation() {
           <div className="md:hidden">
             <button
               type="button"
-              className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-colors"
+              className="min-h-[44px] min-w-[44px] text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-colors flex items-center justify-center"
               aria-controls="mobile-menu"
               aria-expanded={isMobileMenuOpen}
+              aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
               <span className="sr-only">Open menu</span>

@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Archivo, Space_Grotesk } from 'next/font/google';
 import Link from 'next/link';
+import Image from 'next/image';
 import dynamic from 'next/dynamic';
 
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
@@ -852,7 +853,10 @@ export default function AIBlogGenerator() {
     }
 
     const previewUrl = `/blog/${generateSlug(category)}/${generateSlug(subcategory)}/${slug}`;
-    window.open(previewUrl, '_blank', 'noopener,noreferrer');
+    const previewTab = window.open(previewUrl, '_blank');
+    if (!previewTab) {
+      setError('Popup blocked. Please allow popups and try again.');
+    }
   };
 
   const handlePublish = async (statusOverride) => {
@@ -1021,11 +1025,14 @@ export default function AIBlogGenerator() {
                     <div className="flex items-start gap-2">
                       {selectedModel.icon && (
                         <div className="w-8 h-8 flex-shrink-0 bg-slate-50 rounded p-1 flex items-center justify-center">
-                          <img 
+                          <Image 
                             src={selectedModel.icon} 
                             alt={selectedModel.provider}
+                            width={24}
+                            height={24}
+                            loading="lazy"
+                            unoptimized
                             className={`w-full h-full object-contain ${selectedModel.iconClassName || ''}`}
-                            onError={(e) => { e.target.style.display = 'none'; }}
                           />
                         </div>
                       )}

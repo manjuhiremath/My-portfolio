@@ -4,9 +4,14 @@ import { useState, useEffect, Suspense } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import Navigation from '@/components/Navigation';
-import Footer from '@/components/Footer';
 import BlogCard from '@/components/blog/BlogCard';
+
+const Footer = dynamic(() => import('@/components/Footer'), {
+  ssr: false,
+  loading: () => <div className="h-20" />,
+});
 
 function BlogContent() {
   const searchParams = useSearchParams();
@@ -141,11 +146,13 @@ function BlogContent() {
                       return (
                         <div key={blog._id} className="w-full h-full flex-shrink-0 relative">
                           <Image
-                            src={blog.featuredImage || '/placeholder-image.jpg'}
+                            src={blog.featuredImage || '/placeholder-image.svg'}
                             alt={blog.title}
                             fill
+                            sizes="(max-width: 1024px) 100vw, 50vw"
                             className="object-cover"
                             priority={currentSlide === featuredBlogs.indexOf(blog)}
+                            loading={currentSlide === featuredBlogs.indexOf(blog) ? 'eager' : 'lazy'}
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/50 to-transparent"></div>
                           <div className="absolute top-4 left-4">
@@ -176,16 +183,20 @@ function BlogContent() {
                   {featuredBlogs.length > 1 && (
                     <>
                       <button 
+                        type="button"
                         onClick={() => setCurrentSlide(prev => (prev - 1 + featuredBlogs.length) % featuredBlogs.length)}
-                        className="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-sm transition-colors z-10"
+                        aria-label="Previous featured post"
+                        className="absolute left-3 top-1/2 -translate-y-1/2 min-h-[44px] min-w-[44px] rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-sm transition-colors z-10 flex items-center justify-center"
                       >
                         <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                         </svg>
                       </button>
                       <button 
+                        type="button"
                         onClick={() => setCurrentSlide(prev => (prev + 1) % featuredBlogs.length)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-sm transition-colors z-10"
+                        aria-label="Next featured post"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 min-h-[44px] min-w-[44px] rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-sm transition-colors z-10 flex items-center justify-center"
                       >
                         <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -199,8 +210,10 @@ function BlogContent() {
                     <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
                       {featuredBlogs.map((_, index) => (
                         <button
+                          type="button"
                           key={index}
                           onClick={() => setCurrentSlide(index)}
+                          aria-label={`Go to featured slide ${index + 1}`}
                           className={`h-2 rounded-full transition-all ${
                             index === currentSlide ? 'bg-orange-500 w-8' : 'bg-white/40 w-2'
                           }`}
@@ -231,9 +244,10 @@ function BlogContent() {
         <div className="flex flex-wrap gap-2 mb-8">
           {categoryList.map(category => (
             <button
+              type="button"
               key={category}
               onClick={() => handleFilterClick(category)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+              className={`px-4 py-2 min-h-[44px] rounded-full text-sm font-medium transition-all ${
                 activeFilter === category
                   ? 'bg-orange-500 text-white'
                   : 'bg-slate-100 text-secondary hover:bg-slate-200'
