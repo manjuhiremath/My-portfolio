@@ -1,5 +1,5 @@
-import AdminBlogsPageClient from './AdminBlogsPageClient';
+import AdminBlogsClient from './AdminBlogsClient';
 
 export default function AdminBlogsPage() {
-  return <AdminBlogsPageClient />;
+  return <AdminBlogsClient />;
 }

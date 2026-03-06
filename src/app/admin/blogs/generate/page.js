@@ -89,9 +89,9 @@ function SearchableDropdown({ label, value, onChange, options, placeholder, disa
               </div>
             ) : (
               <>
-                {filteredOptions.map((option) => (
+                {filteredOptions.map((option, index) => (
                   <button
-                    key={option._id}
+                    key={option._id || option.slug || option.name || index}
                     type="button"
                     onClick={() => handleSelect(option.name)}
                     className={`w-full px-4 py-2 text-left text-sm hover:bg-indigo-50 transition-colors ${
@@ -1010,8 +1010,8 @@ export default function AIBlogGenerator() {
                 disabled={keywordResearch.isResearching}
                 className="w-full px-3 py-1.5 border border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm bg-white disabled:opacity-50"
               >
-                {textModels.map(model => (
-                  <option key={model._id} value={model._id}>
+                {textModels.map((model, index) => (
+                  <option key={model._id || model.modelId || index} value={model._id}>
                     {model.name} {model.isDefault ? '(Default)' : ''} [{getModelCapabilityLabel(model)}]
                   </option>
                 ))}
@@ -1053,10 +1053,10 @@ export default function AIBlogGenerator() {
                             <span className="px-1.5 py-0.5 bg-blue-50 text-blue-600 text-[10px] rounded">text output</span>
                           )}
                           {selectedModel.inputModalities?.map((mod, i) => (
-                            <span key={i} className="px-1.5 py-0.5 bg-purple-50 text-purple-600 text-[10px] rounded">in: {mod}</span>
+                            <span key={`${mod}-input-${i}`} className="px-1.5 py-0.5 bg-purple-50 text-purple-600 text-[10px] rounded">in: {mod}</span>
                           ))}
                           {selectedModel.outputModalities?.map((mod, i) => (
-                            <span key={i} className="px-1.5 py-0.5 bg-orange-50 text-orange-600 text-[10px] rounded">out: {mod}</span>
+                            <span key={`${mod}-output-${i}`} className="px-1.5 py-0.5 bg-orange-50 text-orange-600 text-[10px] rounded">out: {mod}</span>
                           ))}
                         </div>
                       </div>
@@ -1203,7 +1203,7 @@ export default function AIBlogGenerator() {
               <p className="text-sm font-medium text-slate-700 mb-2">Suggested Titles</p>
               <div className="space-y-2">
                 {keywordResearch.results.suggestedTitles?.slice(0, 3).map((title, i) => (
-                  <div key={i} className="flex items-center gap-2">
+                  <div key={`${title}-${i}`} className="flex items-center gap-2">
                     <span className="flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700">
                       {title}
                     </span>
@@ -1220,7 +1220,7 @@ export default function AIBlogGenerator() {
               <div className="flex flex-wrap gap-2">
                 {keywordResearch.results.secondaryKeywords?.map((kw, i) => (
                   <button
-                    key={i}
+                    key={`${kw}-${i}`}
                     onClick={() => setKeywordData(prev => ({ ...prev, secondaryKeywords: prev.secondaryKeywords ? `${prev.secondaryKeywords}, ${kw}` : kw }))}
                     className="px-3 py-1 bg-slate-100 text-slate-700 text-sm rounded-full hover:bg-slate-200 cursor-pointer transition-colors"
                   >
@@ -1236,7 +1236,7 @@ export default function AIBlogGenerator() {
                 <div className="flex flex-wrap gap-2">
                   {keywordResearch.results.longTailKeywords?.slice(0, 6).map((kw, i) => (
                     <button
-                      key={i}
+                      key={`${kw}-${i}`}
                       onClick={() => setKeywordData(prev => ({ ...prev, secondaryKeywords: prev.secondaryKeywords ? `${prev.secondaryKeywords}, ${kw}` : kw }))}
                       className="px-3 py-1 bg-blue-50 text-blue-700 text-sm rounded-full hover:bg-blue-100 cursor-pointer transition-colors"
                     >
@@ -1252,7 +1252,7 @@ export default function AIBlogGenerator() {
                 <p className="text-sm font-medium text-amber-800 mb-2">SEO Recommendations</p>
                 <ul className="space-y-1">
                   {keywordResearch.results.seoRecommendations.map((rec, i) => (
-                    <li key={i} className="text-sm text-amber-700 flex items-start gap-2">
+                    <li key={`${rec}-${i}`} className="text-sm text-amber-700 flex items-start gap-2">
                       <span className="mt-1">•</span>
                       {rec}
                     </li>
@@ -1391,8 +1391,8 @@ export default function AIBlogGenerator() {
                   onChange={(e) => setKeywordData({ ...keywordData, selectedModel: e.target.value })}
                   className="w-full px-3 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
                 >
-                  {textModels.map(model => (
-                    <option key={model._id} value={model._id}>
+                  {textModels.map((model, index) => (
+                    <option key={model._id || model.modelId || index} value={model._id}>
                       {model.name} [{getModelCapabilityLabel(model)}] {model.isDefault ? '(Default)' : ''}
                     </option>
                   ))}
@@ -1468,7 +1468,7 @@ export default function AIBlogGenerator() {
           <p className="text-slate-500 text-center py-8">No outline generated yet. Go back to Step 1.</p>
         ) : (
           outline.map((section, index) => (
-            <div key={index} className="flex items-center gap-2">
+            <div key={`${section.type}-${section.title}-${index}`} className="flex items-center gap-2">
               <span className={`text-xs font-semibold px-2 py-1 rounded ${
                 section.type === 'h1' ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-600'
               }`}>
@@ -1682,7 +1682,7 @@ export default function AIBlogGenerator() {
           </div>
           <div className="space-y-2">
             {seoScore.checks?.map((check, i) => (
-              <div key={i} className="flex items-center justify-between text-sm">
+              <div key={`${check.name}-${i}`} className="flex items-center justify-between text-sm">
                 <span className="text-slate-600">{check.name}</span>
                 <span className={`w-3 h-3 rounded-full ${
                   check.status === 'good' ? 'bg-green-500' : check.status === 'warning' ? 'bg-yellow-500' : 'bg-red-500'
@@ -1732,8 +1732,8 @@ export default function AIBlogGenerator() {
               className="w-full px-3 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
             >
               <option value="">Select Category</option>
-              {categories.filter(c => !c.parent).map(cat => (
-                <option key={cat._id} value={cat.name}>{cat.name}</option>
+              {categories.filter(c => !c.parent).map((cat, index) => (
+                <option key={cat._id || cat.slug || `${cat.name}-${index}`} value={cat.name}>{cat.name}</option>
               ))}
             </select>
           </div>
@@ -1745,8 +1745,8 @@ export default function AIBlogGenerator() {
               className="w-full px-3 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
             >
               <option value="">Select Subcategory</option>
-              {categories.filter(c => c.parent).map(cat => (
-                <option key={cat._id} value={cat.name}>{cat.name}</option>
+              {categories.filter(c => c.parent).map((cat, index) => (
+                <option key={cat._id || cat.slug || `${cat.name}-${index}`} value={cat.name}>{cat.name}</option>
               ))}
             </select>
           </div>
@@ -1770,8 +1770,8 @@ export default function AIBlogGenerator() {
               {imageModels.length === 0 ? (
                 <option value="">No free image models found</option>
               ) : (
-                imageModels.map((model) => (
-                  <option key={model._id} value={model._id}>
+                imageModels.map((model, index) => (
+                  <option key={model._id || model.modelId || index} value={model._id}>
                     {model.name} [{getModelCapabilityLabel(model)}] {model.isDefault ? '(Default)' : ''}
                   </option>
                 ))

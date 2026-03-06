@@ -1,313 +1,207 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Archivo, Space_Grotesk } from 'next/font/google';
+import { useEffect, useMemo, useState } from 'react';
+import { FiFilter, FiPlus, FiRefreshCw, FiTrash2 } from 'react-icons/fi';
 import { toast } from 'sonner';
+import AdminActionToolbar from '@/components/admin/ui/AdminActionToolbar';
+import AdminPageHeader from '@/components/admin/ui/AdminPageHeader';
+import AdminStatusBadge from '@/components/admin/ui/AdminStatusBadge';
 
-const archivo = Archivo({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
-  variable: '--font-archivo',
-});
+function toSlug(input) {
+  return String(input || '')
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-');
+}
 
-const spaceGrotesk = Space_Grotesk({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
-  variable: '--font-space-grotesk',
-});
-
-export default function AdminCategories() {
+export default function AdminCategoriesPage() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showForm, setShowForm] = useState(false);
-  const [newCategory, setNewCategory] = useState({ name: '', parent: '', color: '#6366f1' });
-  const [adding, setAdding] = useState(false);
-  const [error, setError] = useState('');
+  const [name, setName] = useState('');
+  const [parent, setParent] = useState('');
+  const [query, setQuery] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  const fetchCategories = async () => {
+  async function loadCategories() {
     try {
-      const res = await fetch('/api/categories');
-      const data = await res.json();
+      setLoading(true);
+      const response = await fetch('/api/categories', { cache: 'no-store' });
+      const data = await response.json();
+      if (!response.ok) throw new Error('Failed to fetch categories');
       setCategories(Array.isArray(data) ? data : []);
     } catch (error) {
-      setError('Failed to fetch categories');
+      toast.error(error.message || 'Failed to fetch categories');
     } finally {
       setLoading(false);
     }
-  };
+  }
 
-  const handleAddCategory = async (e) => {
-    e.preventDefault();
-    setAdding(true);
-    setError('');
+  useEffect(() => {
+    loadCategories();
+  }, []);
+
+  const parents = useMemo(() => categories.filter((item) => !item.parent), [categories]);
+  const categoryMap = useMemo(() => new Map(categories.map((item) => [String(item._id), item])), [categories]);
+
+  const filtered = useMemo(() => {
+    const normalized = query.trim().toLowerCase();
+    return categories.filter((item) => {
+      if (!normalized) return true;
+      return item.name?.toLowerCase().includes(normalized) || item.slug?.toLowerCase().includes(normalized);
+    });
+  }, [categories, query]);
+
+  async function handleCreateCategory(event) {
+    event.preventDefault();
+    if (!name.trim()) return;
 
     try {
-      const dataToSubmit = {
-        name: newCategory.name.trim(),
-        slug: newCategory.name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, ''),
-        parent: newCategory.parent || null,
-        color: newCategory.color,
-      };
-
-      const res = await fetch('/api/categories', {
+      setSubmitting(true);
+      const response = await fetch('/api/categories', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(dataToSubmit),
+        body: JSON.stringify({
+          name: name.trim(),
+          slug: toSlug(name),
+          parent: parent || null,
+        }),
       });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || data.error || 'Failed to create category');
 
-      if (res.ok) {
-        setNewCategory({ name: '', parent: '', color: '#6366f1' });
-        setShowForm(false);
-        toast.success('Category added successfully');
-        fetchCategories();
-      } else {
-        const errorData = await res.json();
-        const message = errorData.message || 'Failed to add category';
-        setError(message);
-        toast.error(message);
-      }
+      setName('');
+      setParent('');
+      await loadCategories();
+      toast.success('Category created');
     } catch (error) {
-      const message = 'An error occurred while adding the category';
-      setError(message);
-      toast.error(message);
+      toast.error(error.message || 'Failed to create category');
     } finally {
-      setAdding(false);
+      setSubmitting(false);
     }
-  };
+  }
 
-  const handleDeleteCategory = async (id) => {
-    if (!confirm('Are you sure you want to delete this category? This may affect existing blogs.')) {
-      toast.warning('Delete cancelled');
-      return;
-    }
+  async function handleDeleteCategory(target) {
+    const confirmed = window.confirm(`Delete "${target.name}"?`);
+    if (!confirmed) return;
 
     try {
-      const res = await fetch(`/api/categories/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        toast.success('Category deleted successfully');
-        fetchCategories();
-      } else {
-        setError('Failed to delete category');
-        toast.error('Failed to delete category');
-      }
+      const response = await fetch(`/api/categories/${target._id}`, { method: 'DELETE' });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Failed to delete category');
+      setCategories((rows) => rows.filter((row) => row._id !== target._id));
+      toast.success('Category deleted');
     } catch (error) {
-      setError('An error occurred while deleting the category');
-      toast.error('An error occurred while deleting the category');
+      toast.error(error.message || 'Failed to delete category');
     }
-  };
-
-  const organizeCategories = (cats) => {
-    const topLevel = cats.filter(cat => !cat.parent);
-    return topLevel.map(parent => ({
-      ...parent,
-      children: cats.filter(cat => cat.parent === parent._id)
-    }));
-  };
-
-  const organizedCategories = organizeCategories(categories);
-  const topLevelCategories = categories.filter(cat => !cat.parent);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center">
-        <div className="text-[#18181B] font-space-grotesk">Loading categories...</div>
-      </div>
-    );
   }
 
   return (
-    <div className={`${archivo.variable} ${spaceGrotesk.variable}`}>
-      <div className="max-w-6xl mx-auto">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 md:mb-8">
-          <h1 className="text-2xl md:text-4xl font-archivo font-bold text-[#18181B]">Manage Categories</h1>
-        </div>
+    <div className="space-y-3">
+      <AdminPageHeader
+        title="Categories"
+        description="Manage blog taxonomy with compact parent and subcategory controls."
+        actions={[{ label: 'Refresh', onClick: loadCategories, icon: <FiRefreshCw className="h-3.5 w-3.5" />, variant: 'secondary' }]}
+      />
 
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md mb-6">
-            {error}
-          </div>
-        )}
+      <AdminActionToolbar>
+        <input
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder="Search categories"
+          className="h-8 w-52 rounded-md border border-slate-300 px-2.5 text-xs outline-none focus:border-slate-500"
+        />
+        <button type="button" className="inline-flex h-8 items-center gap-1 rounded-md border border-slate-300 px-2.5 text-xs text-slate-700 hover:bg-slate-50">
+          <FiFilter className="h-3.5 w-3.5" />
+          Filter
+        </button>
+      </AdminActionToolbar>
 
-        {/* Add Category Button */}
-        <div className="mb-6">
-          <button
-            onClick={() => setShowForm(!showForm)}
-            className="bg-[#2563EB] text-white font-space-grotesk py-3 px-6 rounded-md hover:bg-[#1d4ed8] transition-colors duration-200 cursor-pointer flex items-center gap-2"
+      <section className="rounded-lg border border-slate-200 bg-white p-3">
+        <form onSubmit={handleCreateCategory} className="grid grid-cols-1 gap-2 md:grid-cols-[1.2fr_1fr_auto]">
+          <input
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            placeholder="Category name"
+            className="h-8 rounded-md border border-slate-300 px-2.5 text-xs outline-none focus:border-slate-500"
+            required
+          />
+          <select
+            value={parent}
+            onChange={(event) => setParent(event.target.value)}
+            className="h-8 rounded-md border border-slate-300 px-2 text-xs outline-none focus:border-slate-500"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-            {showForm ? 'Cancel' : 'Add New Category'}
+            <option value="">Top level</option>
+            {parents.map((item) => (
+              <option key={item._id} value={item._id}>
+                {item.name}
+              </option>
+            ))}
+          </select>
+          <button
+            type="submit"
+            disabled={submitting}
+            className="inline-flex h-8 items-center justify-center gap-1 rounded-md bg-slate-900 px-3 text-xs font-medium text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            <FiPlus className="h-3.5 w-3.5" />
+            Add Category
           </button>
-        </div>
+        </form>
+      </section>
 
-        {/* Add Category Form */}
-        {showForm && (
-          <div className="bg-white p-6 rounded-lg border border-[#3F3F46]/20 shadow-sm mb-8">
-            <h2 className="text-xl font-archivo font-medium text-[#18181B] mb-4">Add New Category</h2>
-            <form onSubmit={handleAddCategory} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div>
-                <label className="block text-sm font-archivo font-medium text-[#18181B] mb-2">
-                  Category Name *
-                </label>
-                <input
-                  type="text"
-                  value={newCategory.name}
-                  onChange={(e) => setNewCategory(prev => ({ ...prev, name: e.target.value }))}
-                  required
-                  className="w-full px-3 py-1.5 border border-[#3F3F46]/20 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent font-space-grotesk"
-                  placeholder="e.g., Technology, Design"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-archivo font-medium text-[#18181B] mb-2">
-                  Parent Category
-                </label>
-                <select
-                  value={newCategory.parent}
-                  onChange={(e) => setNewCategory(prev => ({ ...prev, parent: e.target.value }))}
-                  className="w-full px-3 py-1.5 border border-[#3F3F46]/20 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent font-space-grotesk"
-                >
-                  <option value="">None (Top Level)</option>
-                  {topLevelCategories.map(cat => (
-                    <option key={cat._id} value={cat._id}>{cat.name}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-archivo font-medium text-[#18181B] mb-2">
-                  Category Color
-                </label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="color"
-                    value={newCategory.color}
-                    onChange={(e) => setNewCategory(prev => ({ ...prev, color: e.target.value }))}
-                    className="w-10 h-10 rounded-md border border-[#3F3F46]/20 cursor-pointer"
-                  />
-                  <input
-                    type="text"
-                    value={newCategory.color}
-                    onChange={(e) => setNewCategory(prev => ({ ...prev, color: e.target.value }))}
-                    className="flex-1 px-3 py-1.5 border border-[#3F3F46]/20 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent font-space-grotesk"
-                    placeholder="#6366f1"
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-end">
-                <button
-                  type="submit"
-                  disabled={adding}
-                  className="w-full bg-[#2563EB] text-white font-space-grotesk py-2 px-4 rounded-md hover:bg-[#1d4ed8] disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 cursor-pointer"
-                >
-                  {adding ? 'Adding...' : 'Add Category'}
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
-
-        {/* Categories Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {organizedCategories.map(category => (
-            <div 
-              key={category._id} 
-              className="bg-white rounded-lg border border-[#3F3F46]/20 shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200"
-            >
-              <div className="p-4 border-b border-[#3F3F46]/10">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <span 
-                      className="w-4 h-4 rounded-full" 
-                      style={{ backgroundColor: category.color || '#6366f1' }}
-                    ></span>
-                    <span className="font-archivo font-semibold text-[#18181B] text-lg">
-                      {category.name}
-                    </span>
-                  </div>
-                  <button
-                    onClick={() => handleDeleteCategory(category._id)}
-                    className="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
-                    title="Delete"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-              
-              {category.children && category.children.length > 0 ? (
-                <div className="p-4 bg-gray-50">
-                  <p className="text-xs font-medium text-[#3F3F46] mb-2 uppercase tracking-wide">
-                    Subcategories ({category.children.length})
-                  </p>
-                  <div className="space-y-2">
-                    {category.children.map(child => (
-                      <div key={child._id} className="flex items-center justify-between bg-white p-2 rounded-md">
-                        <div className="flex items-center gap-2">
-                          <span 
-                            className="w-2.5 h-2.5 rounded-full" 
-                            style={{ backgroundColor: child.color || '#6366f1' }}
-                          ></span>
-                          <span className="text-sm font-space-grotesk text-[#18181B]">
-                            {child.name}
-                          </span>
-                        </div>
+      <section className="overflow-hidden rounded-lg border border-slate-200 bg-white">
+        {loading ? (
+          <div className="p-8 text-center text-xs text-slate-500">Loading categories...</div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead className="bg-slate-50 text-[11px] uppercase tracking-wide text-slate-500">
+                <tr>
+                  <th className="px-3 py-2 text-left">Category</th>
+                  <th className="px-3 py-2 text-left">Slug</th>
+                  <th className="px-3 py-2 text-left">Parent</th>
+                  <th className="px-3 py-2 text-left">Type</th>
+                  <th className="px-3 py-2 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {filtered.map((item) => {
+                  const parentCategory = item.parent ? categoryMap.get(String(item.parent)) : null;
+                  return (
+                    <tr key={item._id} className="h-9 hover:bg-slate-50">
+                      <td className="px-3 py-2 font-medium text-slate-800">{item.name}</td>
+                      <td className="px-3 py-2 text-slate-500">{item.slug}</td>
+                      <td className="px-3 py-2 text-slate-600">{parentCategory?.name || '-'}</td>
+                      <td className="px-3 py-2">
+                        <AdminStatusBadge value={item.parent ? 'Subcategory' : 'Primary'} variant={item.parent ? 'info' : 'violet'} />
+                      </td>
+                      <td className="px-3 py-2 text-right">
                         <button
-                          onClick={() => handleDeleteCategory(child._id)}
-                          className="p-1.5 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
-                          title="Delete"
+                          type="button"
+                          onClick={() => handleDeleteCategory(item)}
+                          className="inline-flex h-7 items-center gap-1 rounded border border-rose-200 px-2 text-[11px] text-rose-700 hover:bg-rose-50"
                         >
-                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                          </svg>
+                          <FiTrash2 className="h-3.5 w-3.5" />
+                          Delete
                         </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                <div className="p-4 bg-gray-50">
-                  <p className="text-xs text-[#3F3F46]">No subcategories</p>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
 
-        {organizedCategories.length === 0 && (
-          <div className="bg-white p-8 rounded-lg border border-[#3F3F46]/20 shadow-sm text-center">
-            <p className="text-[#3F3F46] font-space-grotesk text-lg">No categories found. Add your first category!</p>
+                {!filtered.length ? (
+                  <tr>
+                    <td colSpan={5} className="px-3 py-8 text-center text-xs text-slate-500">
+                      No categories found.
+                    </td>
+                  </tr>
+                ) : null}
+              </tbody>
+            </table>
           </div>
         )}
-
-        {/* Stats */}
-        <div className="mt-8 bg-white p-6 rounded-lg border border-[#3F3F46]/20 shadow-sm">
-          <h3 className="text-lg font-archivo font-medium text-[#18181B] mb-4">Summary</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center p-4 bg-[#2563EB]/5 rounded-lg">
-              <p className="text-2xl font-bold text-[#2563EB]">{topLevelCategories.length}</p>
-              <p className="text-sm text-[#3F3F46]">Main Categories</p>
-            </div>
-            <div className="text-center p-4 bg-green-50 rounded-lg">
-              <p className="text-2xl font-bold text-green-600">{categories.length - topLevelCategories.length}</p>
-              <p className="text-sm text-[#3F3F46]">Subcategories</p>
-            </div>
-            <div className="text-center p-4 bg-purple-50 rounded-lg">
-              <p className="text-2xl font-bold text-purple-600">{categories.length}</p>
-              <p className="text-sm text-[#3F3F46]">Total Categories</p>
-            </div>
-          </div>
-        </div>
-      </div>
+      </section>
     </div>
   );
 }

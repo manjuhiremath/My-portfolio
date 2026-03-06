@@ -15,6 +15,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata = {
+  metadataBase: new URL("https://manjuhiremath.in"),
   title: "Manjunath M | Full Stack Developer",
   description: "Full Stack MERN Developer specializing in React.js, Next.js, and Node.js. Experienced in building scalable web applications with modern technologies.",
   keywords: ["Full Stack Developer", "React.js", "Next.js", "Node.js", "MERN Stack", "Web Developer", "JavaScript"],

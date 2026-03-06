@@ -8,8 +8,9 @@ import BlogCard from '@/components/blog/BlogCard';
 import Pagination from '@/components/Pagination';
 
 export const revalidate = 3600;
+const POSTS_PER_PAGE = 9;
 
-function slugify(text) {
+function slugify(text = '') {
   return text
     .toLowerCase()
     .replace(/[^\w\s-]/g, '')
@@ -17,170 +18,154 @@ function slugify(text) {
     .replace(/^-+|-+$/g, '');
 }
 
-function capitalize(text) {
-  return text.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+function readableLabel(text = '') {
+  return text.replace(/-/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
-
-const POSTS_PER_PAGE = 6;
 
 export async function generateMetadata({ params }) {
   try {
     await connectDB();
     const categorySlug = params.category.toLowerCase();
-    
-    // Fetch category from DB with SEO data
-    const category = await Category.findOne({ slug: categorySlug });
-    const categoryName = category ? category.name : capitalize(params.category);
-    
-    const blogs = await Blog.find({
-      category: { $regex: new RegExp(categoryName, 'i') },
-      published: true
-    }).limit(10);
+    const category = await Category.findOne({ slug: categorySlug }).lean();
+    const categoryName = category?.name || readableLabel(params.category);
+    const totalBlogs = await Blog.countDocuments({
+      category: { $regex: new RegExp(`^${categoryName}$`, 'i') },
+      published: true,
+    });
 
-    // Use DB SEO data or fallback
-    const seoTitle = category?.seoTitle || `${categoryName} Articles - Blog`;
-    const seoDescription = category?.seoDescription || `Explore ${categoryName.toLowerCase()} articles, tutorials, and insights. ${blogs.length} articles on ${categoryName.toLowerCase()} topics.`;
-    const keywords = category?.keywords || [categoryName.toLowerCase()];
-    
+    const title = category?.seoTitle || `${categoryName} Articles`;
+    const description =
+      category?.seoDescription ||
+      `Browse ${totalBlogs} ${categoryName.toLowerCase()} article${totalBlogs === 1 ? '' : 's'} with practical insights and tutorials.`;
+
     return {
-      title: seoTitle,
-      description: seoDescription,
-      keywords: keywords,
+      title,
+      description,
+      keywords: category?.keywords || [categoryName.toLowerCase()],
       openGraph: {
-        title: seoTitle,
-        description: seoDescription,
+        title,
+        description,
         type: 'website',
         url: `/blog/${params.category}`,
-        siteName: 'Blog',
       },
       twitter: {
         card: 'summary',
-        title: seoTitle,
-        description: seoDescription,
+        title,
+        description,
       },
-      robots: {
-        index: true,
-        follow: true,
-      }
     };
-  } catch (error) {
+  } catch {
     return {
-      title: 'Blog',
-      description: 'Explore insightful articles on technology, design, and business.',
+      title: 'Blog Category',
+      description: 'Browse category articles.',
     };
   }
 }
 
-async function getCategoryAndBlogs(categorySlug, page = 1) {
-  try {
-    await connectDB();
+async function getCategoryBlogs(categorySlug, page = 1) {
+  await connectDB();
 
-    const categoryName = capitalize(categorySlug);
-    
-    const category = await Category.findOne({ name: categoryName });
-    
-    const skip = (page - 1) * POSTS_PER_PAGE;
-    
-    const blogs = await Blog.find({
-      category: { $regex: new RegExp(categoryName, 'i') },
-      published: true
+  const decodedSlug = categorySlug.toLowerCase();
+  const category = await Category.findOne({ slug: decodedSlug }).lean();
+  const categoryName = category?.name || readableLabel(categorySlug);
+  const skip = (page - 1) * POSTS_PER_PAGE;
+
+  const [blogs, totalBlogs] = await Promise.all([
+    Blog.find({
+      category: { $regex: new RegExp(`^${categoryName}$`, 'i') },
+      published: true,
     })
-    .sort({ createdAt: -1 })
-    .skip(skip)
-    .limit(POSTS_PER_PAGE);
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(POSTS_PER_PAGE)
+      .lean(),
+    Blog.countDocuments({
+      category: { $regex: new RegExp(`^${categoryName}$`, 'i') },
+      published: true,
+    }),
+  ]);
 
-    const totalBlogs = await Blog.countDocuments({
-      category: { $regex: new RegExp(categoryName, 'i') },
-      published: true
-    });
-
-    const totalPages = Math.ceil(totalBlogs / POSTS_PER_PAGE);
-
-    return { 
-      categoryName, 
-      categorySlug, 
-      blogs, 
-      categoryColor: category?.color || '#6366f1',
-      currentPage: page,
-      totalPages,
-      totalBlogs
-    };
-  } catch (error) {
-    console.error('Error fetching category and blogs:', error);
-    return null;
-  }
+  return {
+    categoryName,
+    categorySlug: slugify(categoryName),
+    categoryColor: category?.color || '#6366f1',
+    blogs,
+    totalBlogs,
+    totalPages: Math.ceil(totalBlogs / POSTS_PER_PAGE),
+    currentPage: page,
+  };
 }
 
 export default async function CategoryPage({ params, searchParams }) {
-  const page = parseInt(searchParams?.page) || 1;
-  const { categoryName, categorySlug, blogs, categoryColor, currentPage, totalPages, totalBlogs } = await getCategoryAndBlogs(params.category, page) || {};
+  const page = Math.max(1, Number(searchParams?.page) || 1);
+  const data = await getCategoryBlogs(params.category, page);
 
-  if (!categoryName) {
+  if (!data) {
     return (
       <div className="min-h-screen bg-background">
         <Navigation />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <nav className="flex items-center gap-2 text-xs text-secondary mb-8">
-            <Link href="/" className="hover:text-primary transition-colors">Home</Link>
-            <span>/</span>
-            <Link href="/blog" className="hover:text-primary transition-colors">Blog</Link>
-            <span>/</span>
-            <span className="text-foreground">Category Not Found</span>
-          </nav>
-          <div className="soft-card p-12 text-center max-w-md mx-auto">
-            <h1 className="text-2xl font-semibold text-foreground mb-4">Category Not Found</h1>
-            <p className="text-secondary">The category you&apos;re looking for doesn&apos;t exist.</p>
-          </div>
+        <div className="mx-auto max-w-5xl px-4 py-16 text-center">
+          <h1 className="text-2xl font-semibold text-slate-900">Category not found</h1>
+          <p className="mt-2 text-sm text-slate-600">The category you requested does not exist.</p>
         </div>
+        <Footer />
       </div>
     );
   }
+
+  const { categoryName, categorySlug, categoryColor, blogs, totalBlogs, totalPages, currentPage } = data;
 
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <nav className="flex items-center gap-2 text-xs text-secondary mb-8">
-          <Link href="/" className="hover:text-primary transition-colors">Home</Link>
+      <main className="mx-auto max-w-7xl space-y-6 px-4 py-8 sm:px-6 lg:px-8">
+        <nav className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
+          <Link href="/" className="hover:text-slate-700">
+            Home
+          </Link>
           <span>/</span>
-          <Link href="/blog" className="hover:text-primary transition-colors">Blog</Link>
+          <Link href="/blog" className="hover:text-slate-700">
+            Blog
+          </Link>
           <span>/</span>
-          <span className="text-foreground capitalize">{categoryName}</span>
+          <span className="text-slate-700">{categoryName}</span>
         </nav>
 
-        <div className="text-center mb-12">
-          <h1 className="minimal-heading mb-4 capitalize">
-            {categoryName}
-          </h1>
-        </div>
+        <header className="rounded-xl border border-slate-200 bg-white p-5">
+          <span
+            className="inline-flex rounded-full px-3 py-1 text-xs font-medium text-white"
+            style={{ backgroundColor: categoryColor }}
+          >
+            Category
+          </span>
+          <h1 className="mt-3 text-3xl font-bold tracking-tight text-slate-900">{categoryName}</h1>
+          <p className="mt-2 text-sm text-slate-600">
+            {totalBlogs} article{totalBlogs === 1 ? '' : 's'} in this category.
+          </p>
+        </header>
 
         {blogs.length === 0 ? (
-          <div className="soft-card p-12 text-center max-w-md mx-auto">
-            <p className="text-secondary">No blogs found in this category yet.</p>
-          </div>
+          <section className="rounded-xl border border-slate-200 bg-white p-10 text-center text-sm text-slate-600">
+            No published posts in this category yet.
+          </section>
         ) : (
           <>
-            <div className="feature-grid">
-              {blogs.map(blog => (
-                <div key={blog._id}>
-                  <BlogCard blog={blog} categoryColor={categoryColor} />
-                </div>
+            <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {blogs.map((blog) => (
+                <BlogCard key={blog._id} blog={blog} categoryColor={categoryColor} />
               ))}
-            </div>
-            
-            {totalPages > 1 && (
-              <Pagination 
-                currentPage={currentPage} 
-                totalPages={totalPages} 
-                baseUrl={`/blog/${categorySlug}`} 
-              />
-            )}
+            </section>
+
+            {totalPages > 1 ? (
+              <Pagination currentPage={currentPage} totalPages={totalPages} baseUrl={`/blog/${categorySlug}`} />
+            ) : null}
           </>
         )}
-      </div>
+      </main>
 
       <Footer />
     </div>
   );
 }
+

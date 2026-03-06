@@ -5,6 +5,7 @@ import { useRouter, useParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { Archivo, Space_Grotesk } from 'next/font/google';
+import { fixUnsplashUrl } from '@/lib/utils';
 
 const archivo = Archivo({
   subsets: ['latin'],
@@ -563,7 +564,7 @@ export default function EditBlog() {
                 {formData.featuredImage && (
                   <div className="mt-2">
                     <Image
-                      src={formData.featuredImage}
+                      src={fixUnsplashUrl(formData.featuredImage)}
                       alt="Featured preview"
                       width={256}
                       height={128}
