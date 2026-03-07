@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useEffect, useMemo, useState } from 'react';
+import { Suspense, useEffect, useMemo, useState, lazy } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { FiSearch, FiX } from 'react-icons/fi';
 import BlogCard from '@/components/blog/BlogCard';
@@ -8,13 +8,13 @@ import BannerAd from '@/components/ads/BannerAd';
 import SidebarAd from '@/components/ads/SidebarAd';
 import MultiplexAd from '@/components/ads/MultiplexAd';
 
-// Editorial Components
-import FeaturedHero from '@/components/blog/editorial/FeaturedHero';
-import TopStories from '@/components/blog/editorial/TopStories';
-import TrendingSidebar from '@/components/blog/editorial/TrendingSidebar';
-import CategorySection from '@/components/blog/editorial/CategorySection';
-import EditorPicks from '@/components/blog/editorial/EditorPicks';
-import LatestBlogsGrid from '@/components/blog/editorial/LatestBlogsGrid';
+// Lazy load editorial components for code splitting - reduces initial JS bundle
+const FeaturedHero = lazy(() => import('@/components/blog/editorial/FeaturedHero'));
+const TopStories = lazy(() => import('@/components/blog/editorial/TopStories'));
+const TrendingSidebar = lazy(() => import('@/components/blog/editorial/TrendingSidebar'));
+const CategorySection = lazy(() => import('@/components/blog/editorial/CategorySection'));
+const EditorPicks = lazy(() => import('@/components/blog/editorial/EditorPicks'));
+const LatestBlogsGrid = lazy(() => import('@/components/blog/editorial/LatestBlogsGrid'));
 
 function getCategoryColor(categories, categoryName) {
   const category = categories.find((item) => 
@@ -265,42 +265,52 @@ function BlogContent() {
           <div className="space-y-10 lg:space-y-14">
             {/* Section 1: Featured Hero */}
             <section aria-label="Featured article">
-              <FeaturedHero
-                blog={featuredBlog}
-                categoryColor={getCategoryColor(categories, featuredBlog?.category?.name || featuredBlog?.category)}
-              />
+              <Suspense fallback={<div className="h-96 rounded-2xl bg-slate-200 animate-pulse" />}>
+                <FeaturedHero
+                  blog={featuredBlog}
+                  categoryColor={getCategoryColor(categories, featuredBlog?.category?.name || featuredBlog?.category)}
+                />
+              </Suspense>
             </section>
 
             {/* Section 2: Top Stories & Sidebar */}
             <div className="grid grid-cols-1 gap-8 lg:gap-12 lg:grid-cols-12">
               {/* Main Content: 8 Columns */}
               <div className="lg:col-span-8 space-y-10 lg:space-y-14">
-                <TopStories
-                  blogs={topStories}
-                  getCategoryColor={(cat) => getCategoryColor(categories, cat)}
-                />
+                <Suspense fallback={<div className="space-y-4"><div className="h-64 rounded-xl bg-slate-200 animate-pulse" /><div className="grid grid-cols-2 gap-4"><div className="h-48 rounded-xl bg-slate-200 animate-pulse" /><div className="h-48 rounded-xl bg-slate-200 animate-pulse" /></div></div>}>
+                  <TopStories
+                    blogs={topStories}
+                    getCategoryColor={(cat) => getCategoryColor(categories, cat)}
+                  />
+                </Suspense>
 
-                <LatestBlogsGrid
-                  blogs={[...mappedBlogs]
-                    .filter(b => b._id !== featuredBlog?._id && !topStories.some(t => t._id === b._id))
-                    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-                    .slice(0, 6)
-                  }
-                  title="Latest Articles"
-                />
+                <Suspense fallback={<div className="grid grid-cols-3 gap-4"><div className="h-48 rounded-xl bg-slate-200 animate-pulse" /><div className="h-48 rounded-xl bg-slate-200 animate-pulse" /><div className="h-48 rounded-xl bg-slate-200 animate-pulse" /></div>}>
+                  <LatestBlogsGrid
+                    blogs={[...mappedBlogs]
+                      .filter(b => b._id !== featuredBlog?._id && !topStories.some(t => t._id === b._id))
+                      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                      .slice(0, 6)
+                    }
+                    title="Latest Articles"
+                  />
+                </Suspense>
 
-                <EditorPicks blogs={editorPicks} />
+                <Suspense fallback={<div className="grid grid-cols-3 gap-4"><div className="h-32 rounded-xl bg-slate-200 animate-pulse" /><div className="h-32 rounded-xl bg-slate-200 animate-pulse" /><div className="h-32 rounded-xl bg-slate-200 animate-pulse" /></div>}>
+                  <EditorPicks blogs={editorPicks} />
+                </Suspense>
               </div>
 
               {/* Sidebar: 4 Columns */}
               <aside className="lg:col-span-4">
                 <div className="lg:sticky lg:top-28 space-y-8">
                   <SidebarAd />
-                  <TrendingSidebar
-                    trendingBlogs={trendingBlogs}
-                    recentBlogs={recentBlogs}
-                    popularTags={popularTags}
-                  />
+                  <Suspense fallback={<div className="h-96 rounded-xl bg-slate-200 animate-pulse" />}>
+                    <TrendingSidebar
+                      trendingBlogs={trendingBlogs}
+                      recentBlogs={recentBlogs}
+                      popularTags={popularTags}
+                    />
+                  </Suspense>
                 </div>
               </aside>
             </div>
@@ -312,12 +322,13 @@ function BlogContent() {
                 <p className="mt-2 text-sm text-slate-500 font-medium">Explore articles organized by topic</p>
               </div>
               {topLevelCategories.map((category) => (
-                <CategorySection
-                  key={category}
-                  category={category}
-                  blogs={mappedBlogs.filter(b => b.category === category)}
-                  categoryColor={getCategoryColor(categories, category)}
-                />
+                <Suspense key={category} fallback={<div className="h-48 rounded-xl bg-slate-200 animate-pulse" />}>
+                  <CategorySection
+                    category={category}
+                    blogs={mappedBlogs.filter(b => b.category === category)}
+                    categoryColor={getCategoryColor(categories, category)}
+                  />
+                </Suspense>
               ))}
             </section>
           </div>

@@ -8,12 +8,14 @@ const __dirname = path.dirname(__filename);
 const nextConfig = {
   compress: true,
   experimental: {
-    turbopackScopeHoisting: false, // This fixes the Turbopack build error
+    turbopackScopeHoisting: false,
   },
   turbopack: {
     root: __dirname,
   },
   images: {
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     domains: [
       "res.cloudinary.com",
       "images.unsplash.com",
@@ -55,11 +57,20 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: "/:all*\\.(js|css|woff2|woff|ttf|otf|svg|jpg|jpeg|png|webp|avif|gif|ico)",
+        source: "/:all*.(js|css|woff2|woff|ttf|otf|svg|jpg|jpeg|png|webp|avif|gif|ico)",
         headers: [
           {
             key: "Cache-Control",
             value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      {
+        source: "/api/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, s-maxage=60, stale-while-revalidate=300",
           },
         ],
       },
