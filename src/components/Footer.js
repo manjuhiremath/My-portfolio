@@ -19,9 +19,19 @@ export default function Footer() {
           fetch('/api/blogs?published=true&limit=100'),
         ]);
 
-        const catData = await catRes.json();
-        const tagData = await tagRes.json();
-        const blogData = await blogRes.json();
+        // Helper to safely parse JSON
+        const safeJson = async (res) => {
+          if (!res.ok) return null;
+          const contentType = res.headers.get('content-type');
+          if (contentType && contentType.includes('application/json')) {
+            return await res.json();
+          }
+          return null;
+        };
+
+        const catData = await safeJson(catRes);
+        const tagData = await safeJson(tagRes);
+        const blogData = await safeJson(blogRes);
 
         const cats = Array.isArray(catData) ? catData : [];
         setCategories(cats.filter(c => !c.parent).slice(0, 6));
@@ -37,23 +47,27 @@ export default function Footer() {
           tagMap[t._id] = t.name;
         });
 
-        const blogs = Array.isArray(blogData) ? blogData : blogData.blogs || [];
+        const blogs = (Array.isArray(blogData) ? blogData : blogData?.blogs) || [];
 
         // Popular blogs by views with mapped categories
         const sorted = [...blogs].sort((a, b) => (b.views || 0) - (a.views || 0));
         const mappedPopularBlogs = sorted.slice(0, 5).map(b => {
-          let categoryName = b.category?.name || b.category;
-          if (catMap[categoryName]) categoryName = catMap[categoryName];
+          if (!b) return null;
+          const rawCat = b.category?.name || b.category;
+          let categoryName = rawCat || 'Uncategorized';
+          if (catMap[rawCat]) categoryName = catMap[rawCat];
+          
           return {
             ...b,
             categoryName: categoryName
           };
-        });
+        }).filter(Boolean);
         setPopularBlogs(mappedPopularBlogs);
 
         // Popular tags
         const tagCounts = {};
         blogs.forEach(b => {
+          if (!b) return;
           (b.tags || []).forEach(tag => {
             const tagName = tag?.name || tagMap[tag] || tag;
             if (tagName && typeof tagName === 'string') {

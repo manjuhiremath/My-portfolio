@@ -1,6 +1,7 @@
 import { connectDB } from "@/lib/mongodb";
 import Blog from "@/models/Blog";
 import Category from "@/models/Category";
+import Tag from "@/models/Tag";
 
 // Escape XML special characters
 function escapeXml(str) {
@@ -13,12 +14,23 @@ function escapeXml(str) {
     .replace(/'/g, '&apos;');
 }
 
+function slugify(text = '') {
+  if (!text) return '';
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 // Helper to add URL to XML
-function addUrl(xml, loc, lastmod) {
+function addUrl(xml, loc, lastmod, changefreq = 'daily', priority = '0.7') {
   xml += '  <url>\n';
   xml += `    <loc>${escapeXml(loc)}</loc>\n`;
   xml += `    <lastmod>${lastmod}</lastmod>\n`;
-  xml += '    <changefreq>daily</changefreq>\n';
+  xml += `    <changefreq>${changefreq}</changefreq>\n`;
+  xml += `    <priority>${priority}</priority>\n`;
   xml += '  </url>\n';
   return xml;
 }
@@ -30,60 +42,48 @@ export async function GET() {
     const baseUrl = process.env.NEXT_PUBLIC_URL || 'https://www.manjuhiremath.in';
     const currentDate = new Date().toISOString();
 
-    // Fetch all published blogs
-    const blogs = await Blog.find({ published: true })
-      .select('slug category updatedAt createdAt tags')
-      .lean();
+    // Fetch everything needed
+    const [blogs, categories, tags] = await Promise.all([
+      Blog.find({ published: true }).select('slug category updatedAt createdAt tags').lean(),
+      Category.find().select('slug name updatedAt createdAt').lean(),
+      Tag.find().select('slug name updatedAt createdAt').lean()
+    ]);
 
-    // Fetch all categories
-    const categories = await Category.find()
-      .select('slug parent name updatedAt createdAt')
-      .lean();
-
-    // Count blogs per category for pagination
-    const blogsPerCategory = {};
-    blogs.forEach(blog => {
-      const catKey = blog.category?.toLowerCase().replace(/\s+/g, '-');
-      if (!blogsPerCategory[catKey]) blogsPerCategory[catKey] = 0;
-      blogsPerCategory[catKey]++;
+    // Build lookup maps
+    const catMap = {};
+    categories.forEach(c => {
+      catMap[c._id.toString()] = c;
+      catMap[c.name] = c;
     });
 
     let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
     xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
 
-    // 1. MAIN URL (/blog)
-    xml = addUrl(xml, `${baseUrl}/blog`, currentDate);
+    // 1. HOME & BLOG ROOT
+    xml = addUrl(xml, `${baseUrl}/`, currentDate, 'weekly', '1.0');
+    xml = addUrl(xml, `${baseUrl}/blog`, currentDate, 'daily', '0.9');
 
-    // Build parent categories lookup
-    const parentCategories = categories.filter(c => !c.parent);
-
-    // 2. CATEGORY URLS WITH PAGINATION
-    parentCategories.forEach(cat => {
-      xml = addUrl(xml, `${baseUrl}/blog/${cat.slug}`, currentDate);
-      
-      const blogCount = blogsPerCategory[cat.slug] || 0;
-      const totalPages = Math.ceil(blogCount / 9);
-      for (let page = 2; page <= totalPages; page++) {
-        xml = addUrl(xml, `${baseUrl}/blog/${cat.slug}?page=${page}`, currentDate);
-      }
+    // 2. CATEGORY PAGES
+    categories.forEach(cat => {
+      const url = `${baseUrl}/blog/${cat.slug || slugify(cat.name)}`;
+      xml = addUrl(xml, url, (cat.updatedAt || currentDate).toISOString ? (cat.updatedAt || currentDate).toISOString() : currentDate, 'weekly', '0.8');
     });
 
-    // 3. TAG URLS
-    const tagCounts = {};
-    blogs.forEach(b => {
-      (b.tags || []).forEach(tag => {
-        tagCounts[tag] = (tagCounts[tag] || 0) + 1;
-      });
-    });
-    Object.keys(tagCounts).forEach(tag => {
-      xml = addUrl(xml, `${baseUrl}/blog/tag/${encodeURIComponent(tag)}`, currentDate);
+    // 3. TAG PAGES
+    tags.forEach(tag => {
+      const url = `${baseUrl}/blog/tag/${tag.slug || slugify(tag.name)}`;
+      xml = addUrl(xml, url, (tag.updatedAt || currentDate).toISOString ? (tag.updatedAt || currentDate).toISOString() : currentDate, 'weekly', '0.6');
     });
 
-    // 4. INDIVIDUAL BLOG POSTS — flat structure: /blog/[category]/[slug]
+    // 4. INDIVIDUAL BLOG POSTS
     blogs.forEach(blog => {
-      const categorySlug = blog.category?.toLowerCase().replace(/\s+/g, '-');
+      const rawCat = blog.category?.toString() || '';
+      const catDoc = catMap[rawCat];
+      const categorySlug = catDoc?.slug || slugify(catDoc?.name || rawCat || 'uncategorized');
+      
       const url = `${baseUrl}/blog/${categorySlug}/${blog.slug}`;
-      xml = addUrl(xml, url, currentDate);
+      const lastMod = (blog.updatedAt || blog.createdAt || new Date()).toISOString();
+      xml = addUrl(xml, url, lastMod, 'monthly', '0.8');
     });
 
     xml += '</urlset>';
@@ -97,21 +97,8 @@ export async function GET() {
 
   } catch (error) {
     console.error('Sitemap XML Error:', error);
-    
-    const baseUrl = process.env.NEXT_PUBLIC_URL || 'https://www.manjuhiremath.in';
-    let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
-    xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
-    xml += '  <url>\n';
-    xml += `    <loc>${escapeXml(`${baseUrl}/blog`)}</loc>\n`;
-    xml += `    <lastmod>${new Date().toISOString()}</lastmod>\n`;
-    xml += '    <changefreq>daily</changefreq>\n';
-    xml += '  </url>\n';
-    xml += '</urlset>';
-    
-    return new Response(xml, {
-      headers: {
-        'Content-Type': 'application/xml',
-      },
+    return new Response('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>', {
+      headers: { 'Content-Type': 'application/xml' },
     });
   }
 }

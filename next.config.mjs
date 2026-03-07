@@ -65,6 +65,15 @@ const nextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: '/blog/sitemap.xml',
+        destination: '/sitemap.xml',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
