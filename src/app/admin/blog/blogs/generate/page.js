@@ -952,317 +952,7 @@ export default function AIBlogGenerator() {
 
   const renderStep1 = () => (
     <div className="space-y-6">
-      <div className="bg-gradient-to-r from-violet-50 to-indigo-50 p-6 rounded-xl border border-violet-200">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 bg-violet-600 rounded-lg flex items-center justify-center">
-            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </div>
-          <div>
-            <h2 className="text-lg font-archivo font-semibold text-slate-900">AI Keyword Research</h2>
-            <p className="text-sm text-slate-600">Analyze top websites to find the best keywords</p>
-          </div>
-        </div>
-        
-        <div className="grid grid-cols-1 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Website URL to Analyze *</label>
-            <input
-              type="url"
-              value={keywordResearch.url}
-              onChange={(e) => setKeywordResearch({ ...keywordResearch, url: e.target.value })}
-              placeholder="https://example.com/blog-post"
-              disabled={loading || keywordResearch.isResearching}
-              className="w-full px-3 py-1.5 border border-violet-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 font-space-grotesk text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Competitor URLs (optional)</label>
-            <input
-              type="text"
-              value={keywordResearch.competitorUrls}
-              onChange={(e) => setKeywordResearch({ ...keywordResearch, competitorUrls: e.target.value })}
-              placeholder="https://competitor1.com, https://competitor2.com"
-              disabled={loading || keywordResearch.isResearching}
-              className="w-full px-3 py-1.5 border border-violet-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 font-space-grotesk text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-            />
-            <p className="text-xs text-slate-500 mt-1">Add multiple URLs separated by commas for better keyword analysis</p>
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-4 rounded-lg border border-indigo-200 mt-4">
-          <div className="flex items-center gap-2 mb-2">
-            <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-            </svg>
-            <label className="text-sm font-semibold text-indigo-900">AI Model for Analysis & Generation *</label>
-          </div>
-          {aiModelsLoading ? (
-            <div className="w-full px-3 py-2 border border-indigo-200 rounded-lg bg-slate-50 text-sm text-slate-500">
-              Loading models...
-            </div>
-          ) : (
-            <>
-              <select
-                value={keywordData.selectedModel}
-                onChange={(e) => setKeywordData({ ...keywordData, selectedModel: e.target.value })}
-                disabled={keywordResearch.isResearching}
-                className="w-full px-3 py-1.5 border border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm bg-white disabled:opacity-50"
-              >
-                {textModels.map((model, index) => (
-                  <option key={model._id || model.modelId || index} value={model._id}>
-                    {model.name} {model.isDefault ? '(Default)' : ''} [{getModelCapabilityLabel(model)}]
-                  </option>
-                ))}
-              </select>
-              {/* Selected Model Details */}
-              {(() => {
-                const selectedModel = textModels.find(m => m._id === keywordData.selectedModel);
-                if (!selectedModel) return null;
-                return (
-                  <div className="mt-2 p-2 bg-white rounded border border-indigo-100">
-                    <div className="flex items-start gap-2">
-                      {selectedModel.icon && (
-                        <div className="w-8 h-8 flex-shrink-0 bg-slate-50 rounded p-1 flex items-center justify-center">
-                          <Image 
-                            src={selectedModel.icon} 
-                            alt={selectedModel.provider}
-                            width={24}
-                            height={24}
-                            loading="lazy"
-                            unoptimized
-                            className={`w-full h-full object-contain ${selectedModel.iconClassName || ''}`}
-                          />
-                        </div>
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs text-indigo-700 font-medium truncate">{selectedModel.modelId}</p>
-                        {selectedModel.permaslug && selectedModel.permaslug !== selectedModel.modelId && (
-                          <p className="text-xs text-slate-500 truncate">{selectedModel.permaslug}</p>
-                        )}
-                        {selectedModel.description && (
-                          <p className="text-xs text-slate-600 mt-0.5 line-clamp-2">{selectedModel.description}</p>
-                        )}
-                        <div className="flex flex-wrap gap-1 mt-1">
-                          {selectedModel.group && (
-                            <span className="px-1.5 py-0.5 bg-slate-100 text-slate-600 text-[10px] rounded">{selectedModel.group}</span>
-                          )}
-                          <span className="px-1.5 py-0.5 bg-emerald-50 text-emerald-600 text-[10px] rounded">ctx: {(selectedModel.contextLength || 8192).toLocaleString()}</span>
-                          {selectedModel.hasTextOutput && (
-                            <span className="px-1.5 py-0.5 bg-blue-50 text-blue-600 text-[10px] rounded">text output</span>
-                          )}
-                          {selectedModel.inputModalities?.map((mod, i) => (
-                            <span key={`${mod}-input-${i}`} className="px-1.5 py-0.5 bg-purple-50 text-purple-600 text-[10px] rounded">in: {mod}</span>
-                          ))}
-                          {selectedModel.outputModalities?.map((mod, i) => (
-                            <span key={`${mod}-output-${i}`} className="px-1.5 py-0.5 bg-orange-50 text-orange-600 text-[10px] rounded">out: {mod}</span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })()}
-            </>
-          )}
-
-          {/* Web Search Toggle */}
-          <div className="mt-3 pt-3 border-t border-indigo-200">
-            <label className="flex items-center gap-3 cursor-pointer">
-              <div className="relative">
-                <input
-                  type="checkbox"
-                  checked={useOnlineMode}
-                  onChange={(e) => setUseOnlineMode(e.target.checked)}
-                  disabled={keywordResearch.isResearching}
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500 disabled:opacity-50"></div>
-              </div>
-              <div className="flex-1">
-                <span className="text-sm font-medium text-slate-700">Enable Web Search (Online Mode)</span>
-                <p className="text-xs text-slate-500">
-                  Adds real-time web data to AI responses. Note: May incur additional costs even with free models.
-                  {useOnlineMode && (
-                    <span className="text-emerald-600 font-medium ml-1">[Enabled - :online]</span>
-                  )}
-                </p>
-              </div>
-              <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-              </svg>
-            </label>
-          </div>
-        </div>
-
-        <button
-          onClick={handleKeywordResearch}
-          disabled={keywordResearch.isResearching || !keywordResearch.url}
-          className="w-full mt-4 py-3 bg-violet-600 text-white font-semibold rounded-lg hover:bg-violet-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer flex items-center justify-center gap-2"
-        >
-          {keywordResearch.isResearching ? (
-            <>
-              <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-              </svg>
-              Analyzing Websites...
-            </>
-          ) : (
-            <>
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-              </svg>
-              Research Keywords with AI
-            </>
-          )}
-        </button>
-
-        {keywordResearch.results && (
-          <div className="mt-6 space-y-4">
-            {/* Auto-Detected Fields */}
-            <div className="bg-gradient-to-r from-emerald-50 to-teal-50 p-4 rounded-lg border border-emerald-200">
-              <div className="flex items-center gap-2 mb-3">
-                <svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <h3 className="text-sm font-semibold text-emerald-900">Auto-Detected from Website Analysis</h3>
-              </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <div className="bg-white p-3 rounded-lg border border-emerald-100">
-                  <p className="text-xs text-slate-500 mb-1">Main Topic</p>
-                  <p className="text-sm font-medium text-slate-900">{keywordResearch.mainTopic || keywordResearch.results.mainTopic || 'N/A'}</p>
-                </div>
-                <div className="bg-white p-3 rounded-lg border border-emerald-100">
-                  <p className="text-xs text-slate-500 mb-1">Industry</p>
-                  <p className="text-sm font-medium text-slate-900">{keywordResearch.industry || keywordResearch.results.industry || 'N/A'}</p>
-                </div>
-                <div className="bg-white p-3 rounded-lg border border-emerald-100">
-                  <p className="text-xs text-slate-500 mb-1">Category</p>
-                  <p className="text-sm font-medium text-emerald-700">
-                    {keywordData.category || keywordResearch.results.category || 'N/A'}
-                    {keywordData.category && (
-                      <span className="text-xs text-emerald-500 ml-1">(auto-created)</span>
-                    )}
-                  </p>
-                </div>
-                <div className="bg-white p-3 rounded-lg border border-emerald-100">
-                  <p className="text-xs text-slate-500 mb-1">Subcategory</p>
-                  <p className="text-sm font-medium text-emerald-700">
-                    {keywordData.subcategory || keywordResearch.results.subcategory || 'N/A'}
-                    {keywordData.subcategory && (
-                      <span className="text-xs text-emerald-500 ml-1">(auto-created)</span>
-                    )}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <div className="bg-white p-3 rounded-lg border border-violet-100">
-                <p className="text-xs text-slate-500 mb-1">Search Intent</p>
-                <span className={`px-2 py-1 rounded text-xs font-medium ${
-                  keywordResearch.results.searchIntent === 'informational' ? 'bg-blue-100 text-blue-700' :
-                  keywordResearch.results.searchIntent === 'transactional' ? 'bg-green-100 text-green-700' :
-                  keywordResearch.results.searchIntent === 'commercial' ? 'bg-purple-100 text-purple-700' :
-                  'bg-gray-100 text-gray-700'
-                }`}>
-                  {keywordResearch.results.searchIntent || 'N/A'}
-                </span>
-              </div>
-              <div className="bg-white p-3 rounded-lg border border-violet-100">
-                <p className="text-xs text-slate-500 mb-1">Competition</p>
-                <span className={`px-2 py-1 rounded text-xs font-medium ${
-                  keywordResearch.results.competitionLevel === 'low' ? 'bg-green-100 text-green-700' :
-                  keywordResearch.results.competitionLevel === 'medium' ? 'bg-yellow-100 text-yellow-700' :
-                  'bg-red-100 text-red-700'
-                }`}>
-                  {keywordResearch.results.competitionLevel || 'N/A'}
-                </span>
-              </div>
-              <div className="bg-white p-3 rounded-lg border border-violet-100 col-span-2">
-                <p className="text-xs text-slate-500 mb-1">Target Audience</p>
-                <p className="text-sm font-medium text-slate-900">{keywordResearch.results.targetAudience || 'N/A'}</p>
-              </div>
-            </div>
-
-            <div>
-              <p className="text-sm font-medium text-slate-700 mb-2">Primary Keyword</p>
-              <div className="flex items-center gap-2">
-                <span className="flex-1 px-4 py-2 bg-violet-50 border border-violet-200 rounded-lg font-medium text-violet-900">
-                  {keywordResearch.results.primaryKeyword}
-                </span>
-                <button onClick={() => applyKeyword(keywordResearch.results.primaryKeyword)} className="px-3 py-2 bg-violet-600 text-white text-sm rounded-lg hover:bg-violet-700 cursor-pointer">
-                  Use
-                </button>
-              </div>
-            </div>
-
-            <div>
-              <p className="text-sm font-medium text-slate-700 mb-2">Suggested Titles</p>
-              <div className="space-y-2">
-                {keywordResearch.results.suggestedTitles?.slice(0, 3).map((title, i) => (
-                  <div key={`${title}-${i}`} className="flex items-center gap-2">
-                    <span className="flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700">
-                      {title}
-                    </span>
-                    <button onClick={() => applyTitle(title)} className="px-3 py-2 bg-indigo-100 text-indigo-700 text-sm rounded-lg hover:bg-indigo-200 cursor-pointer">
-                      Use
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <p className="text-sm font-medium text-slate-700 mb-2">Secondary Keywords</p>
-              <div className="flex flex-wrap gap-2">
-                {keywordResearch.results.secondaryKeywords?.map((kw, i) => (
-                  <button
-                    key={`${kw}-${i}`}
-                    onClick={() => setKeywordData(prev => ({ ...prev, secondaryKeywords: prev.secondaryKeywords ? `${prev.secondaryKeywords}, ${kw}` : kw }))}
-                    className="px-3 py-1 bg-slate-100 text-slate-700 text-sm rounded-full hover:bg-slate-200 cursor-pointer transition-colors"
-                  >
-                    + {kw}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {keywordResearch.results.longTailKeywords?.length > 0 && (
-              <div>
-                <p className="text-sm font-medium text-slate-700 mb-2">Long-tail Keywords</p>
-                <div className="flex flex-wrap gap-2">
-                  {keywordResearch.results.longTailKeywords?.slice(0, 6).map((kw, i) => (
-                    <button
-                      key={`${kw}-${i}`}
-                      onClick={() => setKeywordData(prev => ({ ...prev, secondaryKeywords: prev.secondaryKeywords ? `${prev.secondaryKeywords}, ${kw}` : kw }))}
-                      className="px-3 py-1 bg-blue-50 text-blue-700 text-sm rounded-full hover:bg-blue-100 cursor-pointer transition-colors"
-                    >
-                      + {kw}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {keywordResearch.results.seoRecommendations?.length > 0 && (
-              <div className="bg-amber-50 p-4 rounded-lg border border-amber-200">
-                <p className="text-sm font-medium text-amber-800 mb-2">SEO Recommendations</p>
-                <ul className="space-y-1">
-                  {keywordResearch.results.seoRecommendations.map((rec, i) => (
-                    <li key={`${rec}-${i}`} className="text-sm text-amber-700 flex items-start gap-2">
-                      <span className="mt-1">•</span>
-                      {rec}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
+      {/* AI Keyword Research section removed */}
 
       <div className="bg-white p-6 rounded-xl border border-slate-200 space-y-4">
         <h2 className="text-xl font-archivo font-semibold text-slate-900 mb-4">Step 1 — Keyword Input</h2>
@@ -1270,31 +960,31 @@ export default function AIBlogGenerator() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <SearchableDropdown
-              label="Category * (auto-detected from URL)"
+              label="Category *"
               value={keywordData.category}
               onChange={(value) => setKeywordData({ ...keywordData, category: value, subcategory: '' })}
               options={topLevelCategories}
-              placeholder={keywordResearch.results?.category ? keywordResearch.results.category : "Will be auto-detected from URL"}
+              placeholder="Select or create category"
               onCreateNew={(name) => openCreateModal('category', name)}
               createLabel="Create New Category"
             />
-            {keywordData.category && keywordResearch.results?.category && (
-              <p className="text-xs text-emerald-600 mt-1">Auto-detected: {keywordResearch.results.category}</p>
+            {keywordData.category && (
+              <p className="text-xs text-emerald-600 mt-1">Selected: {keywordData.category}</p>
             )}
           </div>
           <div>
             <SearchableDropdown
-              label="Subcategory * (auto-detected from URL)"
+              label="Subcategory *"
               value={keywordData.subcategory}
               onChange={(value) => setKeywordData({ ...keywordData, subcategory: value })}
               options={keywordData.category ? getSubcategories(categories.find(c => c.name === keywordData.category)?._id) : []}
-              placeholder={keywordResearch.results?.subcategory ? keywordResearch.results.subcategory : (keywordData.category ? "Will be auto-detected" : "Select Category first")}
+              placeholder={keywordData.category ? "Select subcategory" : "Select Category first"}
               disabled={!keywordData.category}
               onCreateNew={(name) => openCreateModal('subcategory', name)}
               createLabel="Create New Subcategory"
             />
-            {keywordData.subcategory && keywordResearch.results?.subcategory && (
-              <p className="text-xs text-emerald-600 mt-1">Auto-detected: {keywordResearch.results.subcategory}</p>
+            {keywordData.subcategory && (
+              <p className="text-xs text-emerald-600 mt-1">Selected: {keywordData.subcategory}</p>
             )}
           </div>
         </div>
@@ -1333,17 +1023,14 @@ export default function AIBlogGenerator() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Target Audience (auto-detected)</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2">Target Audience</label>
             <input
               type="text"
               value={keywordData.targetAudience}
               onChange={(e) => setKeywordData({ ...keywordData, targetAudience: e.target.value })}
-              placeholder="Will be auto-detected from URL analysis"
+              placeholder="e.g., Software developers, Marketing professionals"
               className="w-full px-3 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
             />
-            {keywordData.targetAudience && keywordResearch.results?.targetAudience && (
-              <p className="text-xs text-emerald-600 mt-1">Auto-detected from URL analysis</p>
-            )}
           </div>
 
           <div>
@@ -1360,7 +1047,7 @@ export default function AIBlogGenerator() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Content Length (AI recommended)</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2">Content Length</label>
             <select
               value={keywordData.contentLength}
               onChange={(e) => setKeywordData({ ...keywordData, contentLength: parseInt(e.target.value) })}
@@ -1370,15 +1057,11 @@ export default function AIBlogGenerator() {
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
               ))}
             </select>
-            {keywordResearch.results?.contentLength && (
-              <p className="text-xs text-emerald-600 mt-1">AI recommends: {keywordResearch.results.contentLength} words</p>
-            )}
           </div>
 
           <div className="md:col-span-2">
             <label className="block text-sm font-medium text-slate-700 mb-2">
-              AI Model for Content Generation *
-              <span className="ml-1 text-xs text-indigo-600 font-normal">(select before generating)</span>
+              AI Model
             </label>
             {aiModelsLoading ? (
               <div className="w-full px-3 py-2 border border-slate-200 rounded-lg bg-slate-50 text-sm text-slate-500">
@@ -1404,32 +1087,7 @@ export default function AIBlogGenerator() {
             )}
           </div>
 
-          {/* Web Search Toggle */}
-          <div className="md:col-span-2">
-            <label className="flex items-center gap-3 cursor-pointer p-3 bg-slate-50 rounded-lg border border-slate-200 hover:bg-slate-100 transition-colors">
-              <div className="relative">
-                <input
-                  type="checkbox"
-                  checked={useOnlineMode}
-                  onChange={(e) => setUseOnlineMode(e.target.checked)}
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
-              </div>
-              <div className="flex-1">
-                <span className="text-sm font-medium text-slate-700">Enable Web Search (Online Mode)</span>
-                <p className="text-xs text-slate-500">
-                  Adds real-time web data to AI responses. Note: May incur additional costs.
-                  {useOnlineMode && (
-                    <span className="text-emerald-600 font-medium ml-1">[:online enabled]</span>
-                  )}
-                </p>
-              </div>
-              <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-              </svg>
-            </label>
-          </div>
+          {/* Web Search Toggle removed */}
         </div>
 
         <div className="flex gap-3">

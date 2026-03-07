@@ -2,9 +2,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { connectDB } from '@/lib/mongodb';
 import Blog from '@/models/Blog';
-import Navigation from '@/components/Navigation';
-import Footer from '@/components/Footer';
 import ViewTracker from '@/components/blog/ViewTracker';
+import TableOfContents from '@/components/blog/TableOfContents';
 import { fixUnsplashUrl, slugify } from '@/lib/utils';
 
 export const revalidate = 3600;
@@ -43,14 +42,8 @@ function formatPlainTextToHtml(content = '') {
   const codeBuffer = [];
 
   const closeLists = () => {
-    if (inUl) {
-      html.push('</ul>');
-      inUl = false;
-    }
-    if (inOl) {
-      html.push('</ol>');
-      inOl = false;
-    }
+    if (inUl) { html.push('</ul>'); inUl = false; }
+    if (inOl) { html.push('</ol>'); inOl = false; }
   };
 
   for (const rawLine of lines) {
@@ -83,10 +76,7 @@ function formatPlainTextToHtml(content = '') {
     const ulMatch = trimmed.match(/^[-*]\s+(.*)$/);
     if (ulMatch) {
       if (!inUl) {
-        if (inOl) {
-          html.push('</ol>');
-          inOl = false;
-        }
+        if (inOl) { html.push('</ol>'); inOl = false; }
         html.push('<ul>');
         inUl = true;
       }
@@ -97,10 +87,7 @@ function formatPlainTextToHtml(content = '') {
     const olMatch = trimmed.match(/^\d+\.\s+(.*)$/);
     if (olMatch) {
       if (!inOl) {
-        if (inUl) {
-          html.push('</ul>');
-          inUl = false;
-        }
+        if (inUl) { html.push('</ul>'); inUl = false; }
         html.push('<ol>');
         inOl = true;
       }
@@ -135,10 +122,23 @@ function formatPlainTextToHtml(content = '') {
   return html.join('\n');
 }
 
+/**
+ * Strip wrapping ```html ... ``` code fences from blog content (Issue 10).
+ * Some blogs have content wrapped in code fences which causes raw HTML display.
+ */
+function stripCodeFenceWrappers(content = '') {
+  let c = content.trim();
+  // Remove leading ```html or ``` and trailing ```
+  c = c.replace(/^```(?:html)?\s*\n?/i, '');
+  c = c.replace(/\n?```\s*$/i, '');
+  return c.trim();
+}
+
 function getRenderableContent(content = '') {
-  const looksLikeHtml = /<([a-z][\w-]*)(\s[^>]*)?>/i.test(content);
-  if (looksLikeHtml) return content;
-  return formatPlainTextToHtml(content);
+  let cleaned = stripCodeFenceWrappers(content);
+  const looksLikeHtml = /<([a-z][\w-]*)(\s[^>]*)?>/.test(cleaned);
+  if (looksLikeHtml) return cleaned;
+  return formatPlainTextToHtml(cleaned);
 }
 
 function addHeadingIds(htmlContent = '') {
@@ -151,6 +151,25 @@ function addHeadingIds(htmlContent = '') {
     return `<h${level}${attrs} id="${id}">${inner}</h${level}>`;
   });
   return { html, headings };
+}
+
+/**
+ * Inject section images after H2 headings (Issue 1).
+ * Uses the blog's sectionImages array, mapping each to an H2 in order.
+ */
+function injectSectionImages(htmlContent = '', sectionImages = []) {
+  if (!sectionImages || sectionImages.length === 0) return htmlContent;
+  let imageIndex = 0;
+  return htmlContent.replace(/<\/h2>/gi, (match) => {
+    if (imageIndex < sectionImages.length) {
+      const imgUrl = sectionImages[imageIndex];
+      imageIndex++;
+      if (imgUrl) {
+        return `${match}\n<figure class="blog-section-image my-6"><img src="${imgUrl}" alt="Section illustration" class="w-full rounded-xl" loading="lazy" />\n</figure>`;
+      }
+    }
+    return match;
+  });
 }
 
 function calculateReadingTime(content = '') {
@@ -180,13 +199,21 @@ export async function generateMetadata({ params }) {
         description: blog.seoDescription || blog.excerpt,
         type: 'article',
         publishedTime: blog.createdAt,
-        images: blog.featuredImage ? [{ url: blog.featuredImage }] : [],
+        images: blog.ogImage
+          ? [{ url: blog.ogImage }]
+          : blog.featuredImage
+          ? [{ url: blog.featuredImage }]
+          : [],
       },
       twitter: {
         card: 'summary_large_image',
         title: blog.seoTitle || blog.title,
         description: blog.seoDescription || blog.excerpt,
-        images: blog.featuredImage ? [blog.featuredImage] : [],
+        images: blog.ogImage
+          ? [blog.ogImage]
+          : blog.featuredImage
+          ? [blog.featuredImage]
+          : [],
       },
     };
   } catch {
@@ -197,7 +224,7 @@ export async function generateMetadata({ params }) {
   }
 }
 
-export default async function BlogPage({ params }) {
+export default async function BlogPostPage({ params }) {
   try {
     await connectDB();
     const blog = await Blog.findOne({ slug: params.slug }).lean();
@@ -205,7 +232,6 @@ export default async function BlogPage({ params }) {
     if (!blog) {
       return (
         <div className="min-h-screen bg-background">
-          <Navigation />
           <div className="mx-auto max-w-4xl px-4 py-16 text-center">
             <h1 className="text-2xl font-bold text-slate-900">Blog not found</h1>
             <p className="mt-2 text-sm text-slate-600">The article you are looking for does not exist.</p>
@@ -213,76 +239,59 @@ export default async function BlogPage({ params }) {
               Back to blog
             </Link>
           </div>
-          <Footer />
         </div>
       );
     }
 
-    const [relatedBlogsRaw] = await Promise.all([
-      Blog.find({
-        $or: [{ category: blog.category }, { subcategory: blog.subcategory }],
-        _id: { $ne: blog._id },
-        published: true,
-      })
-        .limit(3)
-        .sort({ createdAt: -1 })
-        .lean(),
-    ]);
+    const relatedBlogsRaw = await Blog.find({
+      category: blog.category,
+      _id: { $ne: blog._id },
+      published: true,
+    })
+      .limit(3)
+      .sort({ createdAt: -1 })
+      .lean();
 
-    const rawContent = getRenderableContent(blog.content || '');
+    let rawContent = getRenderableContent(blog.content || '');
+    // Inject section images after H2 headings (Issue 1)
+    rawContent = injectSectionImages(rawContent, blog.sectionImages || []);
     const { html: renderableContent, headings } = addHeadingIds(rawContent);
     const readingTime = calculateReadingTime(renderableContent);
 
     const categorySlug = slugify(blog.category);
-    const subcategorySlug = slugify(blog.subcategory);
-    const articlePath = subcategorySlug
-      ? `/blog/${categorySlug}/${subcategorySlug}/${blog.slug}`
-      : `/blog/${categorySlug}/${blog.slug}`;
-    const siteUrl = process.env.NEXT_PUBLIC_URL || 'https://manjuhiremath.in';
-    const articleUrl = `${siteUrl}${articlePath}`;
-    const encodedUrl = encodeURIComponent(articleUrl);
-    const encodedTitle = encodeURIComponent(blog.title || '');
 
     return (
       <div className="min-h-screen bg-background">
         <ViewTracker slug={params.slug} />
-        <Navigation />
 
         <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
           <nav className="mb-5 flex flex-wrap items-center gap-2 text-xs text-slate-500">
-            <Link href="/" className="hover:text-slate-700">
-              Home
-            </Link>
-            <span>/</span>
-            <Link href="/blog" className="hover:text-slate-700">
-              Blog
-            </Link>
+            <Link href="/blog" className="hover:text-slate-700">Blog</Link>
             <span>/</span>
             <Link href={`/blog/${categorySlug}`} className="capitalize hover:text-slate-700">
               {blog.category}
             </Link>
-            {subcategorySlug ? (
-              <>
-                <span>/</span>
-                <Link href={`/blog/${categorySlug}/${subcategorySlug}`} className="capitalize hover:text-slate-700">
-                  {blog.subcategory}
-                </Link>
-              </>
-            ) : null}
             <span>/</span>
             <span className="max-w-[320px] truncate text-slate-700">{blog.title}</span>
           </nav>
 
           <header className="rounded-xl border border-slate-200 bg-white p-5">
             <div className="mb-3 flex flex-wrap gap-2">
-              <span className="rounded-full bg-orange-100 px-3 py-1 text-xs font-medium text-orange-700">
+              <Link
+                href={`/blog?category=${encodeURIComponent(blog.category)}`}
+                className="rounded-full bg-orange-100 px-3 py-1 text-xs font-medium text-orange-700 hover:bg-orange-200 transition-colors"
+              >
                 {blog.category}
-              </span>
-              {blog.subcategory ? (
-                <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
-                  {blog.subcategory}
-                </span>
-              ) : null}
+              </Link>
+              {blog.tags?.slice(0, 3).map((tag) => (
+                <Link
+                  key={tag}
+                  href={`/blog/tag/${encodeURIComponent(tag)}`}
+                  className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 hover:bg-slate-200 transition-colors"
+                >
+                  #{tag}
+                </Link>
+              ))}
             </div>
             <h1 className="text-3xl font-bold leading-tight tracking-tight text-slate-900 sm:text-4xl">
               {blog.title}
@@ -319,66 +328,37 @@ export default async function BlogPage({ params }) {
               {blog.tags?.length ? (
                 <div className="mt-8 flex flex-wrap gap-2 border-t border-slate-200 pt-6">
                   {blog.tags.map((tag, index) => (
-                    <span key={`${tag}-${index}`} className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-700">
+                    <Link
+                      key={`${tag}-${index}`}
+                      href={`/blog/tag/${encodeURIComponent(tag)}`}
+                      className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-700 hover:bg-orange-50 hover:text-orange-600 transition-colors"
+                    >
                       #{tag}
-                    </span>
+                    </Link>
                   ))}
+                </div>
+              ) : null}
+
+              {/* FAQ Schema */}
+              {blog.faq?.length ? (
+                <div className="mt-8 border-t border-slate-200 pt-6">
+                  <h2 className="text-xl font-bold text-slate-900 mb-4">Frequently Asked Questions</h2>
+                  <div className="space-y-4">
+                    {blog.faq.map((item, i) => (
+                      <details key={i} className="rounded-lg border border-slate-200 bg-white">
+                        <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-slate-900 hover:text-orange-600">
+                          {item.question}
+                        </summary>
+                        <p className="px-4 pb-3 text-sm text-slate-600">{item.answer}</p>
+                      </details>
+                    ))}
+                  </div>
                 </div>
               ) : null}
             </article>
 
             <aside className="space-y-4 xl:sticky xl:top-24 xl:self-start">
-              <div className="rounded-xl border border-slate-200 bg-white p-4">
-                <h2 className="text-sm font-semibold text-slate-900">Share</h2>
-                <div className="mt-3 flex flex-wrap gap-2 text-xs">
-                  <a
-                    href={`https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="rounded-md border border-slate-300 px-3 py-1.5 text-slate-700 hover:bg-slate-50"
-                  >
-                    X
-                  </a>
-                  <a
-                    href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="rounded-md border border-slate-300 px-3 py-1.5 text-slate-700 hover:bg-slate-50"
-                  >
-                    LinkedIn
-                  </a>
-                  <a
-                    href={`https://wa.me/?text=${encodedTitle}%20${encodedUrl}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="rounded-md border border-slate-300 px-3 py-1.5 text-slate-700 hover:bg-slate-50"
-                  >
-                    WhatsApp
-                  </a>
-                </div>
-              </div>
-
-              {headings.length ? (
-                <div className="rounded-xl border border-slate-200 bg-white p-4">
-                  <h2 className="text-sm font-semibold text-slate-900">On this page</h2>
-                  <ul className="mt-3 space-y-2">
-                    {headings
-                      .filter((item) => item.level <= 3)
-                      .map((item) => (
-                        <li key={item.id} className="text-xs">
-                          <a
-                            href={`#${item.id}`}
-                            className={`block truncate text-slate-600 hover:text-orange-600 ${
-                              item.level === 3 ? 'pl-3' : ''
-                            }`}
-                          >
-                            {item.text}
-                          </a>
-                        </li>
-                      ))}
-                  </ul>
-                </div>
-              ) : null}
+              <TableOfContents headings={headings} />
             </aside>
           </section>
 
@@ -389,9 +369,7 @@ export default async function BlogPage({ params }) {
                 {relatedBlogsRaw.map((relatedBlog) => (
                   <Link
                     key={relatedBlog._id}
-                    href={`/${['blog', slugify(relatedBlog.category), slugify(relatedBlog.subcategory), relatedBlog.slug]
-                      .filter(Boolean)
-                      .join('/')}`}
+                    href={`/blog/${slugify(relatedBlog.category)}/${relatedBlog.slug}`}
                     className="group block overflow-hidden rounded-xl border border-slate-200 bg-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
                   >
                     <div className="relative h-40 bg-slate-100">
@@ -417,22 +395,17 @@ export default async function BlogPage({ params }) {
             </section>
           ) : null}
         </main>
-
-        <Footer />
       </div>
     );
   } catch (error) {
     console.error('Error loading blog:', error);
     return (
       <div className="min-h-screen bg-background">
-        <Navigation />
         <div className="mx-auto max-w-4xl px-4 py-16 text-center">
           <h1 className="text-2xl font-bold text-slate-900">Error loading article</h1>
           <p className="mt-2 text-sm text-slate-600">Something went wrong. Please try again later.</p>
         </div>
-        <Footer />
       </div>
     );
   }
 }
-

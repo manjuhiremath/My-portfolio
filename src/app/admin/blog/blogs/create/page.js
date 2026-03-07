@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { Suspense, useState, useEffect, useRef } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { Archivo, Space_Grotesk } from 'next/font/google';
 
@@ -179,8 +179,9 @@ function SearchableDropdown({ label, value, onChange, options, placeholder, disa
   );
 }
 
-export default function CreateBlog() {
+function CreateBlogInner() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const quillRef = useRef(null);
   const [showTableModal, setShowTableModal] = useState(false);
   const [tableRows, setTableRows] = useState(3);
@@ -205,6 +206,32 @@ export default function CreateBlog() {
   const [uploadError, setUploadError] = useState('');
   const [categories, setCategories] = useState([]);
   const [createModal, setCreateModal] = useState({ isOpen: false, type: '', name: '', loading: false });
+
+  // Load draft data from localStorage if source=scrape
+  useEffect(() => {
+    if (searchParams.get('source') === 'scrape') {
+      const draftStr = localStorage.getItem('blogDraftContent');
+      if (draftStr) {
+        try {
+          const draft = JSON.parse(draftStr);
+          setFormData(prev => ({
+            ...prev,
+            title: draft.title || '',
+            excerpt: draft.excerpt || '',
+            content: draft.content || '',
+            tags: draft.tags ? draft.tags.join(', ') : '',
+            featuredImage: draft.featuredImage || '',
+            seoTitle: draft.title || '',
+            seoDescription: draft.excerpt ? draft.excerpt.substring(0, 160) : '',
+          }));
+          // Optionally clear it so it doesn't pollute future creations
+          // localStorage.removeItem('blogDraftContent');
+        } catch(e) {
+          console.error("Failed to parse draft data", e);
+        }
+      }
+    }
+  }, [searchParams]);
 
   // Fetch categories on mount
   useEffect(() => {
@@ -1280,5 +1307,13 @@ export default function CreateBlog() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function CreateBlog() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CreateBlogInner />
+    </Suspense>
   );
 }

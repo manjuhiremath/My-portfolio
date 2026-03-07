@@ -2,8 +2,6 @@ import Link from 'next/link';
 import { connectDB } from '@/lib/mongodb';
 import Blog from '@/models/Blog';
 import Category from '@/models/Category';
-import Navigation from '@/components/Navigation';
-import Footer from '@/components/Footer';
 import BlogCard from '@/components/blog/BlogCard';
 import Pagination from '@/components/Pagination';
 
@@ -103,12 +101,10 @@ export default async function CategoryPage({ params, searchParams }) {
   if (!data) {
     return (
       <div className="min-h-screen bg-background">
-        <Navigation />
         <div className="mx-auto max-w-5xl px-4 py-16 text-center">
           <h1 className="text-2xl font-semibold text-slate-900">Category not found</h1>
           <p className="mt-2 text-sm text-slate-600">The category you requested does not exist.</p>
         </div>
-        <Footer />
       </div>
     );
   }
@@ -117,8 +113,6 @@ export default async function CategoryPage({ params, searchParams }) {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
-
       <main className="mx-auto max-w-7xl space-y-6 px-4 py-8 sm:px-6 lg:px-8">
         <nav className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
           <Link href="/" className="hover:text-slate-700">
@@ -163,9 +157,6 @@ export default async function CategoryPage({ params, searchParams }) {
           </>
         )}
       </main>
-
-      <Footer />
     </div>
   );
 }
-

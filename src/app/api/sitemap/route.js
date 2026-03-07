@@ -19,7 +19,7 @@ export async function GET() {
 
     // Fetch all published blogs
     const blogs = await Blog.find({ published: true })
-      .select('slug category subcategory updatedAt createdAt')
+      .select('slug category updatedAt createdAt tags')
       .lean();
 
     // Fetch all categories
@@ -27,15 +27,10 @@ export async function GET() {
       .select('slug parent updatedAt createdAt')
       .lean();
 
-    // Build blog URLs
+    // Build blog URLs — flat structure: /blog/[category]/[slug]
     const blogUrls = blogs.map(blog => {
       const categorySlug = blog.category?.toLowerCase().replace(/\s+/g, '-');
-      const subcategorySlug = blog.subcategory?.toLowerCase().replace(/\s+/g, '-');
-      
-      let url = '/blog';
-      if (categorySlug) url += `/${categorySlug}`;
-      if (subcategorySlug) url += `/${subcategorySlug}`;
-      url += `/${blog.slug}`;
+      const url = `/blog/${categorySlug}/${blog.slug}`;
 
       return {
         url: escapeXml(url),
@@ -48,7 +43,6 @@ export async function GET() {
 
     // Build category URLs
     const parentCategories = categories.filter(c => !c.parent);
-    const subcategories = categories.filter(c => c.parent);
 
     const categoryUrls = parentCategories.map(cat => ({
       url: escapeXml(`/blog/${cat.slug}`),
@@ -58,16 +52,20 @@ export async function GET() {
       type: 'category'
     }));
 
-    const subcategoryUrls = subcategories.map(sub => {
-      const parent = parentCategories.find(p => p._id.toString() === sub.parent?.toString());
-      return {
-        url: escapeXml(`/blog/${parent?.slug || 'uncategorized'}/${sub.slug}`),
-        lastModified: sub.updatedAt || sub.createdAt,
-        changeFrequency: 'daily',
-        priority: 0.6,
-        type: 'subcategory'
-      };
+    // Build tag URLs from unique tags
+    const tagCounts = {};
+    blogs.forEach(b => {
+      (b.tags || []).forEach(tag => {
+        tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+      });
     });
+    const tagUrls = Object.keys(tagCounts).map(tag => ({
+      url: escapeXml(`/blog/tag/${encodeURIComponent(tag)}`),
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.5,
+      type: 'tag'
+    }));
 
     // Static pages
     const staticPages = [
@@ -92,7 +90,7 @@ export async function GET() {
       ...staticUrls,
       ...blogUrls,
       ...categoryUrls,
-      ...subcategoryUrls
+      ...tagUrls,
     ];
 
     return Response.json({
@@ -103,7 +101,7 @@ export async function GET() {
         static: staticUrls.length,
         blogs: blogUrls.length,
         categories: categoryUrls.length,
-        subcategories: subcategoryUrls.length
+        tags: tagUrls.length,
       }
     });
 

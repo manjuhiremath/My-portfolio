@@ -20,14 +20,14 @@ import {
 } from 'react-icons/fi';
 
 const NAV_ITEMS = [
-  { label: 'Dashboard', href: '/admin/dashboard', icon: FiGrid },
-  { label: 'Blogs', href: '/admin/blogs', icon: FiBookOpen },
-  { label: 'Categories', href: '/admin/categories', icon: FiLayers },
-  { label: 'Media', href: '/admin/media', icon: FiImage },
-  { label: 'SEO Tools', href: '/admin/seo-tools', icon: FiTarget },
-  { label: 'Analytics', href: '/admin/analytics', icon: FiBarChart2 },
-  { label: 'AI Writer', href: '/admin/ai-writer', icon: FiPenTool },
-  { label: 'Settings', href: '/admin/settings', icon: FiSettings },
+  { label: 'Dashboard', href: '/admin/blog/dashboard', icon: FiGrid },
+  { label: 'Blogs', href: '/admin/blog/blogs', icon: FiBookOpen },
+  { label: 'Categories', href: '/admin/blog/categories', icon: FiLayers },
+  { label: 'Media', href: '/admin/blog/media', icon: FiImage },
+  { label: 'SEO Tools', href: '/admin/blog/seo-tools', icon: FiTarget },
+  { label: 'Analytics', href: '/admin/blog/analytics', icon: FiBarChart2 },
+  { label: 'AI Writer', href: '/admin/blog/ai-writer', icon: FiPenTool },
+  { label: 'Settings', href: '/admin/blog/settings', icon: FiSettings },
 ];
 
 function getCurrentItem(pathname) {
@@ -69,7 +69,7 @@ export default function AdminLayout({ children }) {
         }`}
       >
         <div className="flex h-11 items-center border-b border-slate-800 px-3">
-          <Link href="/admin/dashboard" className="inline-flex items-center gap-2 text-sm font-semibold tracking-tight text-white">
+          <Link href="/admin/blog/dashboard" className="inline-flex items-center gap-2 text-sm font-semibold tracking-tight text-white">
             <span className="inline-flex h-6 w-6 items-center justify-center rounded bg-slate-800 text-[11px] font-bold text-emerald-300">
               SEO
             </span>
@@ -129,7 +129,7 @@ export default function AdminLayout({ children }) {
             </div>
 
             <Link
-              href="/admin/blogs/create"
+              href="/admin/blog/blogs/create"
               className="inline-flex h-8 items-center rounded-md bg-slate-900 px-3 text-xs font-medium text-white hover:bg-slate-800"
             >
               Create Blog
