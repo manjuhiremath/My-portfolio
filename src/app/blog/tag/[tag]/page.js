@@ -5,6 +5,8 @@ import Tag from '@/models/Tag';
 import Category from '@/models/Category';
 import BlogCard from '@/components/blog/BlogCard';
 import Pagination from '@/components/Pagination';
+import BannerAd from '@/components/ads/BannerAd';
+import MultiplexAd from '@/components/ads/MultiplexAd';
 
 export const revalidate = 3600;
 const POSTS_PER_PAGE = 12;
@@ -125,6 +127,7 @@ export default async function TagPage({ params, searchParams }) {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-white">
       <main className="mx-auto max-w-7xl space-y-6 px-4 py-8 sm:px-6 lg:px-8">
+        <BannerAd />
         {/* Breadcrumbs */}
         <nav className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
           <Link href="/" className="hover:text-slate-700">Home</Link>
@@ -175,6 +178,7 @@ export default async function TagPage({ params, searchParams }) {
             )}
           </>
         )}
+        <MultiplexAd />
       </main>
     </div>
   );

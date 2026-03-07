@@ -16,6 +16,455 @@ if (!MONGODB_URI) {
 }
 
 const blogsToPublish = [
+  // MACBOOK NEO ARTICLES
+  {
+    title: "MacBook Neo: Apple's Most Affordable Laptop Explained",
+    slug: "macbook-neo-apple-most-affordable-laptop",
+    category: "Technology",
+    excerpt: "Discover the all-new MacBook Neo - Apple's cheapest laptop starting at $599. Features A18 Pro chip, 13-inch Liquid Retina display, and four vibrant colors.",
+    content: `
+      <h1>MacBook Neo: Apple's Most Affordable Laptop Explained</h1>
+      <p>Apple has officially unveiled the <strong>MacBook Neo</strong>, marking the company's most ambitious entry into the budget laptop market. Priced starting at just $599 (approximately ₹69,900 in India), the MacBook Neo brings the legendary Mac experience to a whole new audience.</p>
+      
+      <h2>What is MacBook Neo?</h2>
+      <p>The <strong>MacBook Neo</strong> is Apple's newest entry-level laptop, designed to make the Mac ecosystem more accessible than ever before. Announced in March 2026, this laptop targets students, first-time Mac users, and budget-conscious consumers.</p>
+      
+      <h2>MacBook Neo Specifications</h2>
+      <table>
+        <tr><th>Specification</th><th>Details</th></tr>
+        <tr><td>Processor</td><td>A18 Pro (6-core CPU, 5-core GPU, 16-core Neural Engine)</td></tr>
+        <tr><td>Memory</td><td>8GB Unified Memory</td></tr>
+        <tr><td>Storage</td><td>256GB SSD</td></tr>
+        <tr><td>Display</td><td>13-inch Liquid Retina, 500 nits brightness</td></tr>
+        <tr><td>Colors</td><td>Silver, Blush, Indigo, Citrus</td></tr>
+        <tr><td>Weight</td><td>1.22 kg</td></tr>
+        <tr><td>Operating System</td><td>macOS Tahoe</td></tr>
+        <tr><td>Wireless</td><td>Wi-Fi 7, Bluetooth 5.3</td></tr>
+        <tr><td>Ports</td><td>2x USB-C, MagSafe</td></tr>
+      </table>
+      
+      <h3>Display Quality</h3>
+      <p>The MacBook Neo features a beautiful <strong>13-inch Liquid Retina display</strong> that brings content to life with remarkable clarity. With support for 1 billion colors and 500 nits of brightness, your photos, videos, and apps will look stunning.</p>
+      
+      <h3>Performance</h3>
+      <p>Powered by the <strong>A18 Pro chip</strong>, the MacBook Neo delivers impressive everyday performance. Apple claims it's up to 50% faster for everyday tasks like web browsing and up to 3x faster for on-device AI tasks.</p>
+      
+      <h2>Design and Colors</h2>
+      <p>Available in four stunning colors: <strong>Silver</strong>, <strong>Blush</strong>, <strong>Indigo</strong>, and <strong>Citrus</strong>. The color extends to the keyboard and default wallpapers, creating a cohesive aesthetic.</p>
+      
+      <h2>Key Features</h2>
+      <h3>MagSafe Charging</h3>
+      <p>The MacBook Neo features <strong>MagSafe technology</strong> for convenient and safe magnetic charging.</p>
+      
+      <h3>Fanless Design</h3>
+      <p>Thanks to the energy-efficient A18 Pro chip, the MacBook Neo operates <strong>completely silently</strong>.</p>
+      
+      <h3>All-Day Battery Life</h3>
+      <p>Apple promises <strong>all-day battery life</strong> on the MacBook Neo.</p>
+      
+      <h3>Wi-Fi 7</h3>
+      <p>The Neo includes the latest <strong>Wi-Fi 7</strong> connectivity.</p>
+      
+      <h2>Who Should Buy MacBook Neo?</h2>
+      <ul>
+        <li><strong>Students</strong> - Education pricing starts at $499</li>
+        <li><strong>First-time Mac users</strong> - Entry point into the Apple ecosystem</li>
+        <li><strong>Basic productivity users</strong> - Web browsing, document creation, video streaming</li>
+        <li><strong>Budget-conscious buyers</strong> - Quality laptop without premium pricing</li>
+      </ul>
+      
+      <h2>Pros and Cons</h2>
+      <h3>Pros</h3>
+      <ul>
+        <li>Incredibly affordable starting price</li>
+        <li>Beautiful color options</li>
+        <li>Silent fanless operation</li>
+        <li>MagSafe charging</li>
+        <li>Wi-Fi 7 connectivity</li>
+        <li>Lightweight and portable</li>
+      </ul>
+      
+      <h3>Cons</h3>
+      <ul>
+        <li>Limited to 8GB RAM (no upgrade option)</li>
+        <li>Uses iPhone chip instead of M-series</li>
+        <li>Not suitable for heavy professional workloads</li>
+        <li>Limited storage options</li>
+      </ul>
+      
+      <h2>Conclusion</h2>
+      <p>The <strong>MacBook Neo</strong> represents Apple's boldest move into the budget laptop market. With its affordable price point, stunning design, and essential Mac features, it opens the door to millions of new users.</p>
+    `,
+    featuredImage: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&q=80&w=1200",
+    sectionImages: [
+      "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&q=80&w=800"
+    ],
+    tags: ["Apple", "MacBook", "Technology", "Laptop", "Budget"],
+    keywords: ["MacBook Neo", "Apple MacBook Neo", "cheap MacBook", "budget Apple laptop", "MacBook Neo features", "Apple laptop 2026"],
+    seoTitle: "MacBook Neo: Apple's Most Affordable Laptop Explained",
+    seoDescription: "Discover the all-new MacBook Neo - Apple's cheapest laptop starting at $599. Features A18 Pro chip, 13-inch Liquid Retina display, and four vibrant colors.",
+    published: true,
+    publishedAt: new Date(),
+    views: 0
+  },
+  {
+    title: "MacBook Neo Price in India, Specs, and Availability",
+    slug: "macbook-neo-price-india-specs-availability",
+    category: "Technology",
+    excerpt: "MacBook Neo price in India starts at ₹69,900. Full specifications, features, colors, and availability details. Buy now on Amazon India.",
+    content: `
+      <h1>MacBook Neo Price in India, Specs, and Availability</h1>
+      <p>Apple's revolutionary <strong>MacBook Neo has officially landed in India</strong>, bringing the magic of Mac to Indian consumers at an unprecedented price point.</p>
+      
+      <h2>MacBook Neo Price in India</h2>
+      <p>The <strong>MacBook Neo price in India</strong> starts at just <strong>₹69,900</strong> for the base model. For eligible students, the educational pricing starts at <strong>₹59,900</strong>.</p>
+      
+      <table>
+        <tr><th>Model</th><th>Color</th><th>RAM</th><th>Storage</th><th>Price</th></tr>
+        <tr><td>MacBook Neo</td><td>Citrus</td><td>8GB</td><td>256GB SSD</td><td>₹69,900</td></tr>
+        <tr><td>MacBook Neo</td><td>Silver</td><td>8GB</td><td>256GB SSD</td><td>₹69,900</td></tr>
+        <tr><td>MacBook Neo</td><td>Blush</td><td>8GB</td><td>256GB SSD</td><td>₹69,900</td></tr>
+        <tr><td>MacBook Neo</td><td>Indigo</td><td>8GB</td><td>256GB SSD</td><td>₹69,900</td></tr>
+        <tr><td>MacBook Neo (Education)</td><td>All Colors</td><td>8GB</td><td>256GB SSD</td><td>₹59,900</td></tr>
+      </table>
+      
+      <h2>Where to Buy MacBook Neo in India</h2>
+      <h3>Online Retailers</h3>
+      <ul>
+        <li><strong>Amazon India</strong> - Currently listing the MacBook Neo for pre-order</li>
+        <li><strong>Apple India Online Store</strong> - Direct from Apple</li>
+      </ul>
+      
+      <h3>Apple Authorized Resellers</h3>
+      <ul>
+        <li>All major electronics retailers across India</li>
+        <li>Apple Premium Resellers (Croma, Reliance Digital)</li>
+      </ul>
+      
+      <h3>Apple Store</h3>
+      <ul>
+        <li>Apple Store locations in Mumbai, Delhi, Bangalore, and other cities</li>
+      </ul>
+      
+      <h2>Availability Date</h2>
+      <p>The MacBook Neo became available for pre-order on <strong>March 4, 2026</strong>. Customer deliveries began on <strong>March 11, 2026</strong>.</p>
+      
+      <h2>Complete Specifications</h2>
+      <h3>Processor and Performance</h3>
+      <p>The MacBook Neo is powered by the <strong>A18 Pro chip</strong>:</p>
+      <ul>
+        <li>6-core CPU for efficient performance</li>
+        <li>5-core GPU for smooth graphics</li>
+        <li>16-core Neural Engine for AI tasks</li>
+        <li>Up to 50% faster for everyday tasks</li>
+        <li>Up to 3x faster for AI workloads</li>
+      </ul>
+      
+      <h3>Memory and Storage</h3>
+      <ul>
+        <li><strong>8GB Unified Memory</strong> - Fixed, not upgradeable</li>
+        <li><strong>256GB SSD</strong> - Fast NVMe storage</li>
+      </ul>
+      
+      <h3>Display</h3>
+      <ul>
+        <li>13-inch Liquid Retina display</li>
+        <li>500 nits brightness</li>
+        <li>P3 wide color gamut</li>
+        <li>Support for 1 billion colors</li>
+        <li>Anti-reflective coating</li>
+      </ul>
+      
+      <h3>Design and Build</h3>
+      <ul>
+        <li>Durable aluminum enclosure</li>
+        <li>Weight: 1.22 kg</li>
+        <li>Four vibrant color options</li>
+        <li>Fanless design for silent operation</li>
+      </ul>
+      
+      <h3>Battery and Charging</h3>
+      <ul>
+        <li>All-day battery life</li>
+        <li>MagSafe magnetic charging</li>
+        <li>Color-matched charging cable</li>
+      </ul>
+      
+      <h3>Connectivity</h3>
+      <ul>
+        <li>Wi-Fi 7 (802.11be)</li>
+        <li>Bluetooth 5.3</li>
+        <li>2x USB-C ports</li>
+        <li>MagSafe 3 charging port</li>
+        <li>3.5mm headphone jack</li>
+      </ul>
+      
+      <h2>Color Options Available in India</h2>
+      <ol>
+        <li><strong>Citrus</strong> - A fresh, vibrant yellow-green</li>
+        <li><strong>Silver</strong> - The classic Apple look</li>
+        <li><strong>Blush</strong> - A soft, elegant pink</li>
+        <li><strong>Indigo</strong> - A deep, sophisticated blue-purple</li>
+      </ol>
+      
+      <h2>What's in the Box?</h2>
+      <ul>
+        <li>MacBook Neo laptop</li>
+        <li>30W USB-C Power Adapter</li>
+        <li>MagSafe to USB-C Cable (2m)</li>
+        <li>Quick Start Guide</li>
+      </ul>
+      
+      <h2>Is MacBook Neo Worth Buying in India?</h2>
+      <p>At ₹69,900, the MacBook Neo offers exceptional value for Indian consumers:</p>
+      <ul>
+        <li><strong>Most affordable MacBook ever</strong></li>
+        <li><strong>Premium build quality</strong></li>
+        <li><strong>Capable performance</strong></li>
+        <li><strong>Future-ready</strong> - Wi-Fi 7 and Apple Intelligence</li>
+      </ul>
+    `,
+    featuredImage: "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?auto=format&fit=crop&q=80&w=1200",
+    sectionImages: [
+      "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&q=80&w=800"
+    ],
+    tags: ["Apple", "MacBook Neo", "India", "Price", "Technology"],
+    keywords: ["MacBook Neo price in India", "MacBook Neo India price", "buy MacBook Neo India", "MacBook Neo specifications India", "MacBook Neo availability India"],
+    seoTitle: "MacBook Neo Price in India, Specs, and Availability",
+    seoDescription: "MacBook Neo price in India starts at ₹69,900. Full specifications, features, colors, and availability details.",
+    published: true,
+    publishedAt: new Date(),
+    views: 0
+  },
+  {
+    title: "MacBook Neo vs MacBook Air M2: Which One Should You Buy?",
+    slug: "macbook-neo-vs-macbook-air-m2-comparison",
+    category: "Technology",
+    excerpt: "Complete comparison: MacBook Neo vs MacBook Air M2. Price, specs, performance, and features. Find out which Apple laptop is right for you.",
+    content: `
+      <h1>MacBook Neo vs MacBook Air M2: Which One Should You Buy?</h1>
+      <p>Apple's latest laptop lineup now includes the brand new <strong>MacBook Neo</strong>, positioned below the popular <strong>MacBook Air M2</strong>. But with a $500 price difference, which is right for you?</p>
+      
+      <h2>Price Comparison</h2>
+      <table>
+        <tr><th>Laptop</th><th>Starting Price (US)</th><th>Starting Price (India)</th></tr>
+        <tr><td>MacBook Neo</td><td>$599</td><td>₹69,900</td></tr>
+        <tr><td>MacBook Air M2</td><td>$1,099</td><td>₹89,900</td></tr>
+        <tr><td><strong>Difference</strong></td><td><strong>$500</strong></td><td><strong>₹20,000</strong></td></tr>
+      </table>
+      
+      <h2>Design and Display</h2>
+      <h3>Size and Weight</h3>
+      <p>Both laptops feature a 13-inch display:</p>
+      <ul>
+        <li><strong>MacBook Neo:</strong> 1.22 kg</li>
+        <li><strong>MacBook Air M2:</strong> 1.24 kg</li>
+      </ul>
+      
+      <h3>Color Options</h3>
+      <p><strong>MacBook Neo:</strong> Silver, Blush, Indigo, Citrus</p>
+      <p><strong>MacBook Air M2:</strong> Silver, Starlight, Midnight, Sky Blue</p>
+      
+      <h3>Display Quality</h3>
+      <p><strong>MacBook Neo:</strong> 13-inch Liquid Retina, 500 nits, 1 billion colors</p>
+      <p><strong>MacBook Air M2:</strong> 13.6-inch Liquid Retina, 500 nits, P3 wide color, True Tone</p>
+      
+      <h2>Performance: A18 Pro vs M2</h2>
+      <h3>MacBook Neo - A18 Pro</h3>
+      <ul>
+        <li><strong>Chip:</strong> A18 Pro (iPhone processor)</li>
+        <li><strong>CPU:</strong> 6-core</li>
+        <li><strong>GPU:</strong> 5-core</li>
+        <li><strong>Memory:</strong> 8GB unified (fixed)</li>
+      </ul>
+      
+      <h3>MacBook Air M2 - M2 Chip</h3>
+      <ul>
+        <li><strong>Chip:</strong> M2 (Mac processor)</li>
+        <li><strong>CPU:</strong> 8-core</li>
+        <li><strong>GPU:</strong> Up to 10-core</li>
+        <li><strong>Memory:</strong> 8GB or 16GB unified</li>
+      </ul>
+      
+      <h3>Real-World Performance</h3>
+      <p>The MacBook Air M2 is noticeably more powerful:</p>
+      <ul>
+        <li>Better for video editing</li>
+        <li>Handles larger files</li>
+        <li>More RAM available</li>
+        <li>Can handle professional software</li>
+      </ul>
+      
+      <h2>Battery Life</h2>
+      <p>Both laptops offer all-day battery life:</p>
+      <ul>
+        <li><strong>MacBook Neo:</strong> Up to 18 hours</li>
+        <li><strong>MacBook Air M2:</strong> Up to 18 hours</li>
+      </ul>
+      
+      <h2>Connectivity</h2>
+      <table>
+        <tr><th>Feature</th><th>MacBook Neo</th><th>MacBook Air M2</th></tr>
+        <tr><td>USB-C Ports</td><td>2</td><td>2</td></tr>
+        <tr><td>MagSafe</td><td>Yes</td><td>Yes</td></tr>
+        <tr><td>Wi-Fi</td><td>Wi-Fi 7</td><td>Wi-Fi 6</td></tr>
+        <tr><td>Bluetooth</td><td>5.3</td><td>5.3</td></tr>
+      </table>
+      
+      <h2>Who Should Buy MacBook Neo?</h2>
+      <ul>
+        <li>Budget is your primary concern</li>
+        <li>You need a laptop for basic tasks</li>
+        <li>You're a student on a tight budget</li>
+        <li>You want the latest Wi-Fi technology</li>
+        <li>You prefer vibrant color options</li>
+      </ul>
+      
+      <h2>Who Should Buy MacBook Air M2?</h2>
+      <ul>
+        <li>You need more processing power</li>
+        <li>You work with photos or videos</li>
+        <li>You want upgradeable RAM (16GB option)</li>
+        <li>You need professional software capabilities</li>
+        <li>True Tone display matters to you</li>
+      </ul>
+      
+      <h2>Verdict</h2>
+      <p>For <strong>$500 less</strong>, the MacBook Neo delivers 90% of the MacBook Air experience for everyday users. If your needs are basic web browsing, document creation, and light photo editing, the Neo represents incredible value.</p>
+      <p>However, if you're a professional or need more power, the MacBook Air M2's M2 chip makes it the better long-term investment.</p>
+    `,
+    featuredImage: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&q=80&w=1200",
+    sectionImages: [
+      "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?auto=format&fit=crop&q=80&w=800"
+    ],
+    tags: ["Apple", "MacBook Neo", "MacBook Air", "Comparison", "Technology"],
+    keywords: ["MacBook Neo vs MacBook Air", "MacBook Neo vs MacBook Air M2", "MacBook Neo or MacBook Air", "MacBook Air M2 vs Neo"],
+    seoTitle: "MacBook Neo vs MacBook Air M2: Which One Should You Buy?",
+    seoDescription: "Complete comparison: MacBook Neo vs MacBook Air M2. Price, specs, performance, and features.",
+    published: true,
+    publishedAt: new Date(),
+    views: 0
+  },
+  {
+    title: "Is the MacBook Neo Worth Buying in 2026?",
+    slug: "macbook-neo-worth-buying-2026",
+    category: "Technology",
+    excerpt: "Honest review: Is MacBook Neo worth buying in 2026? Features, performance, pros, cons, and final recommendation for Indian buyers.",
+    content: `
+      <h1>Is the MacBook Neo Worth Buying in 2026?</h1>
+      <p>With the launch of Apple's most affordable laptop ever, many potential buyers are asking: <strong>Is the MacBook Neo worth buying in 2026?</strong></p>
+      
+      <h2>The Big Question: Value Proposition</h2>
+      <p>At <strong>$599 (₹69,900 in India)</strong>, the MacBook Neo enters a market traditionally dominated by Windows laptops and Chromebooks.</p>
+      
+      <h2>What You Get for the Price</h2>
+      <h3>The Good</h3>
+      <ul>
+        <li><strong>Authentic Mac experience</strong> - Full macOS</li>
+        <li><strong>Premium design</strong> - Apple-grade aluminum build</li>
+        <li><strong>Beautiful display</strong> - 13-inch Liquid Retina</li>
+        <li><strong>Silent operation</strong> - Fanless design</li>
+        <li><strong>Modern connectivity</strong> - Wi-Fi 7 and MagSafe</li>
+        <li><strong>Apple Intelligence</strong> - On-device AI capabilities</li>
+      </ul>
+      
+      <h3>The Trade-offs</h3>
+      <ul>
+        <li><strong>A18 Pro chip</strong> - iPhone processor, not M-series</li>
+        <li><strong>8GB RAM only</strong> - Not upgradeable</li>
+        <li><strong>256GB storage</strong> - Limited options</li>
+        <li><strong>Not for professionals</strong> - May struggle with heavy workloads</li>
+      </ul>
+      
+      <h2>Real-World Performance</h2>
+      <h3>Everyday Tasks - Excellent</h3>
+      <ul>
+        <li>Web browsing - Smooth and fast</li>
+        <li>Document editing - Perfect</li>
+        <li>Video streaming - Looks great</li>
+        <li>Video calls - Works well</li>
+        <li>Light photo editing - Adequate</li>
+      </ul>
+      
+      <h3>Professional Work - Limited</h3>
+      <ul>
+        <li>Video editing - Basic 108p, struggles with 4K</li>
+        <li>3D work - Not recommended</li>
+        <li>Large file handling - May be slow</li>
+        <li>Developer work - Good for basic coding</li>
+      </ul>
+      
+      <h2>For Different Users</h2>
+      <h3>Students - ★★★★★</h3>
+      <p><strong>Worth every penny!</strong> At ₹59,900 (education pricing), it's the best student laptop value.</p>
+      
+      <h3>First-time Mac Users - ★★★★★</h3>
+      <p><strong>Excellent entry point!</strong> If you've always wanted to try macOS, the Neo makes it possible.</p>
+      
+      <h3>Home Users - ★★★★☆</h3>
+      <p><strong>Great choice!</strong> For families needing a shared laptop for basic needs.</p>
+      
+      <h3>Professionals - ★★☆☆☆</h3>
+      <p><strong>Not recommended.</strong> If you need demanding work, spend the extra $500 on MacBook Air.</p>
+      
+      <h3>Content Creators - ★★☆☆☆</h3>
+      <p><strong>Think twice.</strong> Video creation and graphic design need more power.</p>
+      
+      <h2>Competition Analysis</h2>
+      <h3>vs Windows Laptops</h3>
+      <p>In the $500-700 range, the Neo competes with:</p>
+      <ul>
+        <li>Chromebooks - Neo wins on ecosystem and build</li>
+        <li>Budget Windows laptops - Neo wins on display and battery</li>
+      </ul>
+      
+      <h2>India-Specific Verdict</h2>
+      <p>For Indian buyers:</p>
+      <ul>
+        <li><strong>₹69,900</strong> - Cheapest MacBook in India ever</li>
+        <li><strong>₹59,900</strong> - Student price is incredible value</li>
+        <li><strong>Warranty</strong> - Apple India support is excellent</li>
+        <li><strong>Resale</strong> - Apple products hold value</li>
+      </ul>
+      
+      <h2>Final Recommendation</h2>
+      <p><strong>YES - The MacBook Neo is absolutely worth buying</strong> if:</p>
+      <ul>
+        <li>Your budget is under ₹80,000</li>
+        <li>You need a laptop for everyday tasks</li>
+        <li>You want to enter the Apple ecosystem</li>
+        <li>You're a student</li>
+        <li>You value design and build quality</li>
+      </ul>
+      
+      <p><strong>NO - Don't buy the Neo</strong> if:</p>
+      <ul>
+        <li>You need professional-level performance</li>
+        <li>Your work involves video editing or 3D</li>
+        <li>You need more than 8GB RAM</li>
+        <li>You're a power user</li>
+      </ul>
+      
+      <h2>The Bottom Line</h2>
+      <p>The MacBook Neo is designed to be the <strong>most accessible</strong> MacBook ever. For 90% of users, it delivers everything required at a reasonable price.</p>
+    `,
+    featuredImage: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&q=80&w=1200",
+    sectionImages: [
+      "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?auto=format&fit=crop&q=80&w=800"
+    ],
+    tags: ["Apple", "MacBook Neo", "Review", "Technology", "2026"],
+    keywords: ["MacBook Neo worth buying", "MacBook Neo review", "MacBook Neo buying guide", "MacBook Neo 2026", "budget MacBook review"],
+    seoTitle: "Is the MacBook Neo Worth Buying in 2026?",
+    seoDescription: "Honest review: Is MacBook Neo worth buying in 2026? Features, performance, pros, cons, and final recommendation.",
+    published: true,
+    publishedAt: new Date(),
+    views: 0
+  },
+  // EXISTING BLOGS
   {
     title: "Global Conflict & 2026 Economy: Energy Shocks and Stagflation Risks",
     slug: "global-conflict-economy-2026-impact-analysis",

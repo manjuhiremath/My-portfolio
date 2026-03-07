@@ -5,6 +5,8 @@ import Category from '@/models/Category';
 import BlogCard from '@/components/blog/BlogCard';
 import Pagination from '@/components/Pagination';
 import Tag from '@/models/Tag';
+import BannerAd from '@/components/ads/BannerAd';
+import MultiplexAd from '@/components/ads/MultiplexAd';
 
 export const revalidate = 3600;
 const POSTS_PER_PAGE = 9;
@@ -184,6 +186,7 @@ export default async function CategoryPage({ params, searchParams }) {
   return (
     <div className="min-h-screen bg-background">
       <main className="mx-auto max-w-7xl space-y-6 px-4 py-8 sm:px-6 lg:px-8">
+        <BannerAd />
         <nav className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
           <Link href="/" className="hover:text-slate-700">
             Home
@@ -226,6 +229,7 @@ export default async function CategoryPage({ params, searchParams }) {
             ) : null}
           </>
         )}
+        <MultiplexAd />
       </main>
     </div>
   );
