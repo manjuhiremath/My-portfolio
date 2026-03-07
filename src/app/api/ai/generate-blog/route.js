@@ -1,31 +1,8 @@
-import OpenAI from "openai"
 import { connectDB } from "@/lib/mongodb"
 import Blog from "@/models/Blog"
 import AIModel from "@/models/AIModel"
 import slugify from "slugify"
-import { isOllamaModel, callOllama } from "@/lib/ollama"
-
-const client = new OpenAI({
-  baseURL: "https://openrouter.ai/api/v1",
-  apiKey: process.env.OPENROUTER_API_KEY
-})
-
-/**
- * Universal AI caller - routes to Ollama or OpenRouter based on model ID
- */
-async function callAI(modelId, messages, options = {}) {
-  if (isOllamaModel(modelId)) {
-    return callOllama(modelId, messages, options)
-  }
-
-  // Use OpenRouter for other models
-  return client.chat.completions.create({
-    model: modelId,
-    messages,
-    temperature: options.temperature ?? 0.2,
-    max_tokens: options.max_tokens ?? 8000
-  })
-}
+import { AIRouter } from "@/lib/ai/router"
 
 // ============================================
 // Response Healing - Auto-fix malformed JSON
@@ -281,32 +258,14 @@ Requirements:
 - Include practical examples and actionable tips
 `
 
-    let completion;
-    let retries = 0;
-    const maxRetries = 2;
+    // AI Router handles retries, context preservation, and fallback chain automatically
+    const result = await AIRouter.generateWithFallback({
+      systemPrompt: "You are an expert SEO content writer and JSON formatter.",
+      prompt: prompt,
+      temperature: 0.2,
+      maxRetriesPerModel: 1
+    })
 
-    while (retries <= maxRetries) {
-      try {
-        completion = await callAI(selectedModelId, [
-          { role: "user", content: prompt }
-        ], {
-          temperature: 0.2,
-          max_tokens: 8000
-        })
-        break; // Success
-      } catch (err) {
-        if (err.status === 429 && retries < maxRetries) {
-          retries++;
-          const delay = Math.pow(2, retries) * 1000;
-          console.warn(`Rate limited (429). Retrying in ${delay}ms... (Attempt ${retries}/${maxRetries})`);
-          await new Promise(resolve => setTimeout(resolve, delay));
-          continue;
-        }
-        throw err;
-      }
-    }
-
-    const result = completion.choices[0].message.content
     console.log("AI Response:", result.substring(0, 500))
 
     let blogData

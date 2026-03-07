@@ -1,308 +1,441 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-import dynamic from 'next/dynamic';
-import Navigation from '@/components/Navigation';
-import Footer from '@/components/Footer';
+import { Suspense, useEffect, useMemo, useState } from 'react';
+import { FiSearch, FiX } from 'react-icons/fi';
 import BlogCard from '@/components/blog/BlogCard';
 
+// Editorial Components
+import FeaturedHero from '@/components/blog/editorial/FeaturedHero';
+import TopStories from '@/components/blog/editorial/TopStories';
+import TrendingSidebar from '@/components/blog/editorial/TrendingSidebar';
+import CategorySection from '@/components/blog/editorial/CategorySection';
+import EditorPicks from '@/components/blog/editorial/EditorPicks';
+import LatestBlogsGrid from '@/components/blog/editorial/LatestBlogsGrid';
+
+function getCategoryColor(categories, categoryName) {
+  const category = categories.find((item) => item.name === categoryName);
+  return category?.color || '#6366f1';
+}
+
 function BlogContent() {
-  const searchParams = useSearchParams();
-  const initialCategory = searchParams.get('category') || 'all';
-  
   const [blogs, setBlogs] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [filteredBlogs, setFilteredBlogs] = useState([]);
-  const [activeFilter, setActiveFilter] = useState(initialCategory);
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const [activeFilter, setActiveFilter] = useState('all');
+  const [query, setQuery] = useState('');
+  const [sortBy, setSortBy] = useState('newest');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const categoryFromUrl = searchParams.get('category');
-    if (categoryFromUrl) {
-      setActiveFilter(categoryFromUrl);
-    }
-  }, [searchParams]);
+    const params = new URLSearchParams(window.location.search);
+    const categoryFromUrl = params.get('category');
+    if (categoryFromUrl) setActiveFilter(categoryFromUrl);
+  }, []);
 
   useEffect(() => {
+    const controller = new AbortController();
+
     async function fetchData() {
-      setLoading(true);
       try {
-        const categoryParam = activeFilter !== 'all' ? `&category=${encodeURIComponent(activeFilter)}` : '';
-        const [blogsRes, categoriesRes] = await Promise.all([
-          fetch(`/api/blogs?published=true${categoryParam}`),
-          fetch('/api/categories')
+        setLoading(true);
+        const [blogsResponse, categoriesResponse] = await Promise.all([
+          fetch('/api/blogs?published=true&limit=300', {
+            signal: controller.signal,
+            cache: 'no-store',
+          }),
+          fetch('/api/categories', {
+            signal: controller.signal,
+            cache: 'no-store',
+          }),
         ]);
-        const blogsData = await blogsRes.json();
-        const categoriesData = await categoriesRes.json();
-        
-        const blogsArray = Array.isArray(blogsData) ? blogsData : (blogsData.blogs || []);
-        
-        setBlogs(blogsArray);
-        setFilteredBlogs(blogsArray);
+
+        const blogsData = await blogsResponse.json();
+        const categoriesData = await categoriesResponse.json();
+
+        const blogRows = Array.isArray(blogsData) ? blogsData : blogsData.blogs || [];
+        setBlogs(blogRows);
         setCategories(Array.isArray(categoriesData) ? categoriesData : []);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        if (error.name !== 'AbortError') {
+          console.error('Failed to load blog content:', error);
+        }
       } finally {
         setLoading(false);
       }
     }
+
     fetchData();
-  }, [activeFilter]);
+    return () => controller.abort();
+  }, []);
 
-  useEffect(() => {
-    if (activeFilter === 'all') {
-      setFilteredBlogs(blogs);
-    } else {
-      setFilteredBlogs(blogs.filter(blog => 
-        blog.category.toLowerCase() === activeFilter.toLowerCase()
-      ));
+  const topLevelCategories = useMemo(
+    () => categories.filter((item) => !item.parent).map((item) => item.name),
+    [categories]
+  );
+
+  // ─── "All Posts" editorial data ───
+  const featuredBlog = useMemo(
+    () => [...blogs].sort((a, b) => (b.views || 0) - (a.views || 0))[0],
+    [blogs]
+  );
+
+  const topStories = useMemo(
+    () => [...blogs]
+      .filter(b => b._id !== featuredBlog?._id)
+      .sort((a, b) => (b.views || 0) - (a.views || 0))
+      .slice(0, 4),
+    [blogs, featuredBlog]
+  );
+
+  const trendingBlogs = useMemo(
+    () => [...blogs]
+      .sort((a, b) => (b.views || 0) - (a.views || 0))
+      .slice(0, 5),
+    [blogs]
+  );
+
+  const recentBlogs = useMemo(
+    () => [...blogs]
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .slice(0, 5),
+    [blogs]
+  );
+
+  const editorPicks = useMemo(
+    () => [...blogs]
+      .filter(b => b.views > 100)
+      .sort((a, b) => 0.5 - Math.random())
+      .slice(0, 3),
+    [blogs]
+  );
+
+  const popularTags = useMemo(() => {
+    const tags = blogs.flatMap(b => b.tags || []);
+    const counts = tags.reduce((acc, tag) => {
+      acc[tag] = (acc[tag] || 0) + 1;
+      return acc;
+    }, {});
+    return Object.keys(counts)
+      .sort((a, b) => counts[b] - counts[a])
+      .slice(0, 10);
+  }, [blogs]);
+
+  // ─── Category-specific editorial data (Issues 7, 8, 9) ───
+  const categoryBlogs = useMemo(() => {
+    if (activeFilter === 'all' || query.trim()) return [];
+    return blogs.filter(b => b.category?.toLowerCase() === activeFilter.toLowerCase());
+  }, [activeFilter, blogs, query]);
+
+  const categoryFeatured = useMemo(
+    () => categoryBlogs.length ? [...categoryBlogs].sort((a, b) => (b.views || 0) - (a.views || 0))[0] : null,
+    [categoryBlogs]
+  );
+
+  const categoryTrending = useMemo(
+    () => [...categoryBlogs]
+      .filter(b => b._id !== categoryFeatured?._id)
+      .sort((a, b) => (b.views || 0) - (a.views || 0))
+      .slice(0, 5),
+    [categoryBlogs, categoryFeatured]
+  );
+
+  const categoryLatest = useMemo(
+    () => [...categoryBlogs]
+      .filter(b => b._id !== categoryFeatured?._id && !categoryTrending.some(t => t._id === b._id))
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .slice(0, 6),
+    [categoryBlogs, categoryFeatured, categoryTrending]
+  );
+
+  // ─── Search/filter view data ───
+  const filteredBlogs = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+    const rows = blogs.filter((blog) => {
+      const matchesCategory =
+        activeFilter === 'all' || blog.category?.toLowerCase() === activeFilter.toLowerCase();
+      const matchesQuery =
+        !normalizedQuery ||
+        blog.title?.toLowerCase().includes(normalizedQuery) ||
+        blog.excerpt?.toLowerCase().includes(normalizedQuery) ||
+        blog.tags?.some((tag) => String(tag).toLowerCase().includes(normalizedQuery));
+      return matchesCategory && matchesQuery;
+    });
+
+    if (sortBy === 'popular') {
+      return rows.sort((left, right) => (right.views || 0) - (left.views || 0));
     }
-  }, [activeFilter, blogs]);
 
-  const getCategoryColor = (categoryName) => {
-    const category = categories.find(c => c.name === categoryName);
-    return category?.color || '#6366f1';
-  };
+    return rows.sort((left, right) => {
+      const leftDate = new Date(left.createdAt || 0).getTime();
+      const rightDate = new Date(right.createdAt || 0).getTime();
+      return rightDate - leftDate;
+    });
+  }, [activeFilter, blogs, query, sortBy]);
 
-  const topLevelCategories = categories
-    .filter(cat => !cat.parent)
-    .map(cat => cat.name);
-  
-  const categoryList = ['all', ...topLevelCategories];
-  
-  const featuredBlogs = blogs.slice(0, 4);
+  const isEditorialView = activeFilter === 'all' && !query.trim();
+  const isCategoryEditorialView = activeFilter !== 'all' && !query.trim();
 
-  useEffect(() => {
-    if (featuredBlogs.length === 0) return;
-    const timer = setInterval(() => {
-      setCurrentSlide(prev => (prev + 1) % featuredBlogs.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, [featuredBlogs.length]);
-
-  const handleFilterClick = (category) => {
+  function handleFilter(category) {
     setActiveFilter(category);
     const url = category === 'all' ? '/blog' : `/blog?category=${encodeURIComponent(category)}`;
     window.history.pushState({}, '', url);
-  };
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function clearFilters() {
+    setActiveFilter('all');
+    setQuery('');
+    window.history.pushState({}, '', '/blog');
+  }
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
-        <Navigation />
-        <div className="max-w-7xl mx-auto px-4 py-16 text-center">
-          <p className="text-secondary">Loading...</p>
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50">
+        <div className="flex items-center justify-center min-h-[70vh]">
+          <div className="flex flex-col items-center gap-6">
+            <div className="relative">
+              <div className="h-16 w-16 animate-spin rounded-full border-4 border-slate-100 border-t-orange-500" />
+              <div className="absolute inset-0 h-16 w-16 animate-pulse rounded-full bg-orange-100/30" />
+            </div>
+            <div className="text-center space-y-1">
+              <p className="text-sm font-black text-slate-800 uppercase tracking-[0.3em]">Loading</p>
+              <p className="text-xs font-medium text-slate-400 uppercase tracking-wider">Assembling Stories...</p>
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-white">
+      {/* Main Content */}
+      <main className="mx-auto max-w-7xl px-4 py-6 sm:py-8 lg:py-12 lg:px-8">
+        {isEditorialView ? (
+          /* ─── ALL POSTS EDITORIAL VIEW ─── */
+          <div className="space-y-10 lg:space-y-14">
+            {/* Section 1: Featured Hero */}
+            <section aria-label="Featured article">
+              <FeaturedHero
+                blog={featuredBlog}
+                categoryColor={getCategoryColor(categories, featuredBlog?.category)}
+              />
+            </section>
 
-      {/* Hero Section with Carousel */}
-      <section className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white overflow-hidden">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDM0djItSDI0di0yaDEyek0zNiA0NHYySDI0di0yaDEyeiIvPjwvZz48L2c+PC9zdmc+')] opacity-50"></div>
-        
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-            {/* Left - Text Content */}
-            <div>
-              <span className="inline-block px-4 py-1.5 bg-orange-500/20 border border-orange-500/30 rounded-full text-orange-400 text-sm font-medium mb-6">
-                Welcome to My Blog
-              </span>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-                Insights & Perspectives on <span className="text-orange-500">Technology</span>, Design & Business
-              </h1>
-              <p className="text-lg md:text-xl text-slate-300 mb-8 max-w-xl">
-                Explore in-depth articles, tutorials, and guides on web development, AI, design principles, and entrepreneurship.
-              </p>
-              <div className="flex flex-wrap gap-4">
-                <a href="#blogs" className="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-colors">
-                  Browse Articles
-                </a>
+            {/* Section 2: Top Stories & Sidebar */}
+            <div className="grid grid-cols-1 gap-8 lg:gap-12 lg:grid-cols-12">
+              {/* Main Content: 8 Columns */}
+              <div className="lg:col-span-8 space-y-10 lg:space-y-14">
+                <TopStories
+                  blogs={topStories}
+                  getCategoryColor={(cat) => getCategoryColor(categories, cat)}
+                />
+
+                <LatestBlogsGrid
+                  blogs={[...blogs]
+                    .filter(b => b._id !== featuredBlog?._id && !topStories.some(t => t._id === b._id))
+                    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                    .slice(0, 6)
+                  }
+                  title="Latest Articles"
+                />
+
+                <EditorPicks blogs={editorPicks} />
               </div>
+
+              {/* Sidebar: 4 Columns */}
+              <aside className="lg:col-span-4">
+                <div className="lg:sticky lg:top-28 space-y-8">
+                  <TrendingSidebar
+                    trendingBlogs={trendingBlogs}
+                    recentBlogs={recentBlogs}
+                    popularTags={popularTags}
+                  />
+                </div>
+              </aside>
             </div>
 
-            {/* Right - Carousel */}
-            <div className="relative h-80 md:h-96 lg:h-[500px]">
-              {featuredBlogs.length > 0 ? (
-                <div className="relative w-full h-full overflow-hidden rounded-2xl shadow-2xl">
-                  <div 
-                    className="flex h-full transition-transform duration-500 ease-out"
-                    style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-                  >
-                    {featuredBlogs.map((blog) => {
-                      const categoryColor = getCategoryColor(blog.category);
-                      return (
-                        <div key={blog._id} className="w-full h-full flex-shrink-0 relative">
-                          <Image
-                            src={blog.featuredImage || '/placeholder-image.svg'}
-                            alt={blog.title}
-                            fill
-                            sizes="(max-width: 1024px) 100vw, 50vw"
-                            className="object-cover"
-                            priority={currentSlide === featuredBlogs.indexOf(blog)}
-                            loading={currentSlide === featuredBlogs.indexOf(blog) ? 'eager' : 'lazy'}
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/50 to-transparent"></div>
-                          <div className="absolute top-4 left-4">
-                            <span 
-                              className="px-3 py-1 rounded-full text-sm font-medium text-white"
-                              style={{ backgroundColor: categoryColor }}
-                            >
-                              {blog.category}
-                            </span>
-                          </div>
-                          <div className="absolute bottom-0 left-0 right-0 p-6">
-                            <h3 className="text-xl font-bold text-white mb-2 line-clamp-2">
-                              {blog.title}
-                            </h3>
-                            <Link 
-                              href={`/blog/${blog.category.toLowerCase().replace(/\s+/g, '-').replace(/[^\w\-]+/g, '')}/${blog.subcategory.toLowerCase().replace(/\s+/g, '-').replace(/[^\w\-]+/g, '')}/${blog.slug}`}
-                              className="text-orange-400 font-medium hover:underline text-sm"
-                            >
-                              Read More →
-                            </Link>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  
-                  {/* Navigation Arrows */}
-                  {featuredBlogs.length > 1 && (
-                    <>
-                      <button 
-                        type="button"
-                        onClick={() => setCurrentSlide(prev => (prev - 1 + featuredBlogs.length) % featuredBlogs.length)}
-                        aria-label="Previous featured post"
-                        className="absolute left-3 top-1/2 -translate-y-1/2 min-h-[44px] min-w-[44px] rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-sm transition-colors z-10 flex items-center justify-center"
-                      >
-                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                        </svg>
-                      </button>
-                      <button 
-                        type="button"
-                        onClick={() => setCurrentSlide(prev => (prev + 1) % featuredBlogs.length)}
-                        aria-label="Next featured post"
-                        className="absolute right-3 top-1/2 -translate-y-1/2 min-h-[44px] min-w-[44px] rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-sm transition-colors z-10 flex items-center justify-center"
-                      >
-                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </button>
-                    </>
-                  )}
-
-                  {/* Dots */}
-                  {featuredBlogs.length > 1 && (
-                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-                      {featuredBlogs.map((_, index) => (
-                        <button
-                          type="button"
-                          key={index}
-                          onClick={() => setCurrentSlide(index)}
-                          aria-label={`Go to featured slide ${index + 1}`}
-                          className={`h-2 rounded-full transition-all ${
-                            index === currentSlide ? 'bg-orange-500 w-8' : 'bg-white/40 w-2'
-                          }`}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div className="w-full h-full bg-slate-800 rounded-2xl flex items-center justify-center">
-                  <p className="text-slate-400">No featured posts yet</p>
-                </div>
-              )}
-            </div>
+            {/* Section 3: Category Sections */}
+            <section className="border-t border-slate-200 pt-10 lg:pt-14 space-y-10 lg:space-y-14">
+              <div className="text-center">
+                <h2 className="text-2xl font-black tracking-tight text-slate-900 uppercase">Browse by Category</h2>
+                <p className="mt-2 text-sm text-slate-500 font-medium">Explore articles organized by topic</p>
+              </div>
+              {topLevelCategories.map((category) => (
+                <CategorySection
+                  key={category}
+                  category={category}
+                  blogs={blogs.filter(b => b.category === category)}
+                  categoryColor={getCategoryColor(categories, category)}
+                />
+              ))}
+            </section>
           </div>
-        </div>
-      </section>
+        ) : isCategoryEditorialView ? (
+          /* ─── CATEGORY EDITORIAL VIEW (Issues 7, 8, 9) ─── */
+          <div className="space-y-10 lg:space-y-14">
+            {/* Category Header */}
+            <header className="border-b border-slate-200 pb-6">
+              <p className="text-xs font-bold text-orange-600 uppercase tracking-widest mb-1">Category</p>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-slate-900">
+                {activeFilter}
+              </h1>
+              <p className="mt-2 text-sm text-slate-500 font-medium">
+                {categoryBlogs.length} {categoryBlogs.length === 1 ? 'article' : 'articles'} in this category
+              </p>
+            </header>
 
-      {/* Blog Listing */}
-      <div id="blogs" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <nav className="flex items-center gap-2 text-xs text-secondary mb-8">
-          <Link href="/" className="hover:text-primary transition-colors">Home</Link>
-          <span>/</span>
-          <span className="text-foreground">Blog</span>
-        </nav>
+            {/* Featured Article for this category (Issue 8) */}
+            {categoryFeatured && (
+              <section aria-label="Featured article">
+                <FeaturedHero
+                  blog={categoryFeatured}
+                  categoryColor={getCategoryColor(categories, activeFilter)}
+                />
+              </section>
+            )}
 
-        {/* Filter Buttons */}
-        <div className="flex flex-wrap gap-2 mb-8">
-          {categoryList.map(category => (
-            <button
-              type="button"
-              key={category}
-              onClick={() => handleFilterClick(category)}
-              className={`px-4 py-2 min-h-[44px] rounded-full text-sm font-medium transition-all ${
-                activeFilter === category
-                  ? 'bg-orange-500 text-white'
-                  : 'bg-slate-100 text-secondary hover:bg-slate-200'
-              }`}
-            >
-              {category === 'all' ? 'All Posts' : category}
-            </button>
-          ))}
-        </div>
+            <div className="grid grid-cols-1 gap-8 lg:gap-12 lg:grid-cols-12">
+              <div className="lg:col-span-8 space-y-10 lg:space-y-14">
+                {/* Trending Now for this category (Issue 9) */}
+                {categoryTrending.length > 0 && (
+                  <TopStories
+                    blogs={categoryTrending.slice(0, 4)}
+                    getCategoryColor={(cat) => getCategoryColor(categories, cat)}
+                  />
+                )}
 
-        {Object.keys(filteredBlogs.reduce((acc, blog) => {
-          if (!acc[blog.category]) acc[blog.category] = [];
-          acc[blog.category].push(blog);
-          return acc;
-        }, {})).length === 0 ? (
-          <div className="text-center py-16">
-            <p className="text-secondary">No blogs found for this category.</p>
+                {/* Latest Articles for this category (Issue 7) */}
+                {categoryLatest.length > 0 && (
+                  <LatestBlogsGrid
+                    blogs={categoryLatest}
+                    title="Latest Articles"
+                  />
+                )}
+              </div>
+
+              {/* Sidebar */}
+              <aside className="lg:col-span-4">
+                <div className="lg:sticky lg:top-28 space-y-8">
+                  <TrendingSidebar
+                    trendingBlogs={categoryTrending}
+                    recentBlogs={categoryBlogs
+                      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                      .slice(0, 5)}
+                    popularTags={
+                      [...new Set(categoryBlogs.flatMap(b => b.tags || []))].slice(0, 10)
+                    }
+                  />
+                </div>
+              </aside>
+            </div>
+
+            {/* All remaining articles in grid */}
+            {categoryBlogs.length > (1 + categoryTrending.length + categoryLatest.length) && (
+              <section className="border-t border-slate-200 pt-8">
+                <h2 className="text-lg font-bold tracking-tight text-slate-900 uppercase mb-5">All {activeFilter} Articles</h2>
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                  {categoryBlogs
+                    .filter(b =>
+                      b._id !== categoryFeatured?._id &&
+                      !categoryTrending.some(t => t._id === b._id) &&
+                      !categoryLatest.some(l => l._id === b._id)
+                    )
+                    .map((blog) => (
+                      <BlogCard
+                        key={blog._id}
+                        blog={blog}
+                        categoryColor={getCategoryColor(categories, blog.category)}
+                      />
+                    ))}
+                </div>
+              </section>
+            )}
           </div>
         ) : (
-          Object.entries(filteredBlogs.reduce((acc, blog) => {
-            if (!acc[blog.category]) acc[blog.category] = [];
-            acc[blog.category].push(blog);
-            return acc;
-          }, {})).map(([category, categoryBlogs]) => {
-            const categoryColor = getCategoryColor(category);
-            return (
-              <div key={category} className="mb-12">
-                <h2 
-                  className="text-xl font-semibold mb-6 capitalize border-l-4 pl-4"
-                  style={{ borderColor: categoryColor, color: categoryColor }}
-                >
-                  {category}
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {categoryBlogs.map(blog => (
-                    <div key={blog._id}>
-                      <BlogCard blog={blog} categoryColor={categoryColor} />
-                    </div>
-                  ))}
+          /* ─── SEARCH/FILTER VIEW ─── */
+          <div className="space-y-8">
+            <header className="border-b border-slate-200 pb-6">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <p className="text-xs font-bold text-orange-600 uppercase tracking-widest mb-1">
+                    Search Results
+                  </p>
+                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-slate-900">
+                    &quot;{query}&quot;
+                  </h1>
+                  <p className="mt-2 text-sm text-slate-500 font-medium">
+                    {filteredBlogs.length} {filteredBlogs.length === 1 ? 'article' : 'articles'} found
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold uppercase tracking-wide outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/10 transition-all"
+                  >
+                    <option value="newest">Newest</option>
+                    <option value="popular">Popular</option>
+                  </select>
+                  <button
+                    onClick={clearFilters}
+                    className="flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-xs font-semibold uppercase tracking-wide text-white transition-all hover:bg-orange-600"
+                  >
+                    <FiX className="h-4 w-4" /> Clear
+                  </button>
                 </div>
               </div>
-            );
-          })
-        )}
-      </div>
+            </header>
 
-      <Footer />
+            {filteredBlogs.length === 0 ? (
+              <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50/50 py-20 text-center">
+                <div className="rounded-full bg-orange-100 p-6">
+                  <FiSearch className="h-10 w-10 text-orange-500" />
+                </div>
+                <h3 className="mt-6 text-xl font-bold text-slate-900">No articles found</h3>
+                <p className="mt-2 max-w-sm text-slate-500 font-medium text-sm">
+                  We couldn&apos;t find any articles matching your search. Try different keywords or browse all articles.
+                </p>
+                <button
+                  onClick={clearFilters}
+                  className="mt-6 rounded-lg bg-orange-600 px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-orange-700"
+                >
+                  View All Articles
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {filteredBlogs.map((blog) => (
+                  <BlogCard
+                    key={blog._id}
+                    blog={blog}
+                    categoryColor={getCategoryColor(categories, blog.category)}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </main>
     </div>
   );
 }
 
 function BlogPageFallback() {
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
-      <div className="max-w-7xl mx-auto px-4 py-16 text-center">
-        <p className="text-secondary">Loading...</p>
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50">
+      <div className="flex min-h-[70vh] items-center justify-center">
+        <div className="flex flex-col items-center gap-6">
+          <div className="relative">
+            <div className="h-16 w-16 animate-spin rounded-full border-4 border-slate-100 border-t-orange-500" />
+            <div className="absolute inset-0 h-16 w-16 animate-pulse rounded-full bg-orange-100/30" />
+          </div>
+          <div className="text-center space-y-1">
+            <p className="text-sm font-black text-slate-700 uppercase tracking-[0.3em]">Loading</p>
+            <p className="text-xs font-medium text-slate-400 uppercase tracking-wider">Please wait...</p>
+          </div>
+        </div>
       </div>
-      <Footer />
     </div>
   );
 }

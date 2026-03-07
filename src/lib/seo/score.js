@@ -2,18 +2,10 @@ const HEADING_REGEX = /<h[1-6][^>]*>/gi;
 const WORD_REGEX = /\S+/g;
 
 export function stripHtml(input = '') {
-  if (!input) return '';
-  
   return input
     .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, ' ')
     .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, ' ')
-    .replace(/<noscript[^>]*>[\s\S]*?<\/noscript>/gi, ' ')
     .replace(/<[^>]+>/g, ' ')
-    .replace(/Skip to content/gi, ' ')
-    .replace(/\{"props":[\s\S]*?\}/g, ' ')
-    .replace(/\{"resolvedServerColorMode"[\s\S]*?\}/g, ' ')
-    .replace(/\{"should_use_dotcom_links"[\s\S]*?\}/g, ' ')
-    .replace(/Navigation Menu Toggle navigation/gi, ' ')
     .replace(/\s+/g, ' ')
     .trim();
 }

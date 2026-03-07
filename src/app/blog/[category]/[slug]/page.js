@@ -1,0 +1,411 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { connectDB } from '@/lib/mongodb';
+import Blog from '@/models/Blog';
+import ViewTracker from '@/components/blog/ViewTracker';
+import TableOfContents from '@/components/blog/TableOfContents';
+import { fixUnsplashUrl, slugify } from '@/lib/utils';
+
+export const revalidate = 3600;
+
+function escapeHtml(text = '') {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function stripHtml(text = '') {
+  return text.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function formatInlineMarkdown(text = '') {
+  let formatted = escapeHtml(text);
+  formatted = formatted.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+  formatted = formatted.replace(/`([^`]+)`/g, '<code>$1</code>');
+  formatted = formatted.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  formatted = formatted.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+  return formatted;
+}
+
+function formatPlainTextToHtml(content = '') {
+  const normalized = content.replace(/\r\n/g, '\n').trim();
+  if (!normalized) return '';
+
+  const lines = normalized.split('\n');
+  const html = [];
+  let inUl = false;
+  let inOl = false;
+  let inPre = false;
+  const codeBuffer = [];
+
+  const closeLists = () => {
+    if (inUl) { html.push('</ul>'); inUl = false; }
+    if (inOl) { html.push('</ol>'); inOl = false; }
+  };
+
+  for (const rawLine of lines) {
+    const line = rawLine.trimEnd();
+    const trimmed = line.trim();
+
+    if (!trimmed) {
+      closeLists();
+      if (inPre) codeBuffer.push('');
+      continue;
+    }
+
+    if (/^```/.test(trimmed)) {
+      closeLists();
+      if (!inPre) {
+        inPre = true;
+        codeBuffer.length = 0;
+      } else {
+        html.push(`<pre><code>${escapeHtml(codeBuffer.join('\n'))}</code></pre>`);
+        inPre = false;
+      }
+      continue;
+    }
+
+    if (inPre) {
+      codeBuffer.push(line);
+      continue;
+    }
+
+    const ulMatch = trimmed.match(/^[-*]\s+(.*)$/);
+    if (ulMatch) {
+      if (!inUl) {
+        if (inOl) { html.push('</ol>'); inOl = false; }
+        html.push('<ul>');
+        inUl = true;
+      }
+      html.push(`<li>${escapeHtml(ulMatch[1])}</li>`);
+      continue;
+    }
+
+    const olMatch = trimmed.match(/^\d+\.\s+(.*)$/);
+    if (olMatch) {
+      if (!inOl) {
+        if (inUl) { html.push('</ul>'); inUl = false; }
+        html.push('<ol>');
+        inOl = true;
+      }
+      html.push(`<li>${escapeHtml(olMatch[1])}</li>`);
+      continue;
+    }
+
+    closeLists();
+
+    const headingMatch = trimmed.match(/^(#{1,6})\s+(.*)$/);
+    if (headingMatch) {
+      const level = headingMatch[1].length;
+      const headingText = formatInlineMarkdown(headingMatch[2]);
+      html.push(`<h${level}>${headingText}</h${level}>`);
+      continue;
+    }
+
+    const blockquoteMatch = trimmed.match(/^>\s?(.*)$/);
+    if (blockquoteMatch) {
+      html.push(`<blockquote><p>${formatInlineMarkdown(blockquoteMatch[1])}</p></blockquote>`);
+      continue;
+    }
+
+    html.push(`<p>${formatInlineMarkdown(trimmed)}</p>`);
+  }
+
+  closeLists();
+  if (inPre) {
+    html.push(`<pre><code>${escapeHtml(codeBuffer.join('\n'))}</code></pre>`);
+  }
+
+  return html.join('\n');
+}
+
+/**
+ * Strip wrapping ```html ... ``` code fences from blog content (Issue 10).
+ * Some blogs have content wrapped in code fences which causes raw HTML display.
+ */
+function stripCodeFenceWrappers(content = '') {
+  let c = content.trim();
+  // Remove leading ```html or ``` and trailing ```
+  c = c.replace(/^```(?:html)?\s*\n?/i, '');
+  c = c.replace(/\n?```\s*$/i, '');
+  return c.trim();
+}
+
+function getRenderableContent(content = '') {
+  let cleaned = stripCodeFenceWrappers(content);
+  const looksLikeHtml = /<([a-z][\w-]*)(\s[^>]*)?>/.test(cleaned);
+  if (looksLikeHtml) return cleaned;
+  return formatPlainTextToHtml(cleaned);
+}
+
+function addHeadingIds(htmlContent = '') {
+  const headings = [];
+  const html = htmlContent.replace(/<h([1-6])([^>]*)>([\s\S]*?)<\/h\1>/gi, (_, level, attrs, inner) => {
+    const text = stripHtml(inner);
+    if (!text) return `<h${level}${attrs}>${inner}</h${level}>`;
+    const id = `${slugify(text)}-${headings.length + 1}`;
+    headings.push({ id, level: Number(level), text });
+    return `<h${level}${attrs} id="${id}">${inner}</h${level}>`;
+  });
+  return { html, headings };
+}
+
+/**
+ * Inject section images after H2 headings (Issue 1).
+ * Uses the blog's sectionImages array, mapping each to an H2 in order.
+ */
+function injectSectionImages(htmlContent = '', sectionImages = []) {
+  if (!sectionImages || sectionImages.length === 0) return htmlContent;
+  let imageIndex = 0;
+  return htmlContent.replace(/<\/h2>/gi, (match) => {
+    if (imageIndex < sectionImages.length) {
+      const imgUrl = sectionImages[imageIndex];
+      imageIndex++;
+      if (imgUrl) {
+        return `${match}\n<figure class="blog-section-image my-6"><img src="${imgUrl}" alt="Section illustration" class="w-full rounded-xl" loading="lazy" />\n</figure>`;
+      }
+    }
+    return match;
+  });
+}
+
+function calculateReadingTime(content = '') {
+  const plain = stripHtml(content);
+  const words = plain ? plain.split(/\s+/).filter(Boolean).length : 0;
+  return Math.max(1, Math.round(words / 220));
+}
+
+export async function generateMetadata({ params }) {
+  try {
+    await connectDB();
+    const blog = await Blog.findOne({ slug: params.slug }).lean();
+
+    if (!blog) {
+      return {
+        title: 'Blog Post Not Found',
+        description: 'The requested blog post could not be found.',
+      };
+    }
+
+    return {
+      title: blog.seoTitle || blog.title,
+      description: blog.seoDescription || blog.excerpt,
+      keywords: blog.keywords || blog.tags || [],
+      openGraph: {
+        title: blog.seoTitle || blog.title,
+        description: blog.seoDescription || blog.excerpt,
+        type: 'article',
+        publishedTime: blog.createdAt,
+        images: blog.ogImage
+          ? [{ url: blog.ogImage }]
+          : blog.featuredImage
+          ? [{ url: blog.featuredImage }]
+          : [],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: blog.seoTitle || blog.title,
+        description: blog.seoDescription || blog.excerpt,
+        images: blog.ogImage
+          ? [blog.ogImage]
+          : blog.featuredImage
+          ? [blog.featuredImage]
+          : [],
+      },
+    };
+  } catch {
+    return {
+      title: 'Blog Post',
+      description: 'Read our latest blog posts.',
+    };
+  }
+}
+
+export default async function BlogPostPage({ params }) {
+  try {
+    await connectDB();
+    const blog = await Blog.findOne({ slug: params.slug }).lean();
+
+    if (!blog) {
+      return (
+        <div className="min-h-screen bg-background">
+          <div className="mx-auto max-w-4xl px-4 py-16 text-center">
+            <h1 className="text-2xl font-bold text-slate-900">Blog not found</h1>
+            <p className="mt-2 text-sm text-slate-600">The article you are looking for does not exist.</p>
+            <Link href="/blog" className="mt-4 inline-block text-orange-600 hover:underline">
+              Back to blog
+            </Link>
+          </div>
+        </div>
+      );
+    }
+
+    const relatedBlogsRaw = await Blog.find({
+      category: blog.category,
+      _id: { $ne: blog._id },
+      published: true,
+    })
+      .limit(3)
+      .sort({ createdAt: -1 })
+      .lean();
+
+    let rawContent = getRenderableContent(blog.content || '');
+    // Inject section images after H2 headings (Issue 1)
+    rawContent = injectSectionImages(rawContent, blog.sectionImages || []);
+    const { html: renderableContent, headings } = addHeadingIds(rawContent);
+    const readingTime = calculateReadingTime(renderableContent);
+
+    const categorySlug = slugify(blog.category);
+
+    return (
+      <div className="min-h-screen bg-background">
+        <ViewTracker slug={params.slug} />
+
+        <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+          <nav className="mb-5 flex flex-wrap items-center gap-2 text-xs text-slate-500">
+            <Link href="/blog" className="hover:text-slate-700">Blog</Link>
+            <span>/</span>
+            <Link href={`/blog/${categorySlug}`} className="capitalize hover:text-slate-700">
+              {blog.category}
+            </Link>
+            <span>/</span>
+            <span className="max-w-[320px] truncate text-slate-700">{blog.title}</span>
+          </nav>
+
+          <header className="rounded-xl border border-slate-200 bg-white p-5">
+            <div className="mb-3 flex flex-wrap gap-2">
+              <Link
+                href={`/blog?category=${encodeURIComponent(blog.category)}`}
+                className="rounded-full bg-orange-100 px-3 py-1 text-xs font-medium text-orange-700 hover:bg-orange-200 transition-colors"
+              >
+                {blog.category}
+              </Link>
+              {blog.tags?.slice(0, 3).map((tag) => (
+                <Link
+                  key={tag}
+                  href={`/blog/tag/${encodeURIComponent(tag)}`}
+                  className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 hover:bg-slate-200 transition-colors"
+                >
+                  #{tag}
+                </Link>
+              ))}
+            </div>
+            <h1 className="text-3xl font-bold leading-tight tracking-tight text-slate-900 sm:text-4xl">
+              {blog.title}
+            </h1>
+            <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-slate-500">
+              <span>{new Date(blog.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+              <span>•</span>
+              <span>{readingTime} min read</span>
+              <span>•</span>
+              <span>{(blog.views || 0).toLocaleString()} views</span>
+            </div>
+          </header>
+
+          {blog.featuredImage ? (
+            <div className="relative mt-6 h-[240px] overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 sm:h-[340px] lg:h-[440px]">
+              <Image
+                src={fixUnsplashUrl(blog.featuredImage)}
+                alt={blog.title}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1280px) 90vw, 1200px"
+                className="object-cover"
+                priority
+              />
+            </div>
+          ) : null}
+
+          <section className="mt-8 grid grid-cols-1 gap-8 xl:grid-cols-[1fr_280px]">
+            <article className="min-w-0">
+              <div
+                className="blog-content leading-relaxed text-slate-700"
+                dangerouslySetInnerHTML={{ __html: renderableContent }}
+              />
+
+              {blog.tags?.length ? (
+                <div className="mt-8 flex flex-wrap gap-2 border-t border-slate-200 pt-6">
+                  {blog.tags.map((tag, index) => (
+                    <Link
+                      key={`${tag}-${index}`}
+                      href={`/blog/tag/${encodeURIComponent(tag)}`}
+                      className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-700 hover:bg-orange-50 hover:text-orange-600 transition-colors"
+                    >
+                      #{tag}
+                    </Link>
+                  ))}
+                </div>
+              ) : null}
+
+              {/* FAQ Schema */}
+              {blog.faq?.length ? (
+                <div className="mt-8 border-t border-slate-200 pt-6">
+                  <h2 className="text-xl font-bold text-slate-900 mb-4">Frequently Asked Questions</h2>
+                  <div className="space-y-4">
+                    {blog.faq.map((item, i) => (
+                      <details key={i} className="rounded-lg border border-slate-200 bg-white">
+                        <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-slate-900 hover:text-orange-600">
+                          {item.question}
+                        </summary>
+                        <p className="px-4 pb-3 text-sm text-slate-600">{item.answer}</p>
+                      </details>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+            </article>
+
+            <aside className="space-y-4 xl:sticky xl:top-24 xl:self-start">
+              <TableOfContents headings={headings} />
+            </aside>
+          </section>
+
+          {relatedBlogsRaw?.length ? (
+            <section className="mt-12">
+              <h2 className="mb-4 text-xl font-bold text-slate-900">Related Articles</h2>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {relatedBlogsRaw.map((relatedBlog) => (
+                  <Link
+                    key={relatedBlog._id}
+                    href={`/blog/${slugify(relatedBlog.category)}/${relatedBlog.slug}`}
+                    className="group block overflow-hidden rounded-xl border border-slate-200 bg-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
+                  >
+                    <div className="relative h-40 bg-slate-100">
+                      <Image
+                        src={fixUnsplashUrl(relatedBlog.featuredImage)}
+                        alt={relatedBlog.title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                        className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                      />
+                    </div>
+                    <div className="p-3">
+                      <h3 className="line-clamp-2 text-sm font-semibold text-slate-900 group-hover:text-orange-600">
+                        {relatedBlog.title}
+                      </h3>
+                      <p className="mt-1 text-xs text-slate-500">
+                        {new Date(relatedBlog.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      </p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          ) : null}
+        </main>
+      </div>
+    );
+  } catch (error) {
+    console.error('Error loading blog:', error);
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="mx-auto max-w-4xl px-4 py-16 text-center">
+          <h1 className="text-2xl font-bold text-slate-900">Error loading article</h1>
+          <p className="mt-2 text-sm text-slate-600">Something went wrong. Please try again later.</p>
+        </div>
+      </div>
+    );
+  }
+}

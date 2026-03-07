@@ -1,3 +1,7 @@
+import BlogNavigation from '@/components/blog/BlogNavigation';
+import Footer from '@/components/Footer';
+import { Suspense } from 'react';
+
 export const metadata = {
   title: 'Blog | Tech, Design & Business Insights',
   description: 'Explore insightful articles on technology, web development, AI, UI/UX design, and business. Get the latest tips, tutorials, and trends from industry experts.',
@@ -24,5 +28,13 @@ export const metadata = {
 }
 
 export default function BlogLayout({ children }) {
-  return children;
+  return (
+    <>
+      <Suspense fallback={<div className="h-16 bg-white border-b border-slate-200" />}>
+        <BlogNavigation />
+      </Suspense>
+      {children}
+      <Footer />
+    </>
+  );
 }

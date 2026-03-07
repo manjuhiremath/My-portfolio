@@ -1,6 +1,6 @@
 import { v2 as cloudinary } from 'cloudinary';
 
-const cloudName = process.env.CLOUDINARY_CLOUD_NAME?.trim().toLowerCase() || '';
+const cloudName = (process.env.CLOUDINARY_CLOUD_NAME || 'dmn2neefw').trim().toLowerCase();
 
 cloudinary.config({
   cloud_name: cloudName,

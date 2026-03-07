@@ -16,10 +16,14 @@ export async function GET(req){
     
     const query = {}
     
-    if (published === 'true') {
+    // Default to published blogs for public API.
+    // Use published=all for admin-style listings.
+    if (published === 'all') {
+      // no published filter
+    } else if (published === null || published === '') {
       query.published = true
-    } else if (published === 'false') {
-      query.published = false
+    } else {
+      query.published = published === 'true'
     }
     
     if (category && category !== 'all') {
@@ -48,6 +52,7 @@ export async function GET(req){
    const total = await Blog.countDocuments(query)
    
    return Response.json({
+     success: true,
      blogs,
      pagination: {
        page,
@@ -59,7 +64,7 @@ export async function GET(req){
 
  } catch (error) {
 
-  return Response.json({error: error.message}, {status: 500})
+  return Response.json({success: false, error: error.message}, {status: 500})
 
  }
 

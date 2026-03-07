@@ -59,41 +59,8 @@ export async function POST(req) {
     });
 
     // Extract text content (for word count / readability)
-    // Create a clone to avoid affecting original headings/links extraction
-    const $content = cheerio.load($.html());
-    $content('script, style, noscript, nav, footer, header, aside, form, svg, iframe, menu, button').remove();
-    $content('.nav, .footer, .header, .sidebar, .menu, .ad, .advertisement, .social-share, .comments').remove();
-    $content('#nav, #footer, #header, #sidebar, #menu, #comments').remove();
-    $content('[role="navigation"], [role="banner"], [role="contentinfo"], [aria-hidden="true"]').remove();
-    
-    // Specifically target common "Skip to content" links that might be anywhere
-    $content('a').each((_, el) => {
-      const text = $content(el).text().toLowerCase();
-      if (text.includes('skip to content') || text.includes('skip to main')) {
-        $content(el).remove();
-      }
-    });
-
-    // Try to find the main content area first
-    let textContent = '';
-    const $main = $content('main, [role="main"], article, #content, .content, .main-content, .entry-content').first();
-    
-    if ($main.length) {
-      textContent = $main.text();
-    } else {
-      textContent = $content('body').text();
-    }
-    
-    // Clean up the text content
-    textContent = textContent
-      .replace(/Skip to content/gi, '')
-      .replace(/\{"props":[\s\S]*?\}/g, '')
-      .replace(/\{"resolvedServerColorMode"[\s\S]*?\}/g, '')
-      .replace(/\{"should_use_dotcom_links"[\s\S]*?\}/g, '')
-      .replace(/Navigation Menu Toggle navigation/gi, '')
-      .replace(/Sign in|Appearance settings/gi, '')
-      .replace(/\s+/g, ' ')
-      .trim();
+    $('script, style, noscript, nav, footer, header').remove(); // remove non-content tags
+    const textContent = $('body').text().replace(/\s+/g, ' ').trim();
 
     // Extract links
     const links = [];
