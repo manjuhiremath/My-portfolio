@@ -24,7 +24,8 @@ function calculateReadingTime(content) {
 export default function FeaturedHero({ blog, categoryColor = '#6366f1' }) {
   if (!blog) return null;
 
-  const categorySlug = slugify(blog.category);
+  const categoryName = blog.category?.name || blog.category;
+  const categorySlug = slugify(categoryName);
   const href = `/blog/${categorySlug}/${blog.slug}`;
   const imageUrl = fixUnsplashUrl(blog.featuredImage);
 
@@ -46,11 +47,11 @@ export default function FeaturedHero({ blog, categoryColor = '#6366f1' }) {
           {/* Category badge on image - Mobile */}
           <div className="absolute top-4 left-4 lg:hidden">
             <Link
-              href={`/blog?category=${encodeURIComponent(blog.category)}`}
+              href={`/blog?category=${encodeURIComponent(categoryName)}`}
               className="inline-flex items-center rounded-lg px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-white backdrop-blur-sm"
               style={{ backgroundColor: categoryColor }}
             >
-              {blog.category}
+              {categoryName}
             </Link>
           </div>
         </div>
@@ -67,11 +68,11 @@ export default function FeaturedHero({ blog, categoryColor = '#6366f1' }) {
             {/* Category badge - Desktop */}
             <div className="hidden lg:block">
               <Link
-                href={`/blog?category=${encodeURIComponent(blog.category)}`}
+                href={`/blog?category=${encodeURIComponent(categoryName)}`}
                 className="inline-flex items-center rounded-lg px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-white transition-opacity hover:opacity-90"
                 style={{ backgroundColor: categoryColor }}
               >
-                {blog.category}
+                {categoryName}
               </Link>
             </div>
 

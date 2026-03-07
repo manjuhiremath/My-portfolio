@@ -40,6 +40,7 @@ function createKeywordRankings(blogs = []) {
           articleTitle: blog.title,
           slug: blog.slug,
           views: blog.views || 0,
+          intent: keyword.length > 15 ? 'Informational' : 'Transactional',
         });
       }
     }
@@ -47,7 +48,7 @@ function createKeywordRankings(blogs = []) {
 
   return [...keywordMap.values()]
     .sort((left, right) => right.views - left.views)
-    .slice(0, 8)
+    .slice(0, 12)
     .map((item, index) => ({
       ...item,
       position: index + 1,
@@ -57,15 +58,19 @@ function createKeywordRankings(blogs = []) {
 
 function createSeoDistribution(scores = []) {
   const buckets = [
-    { key: 'Excellent', range: '80-100', count: 0 },
-    { key: 'Good', range: '60-79', count: 0 },
-    { key: 'Needs Work', range: '40-59', count: 0 },
-    { key: 'Poor', range: '0-39', count: 0 },
+    { key: 'Excellent', range: '90-100', count: 0, color: '#10b981' },
+    { key: 'Good', range: '70-89', count: 0, color: '#3b82f6' },
+    { key: 'Average', range: '50-69', count: 0, color: '#f59e0b' },
+    { key: 'Poor', range: '0-49', count: 0, color: '#ef4444' },
   ];
 
   for (const score of scores) {
-    const bucket = getSeoScoreBucket(score);
-    const target = buckets.find((item) => item.key === bucket);
+    let targetKey = 'Poor';
+    if (score >= 90) targetKey = 'Excellent';
+    else if (score >= 70) targetKey = 'Good';
+    else if (score >= 50) targetKey = 'Average';
+    
+    const target = buckets.find((item) => item.key === targetKey);
     if (target) target.count += 1;
   }
 
@@ -116,7 +121,7 @@ export async function getDashboardStats() {
     Blog.aggregate([
       {
         $match: {
-          createdAt: { $gte: new Date(Date.now() - 180 * 24 * 60 * 60 * 1000) },
+          createdAt: { $gte: new Date(Date.now() - 365 * 24 * 60 * 60 * 1000) },
         },
       },
       {
@@ -137,18 +142,18 @@ export async function getDashboardStats() {
     Blog.find()
       .sort({ updatedAt: -1 })
       .limit(18)
-      .select('title slug published createdAt updatedAt category subcategory views seoTitle seoDescription excerpt content tags keywords')
+      .select('title slug published createdAt updatedAt category views seoTitle seoDescription excerpt content tags keywords readingTime')
       .lean(),
     Blog.find({ published: true })
       .sort({ views: -1, publishedAt: -1 })
-      .limit(8)
-      .select('title slug views publishedAt category subcategory seoTitle seoDescription excerpt content tags keywords')
+      .limit(15)
+      .select('title slug views publishedAt category seoTitle seoDescription excerpt content tags keywords readingTime')
       .lean(),
     Blog.aggregate([
       { $match: { published: true } },
       { $group: { _id: '$category', count: { $sum: 1 }, views: { $sum: '$views' } } },
-      { $sort: { count: -1 } },
-      { $limit: 8 },
+      { $sort: { views: -1 } },
+      { $limit: 10 },
     ]),
     Blog.aggregate([
       {
@@ -171,29 +176,41 @@ export async function getDashboardStats() {
       .lean(),
     Blog.find({ published: true })
       .sort({ views: -1 })
-      .limit(40)
+      .limit(60)
       .select('title slug views tags keywords')
       .lean(),
   ]);
 
   const totalViews = totalViewsAggregate[0]?.totalViews || 0;
-  const recentBlogs = recentBlogsRaw.map((blog) => ({
-    ...blog,
-    seoScore: calculateBlogSeoScore(blog),
-    readabilityScore: calculateReadabilityScore(blog.content || ''),
-  }));
+  
+  // Calculate SEO metrics
+  let missingMetaCount = 0;
+  let missingImagesCount = 0;
+  let missingInternalLinksCount = 0;
+  let highSeoCount = 0;
+
+  const seoData = seoBlogs.map((blog) => {
+    const score = calculateBlogSeoScore(blog);
+    if (score >= 90) highSeoCount++;
+    if (!blog.seoDescription || blog.seoDescription.length < 50) missingMetaCount++;
+    if (!blog.content?.includes('<img')) missingImagesCount++;
+    // Simple check for internal links: looking for hrefs that start with /blog or the site domain
+    if (!blog.content?.includes('href="/') && !blog.content?.includes('href="https://manjuhiremath.in')) {
+      missingInternalLinksCount++;
+    }
+    return score;
+  });
+
+  const averageSeoScore = seoData.length
+    ? Math.round(seoData.reduce((acc, score) => acc + score, 0) / seoData.length)
+    : 0;
 
   const topArticles = topArticlesRaw.map((blog) => ({
     ...blog,
     seoScore: calculateBlogSeoScore(blog),
   }));
 
-  const seoScores = seoBlogs.map((blog) => calculateBlogSeoScore(blog));
-  const averageSeoScore = seoScores.length
-    ? Math.round(seoScores.reduce((acc, score) => acc + score, 0) / seoScores.length)
-    : 0;
-
-  const monthKeys = buildLastMonthKeys(6);
+  const monthKeys = buildLastMonthKeys(12);
   const monthMap = new Map(monthlyViewsRaw.map((item) => [item._id, item]));
   const monthlyViews = monthKeys.map((month) => {
     const source = monthMap.get(month.key);
@@ -205,9 +222,19 @@ export async function getDashboardStats() {
     };
   });
 
+  // Trend calculations (Current month vs Previous month)
+  const currentMonthViews = monthlyViews[monthlyViews.length - 1]?.views || 0;
+  const prevMonthViews = monthlyViews[monthlyViews.length - 2]?.views || 0;
+  const viewsTrend = prevMonthViews === 0 ? 100 : Math.round(((currentMonthViews - prevMonthViews) / prevMonthViews) * 100);
+
   const keywordRankings = createKeywordRankings(keywordSourceBlogs);
-  const seoScoreDistribution = createSeoDistribution(seoScores);
+  const seoScoreDistribution = createSeoDistribution(seoData);
   const dailyCounts = createDailySeries(dailyCountsRaw, 7);
+
+  const recentBlogs = recentBlogsRaw.map((blog) => ({
+    ...blog,
+    seoScore: calculateBlogSeoScore(blog),
+  }));
 
   return {
     metrics: {
@@ -218,7 +245,15 @@ export async function getDashboardStats() {
       totalViews,
       blogsLast30Days,
       averageSeoScore,
-      monthlyViewsCurrent: monthlyViews[monthlyViews.length - 1]?.views || 0,
+      monthlyViewsCurrent: currentMonthViews,
+      viewsTrend,
+      highSeoCount,
+      keywordsCount: keywordRankings.length,
+      health: {
+        missingMeta: missingMetaCount,
+        missingImages: missingImagesCount,
+        missingInternalLinks: missingInternalLinksCount
+      }
     },
     monthlyViews,
     recentBlogs,

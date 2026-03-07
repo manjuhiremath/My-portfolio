@@ -19,7 +19,8 @@ export function fixUnsplashUrl(url) {
 
 export function slugify(text = '') {
   if (!text) return '';
-  return text
+  const stringText = typeof text === 'string' ? text : String(text);
+  return stringText
     .toLowerCase()
     .replace(/[^\w\s-]/g, '')
     .replace(/[\s_-]+/g, '-')

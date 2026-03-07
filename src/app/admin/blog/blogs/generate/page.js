@@ -884,7 +884,7 @@ export default function AIBlogGenerator() {
       if (!res.ok) throw new Error('Failed to create blog');
       const blog = await res.json();
       
-      window.location.href = `/admin/blogs/edit/${blog.slug}`;
+      window.location.href = `/admin/blog/blogs/edit/${blog.slug}`;
     } catch (err) {
       setError(err.message);
     } finally {
@@ -1557,7 +1557,7 @@ export default function AIBlogGenerator() {
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl md:text-3xl font-archivo font-bold text-[#18181B]">AI Blog Generator</h1>
-          <Link href="/admin/blogs" className="text-indigo-600 hover:text-indigo-800 font-space-grotesk cursor-pointer">
+          <Link href="/admin/blog/blogs" className="text-indigo-600 hover:text-indigo-800 font-space-grotesk cursor-pointer">
             ← Back to Blogs
           </Link>
         </div>

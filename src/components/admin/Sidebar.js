@@ -12,6 +12,7 @@ const navItems = [
       { name: 'AI Generator', href: '/admin/blog/blogs/generate', icon: 'M13 10V3L4 14h7v7l9-11h-7z' },
       { name: 'Create Blog', href: '/admin/blog/blogs/create', icon: 'M12 4v16m8-8H4' },
       { name: 'Categories', href: '/admin/blog/categories', icon: 'M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z' },
+      { name: 'Tags', href: '/admin/blog/tags', icon: 'M7 20l4-16m2 16l4-16M6 9h14M4 15h14' },
       { name: 'Media Library', href: '/admin/blog/media', icon: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z' },
       { name: 'SEO Tools', href: '/admin/blog/seo-tools', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z' },
       { name: 'AI Models', href: '/admin/blog/ai-models', icon: 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z' },

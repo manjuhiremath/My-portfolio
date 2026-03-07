@@ -13,28 +13,52 @@ export default function Footer() {
   useEffect(() => {
     async function fetchFooterData() {
       try {
-        const [catRes, blogRes] = await Promise.all([
-          fetch('/api/categories', { cache: 'no-store' }),
-          fetch('/api/blogs?published=true&limit=100', { cache: 'no-store' }),
+        const [catRes, tagRes, blogRes] = await Promise.all([
+          fetch('/api/categories'),
+          fetch('/api/tags'),
+          fetch('/api/blogs?published=true&limit=100'),
         ]);
 
         const catData = await catRes.json();
+        const tagData = await tagRes.json();
         const blogData = await blogRes.json();
 
         const cats = Array.isArray(catData) ? catData : [];
         setCategories(cats.filter(c => !c.parent).slice(0, 6));
 
+        const catMap = {};
+        cats.forEach(c => {
+          catMap[c._id] = c.name;
+        });
+
+        const tags = Array.isArray(tagData) ? tagData : [];
+        const tagMap = {};
+        tags.forEach(t => {
+          tagMap[t._id] = t.name;
+        });
+
         const blogs = Array.isArray(blogData) ? blogData : blogData.blogs || [];
 
-        // Popular blogs by views
+        // Popular blogs by views with mapped categories
         const sorted = [...blogs].sort((a, b) => (b.views || 0) - (a.views || 0));
-        setPopularBlogs(sorted.slice(0, 5));
+        const mappedPopularBlogs = sorted.slice(0, 5).map(b => {
+          let categoryName = b.category?.name || b.category;
+          if (catMap[categoryName]) categoryName = catMap[categoryName];
+          return {
+            ...b,
+            categoryName: categoryName
+          };
+        });
+        setPopularBlogs(mappedPopularBlogs);
 
         // Popular tags
         const tagCounts = {};
         blogs.forEach(b => {
           (b.tags || []).forEach(tag => {
-            tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+            const tagName = tag?.name || tagMap[tag] || tag;
+            if (tagName && typeof tagName === 'string') {
+              tagCounts[tagName] = (tagCounts[tagName] || 0) + 1;
+            }
           });
         });
         const sortedTags = Object.keys(tagCounts)
@@ -127,7 +151,7 @@ export default function Footer() {
               {popularBlogs.map((blog) => (
                 <li key={blog._id}>
                   <Link
-                    href={`/blog/${slugify(blog.category)}/${blog.slug}`}
+                    href={`/blog/${slugify(blog.categoryName || blog.category)}/${blog.slug}`}
                     className="text-sm text-slate-400 hover:text-orange-400 transition-colors line-clamp-2 leading-snug"
                   >
                     {blog.title}

@@ -2,20 +2,28 @@ import mongoose from "mongoose"
 
 const BlogSchema = new mongoose.Schema({
 
- title:String,
- slug:String,
+  title:String,
+  slug:String,
 
- category:String,
+  // Support both string (legacy) and ObjectId (new) for category
+  category: {
+    type: mongoose.Schema.Types.Mixed,
+    ref: "Category"
+  },
 
- excerpt:String,
- content:String,
+  excerpt:String,
+  content:String,
 
- readingTime: { type: Number, default: 5 },
+  readingTime: { type: Number, default: 5 },
 
- featuredImage:String,
+  featuredImage:String,
 
- tags:[String],
- keywords:[String],
+  // Support both string array (legacy) and ObjectId array (new) for tags
+  tags: [{
+    type: mongoose.Schema.Types.Mixed,
+    ref: "Tag"
+  }],
+  keywords:[String],
 
  seoTitle:String,
  seoDescription:String,
@@ -43,4 +51,4 @@ const BlogSchema = new mongoose.Schema({
 
 },{ timestamps: true });
 
-export default mongoose.models.Blog || mongoose.model("Blog",BlogSchema)
+export default mongoose.models.Blog || mongoose.model("Blog", BlogSchema)

@@ -1,5 +1,7 @@
 import {connectDB} from "@/lib/mongodb"
 import Blog from "@/models/Blog"
+import Category from "@/models/Category"
+import Tag from "@/models/Tag"
 import { normalizeFeaturedImageUrl } from "@/lib/cloudinary"
 
 export async function GET(req){
@@ -16,8 +18,6 @@ export async function GET(req){
     
     const query = {}
     
-    // Default to published blogs for public API.
-    // Use published=all for admin-style listings.
     if (published === 'all') {
       // no published filter
     } else if (published === null || published === '') {
@@ -26,8 +26,19 @@ export async function GET(req){
       query.published = published === 'true'
     }
     
+    // Handle category - can be ObjectId or string slug
     if (category && category !== 'all') {
-      query.category = { $regex: new RegExp(category, 'i') }
+      // Check if it's a valid ObjectId
+      const isObjectId = /^[0-9a-fA-F]{24}$/.test(category)
+      if (isObjectId) {
+        query.category = category
+      } else {
+        // It's a slug - find category first
+        const cat = await Category.findOne({ slug: category.toLowerCase() })
+        if (cat) {
+          query.category = cat._id
+        }
+      }
     }
    
    if (startDate || endDate) {
@@ -44,16 +55,22 @@ export async function GET(req){
    
    const skip = (page - 1) * limit
    
-   const blogs = await Blog.find(query)
-     .sort({ createdAt: -1 })
-     .skip(skip)
-     .limit(limit)
+   // Use lean to avoid populate issues with legacy string categories
+    const blogs = await Blog.find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate('category')
+      .populate('tags')
+      .lean()
+    
+    console.log('Sample blog category:', blogs[0]?.category)
    
    const total = await Blog.countDocuments(query)
    
    return Response.json({
      success: true,
-     blogs,
+     blogs: JSON.parse(JSON.stringify(blogs)),
      pagination: {
        page,
        limit,
@@ -62,11 +79,11 @@ export async function GET(req){
      }
    })
 
- } catch (error) {
+  } catch (error) {
+   console.error('[API /blogs] Error:', error)
+   return Response.json({success: false, error: error.message || 'Failed to fetch blogs'}, {status: 500})
 
-  return Response.json({success: false, error: error.message}, {status: 500})
-
- }
+  }
 
 }
 
@@ -82,18 +99,49 @@ export async function POST(req){
     data.featuredImage = await normalizeFeaturedImageUrl(data.featuredImage, "blog-featured")
   }
 
+  // Convert category name to ObjectId if provided as string
+  if (data.category) {
+    const isObjectId = /^[0-9a-fA-F]{24}$/.test(data.category)
+    if (!isObjectId) {
+      const cat = await Category.findOne({ name: data.category })
+      if (cat) {
+        data.category = cat._id
+      }
+    }
+  }
+
+  // Convert tag names to ObjectIds if provided as strings
+  if (data.tags && Array.isArray(data.tags)) {
+    const tagIds = []
+    for (const tag of data.tags) {
+      const isObjectId = /^[0-9a-fA-F]{24}$/.test(tag)
+      if (isObjectId) {
+        tagIds.push(tag)
+      } else {
+        const t = await Tag.findOne({ name: tag })
+        if (t) {
+          tagIds.push(t._id)
+        }
+      }
+    }
+    data.tags = tagIds
+  }
+
   if (data.published === true) {
     data.publishedAt = new Date()
   }
 
   const blog = await Blog.create(data)
+  
+  // Populate before returning
+  await blog.populate('category')
+  await blog.populate('tags')
 
   return Response.json(blog)
 
- } catch (error) {
+  } catch (error) {
 
-  return Response.json({error: error.message}, {status: 500})
+   return Response.json({error: error.message}, {status: 500})
 
- }
-
+  }
 }

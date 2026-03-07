@@ -1,6 +1,7 @@
 import { Poppins, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import "./globals.css";
+import AdSenseScript from "@/components/ads/AdSenseScript";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -55,6 +56,7 @@ export default function RootLayout({ children }) {
       <head>
         <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="" />
         <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+        <AdSenseScript />
       </head>
       <body
         className={`${poppins.variable} ${jetbrainsMono.variable} antialiased`}

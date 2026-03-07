@@ -2,8 +2,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { connectDB } from '@/lib/mongodb';
 import Blog from '@/models/Blog';
+import Category from '@/models/Category';
+import Tag from '@/models/Tag';
 import ViewTracker from '@/components/blog/ViewTracker';
 import TableOfContents from '@/components/blog/TableOfContents';
+import ArticleAd from '@/components/ads/ArticleAd';
+import SidebarAd from '@/components/ads/SidebarAd';
+import MultiplexAd from '@/components/ads/MultiplexAd';
 import { fixUnsplashUrl, slugify } from '@/lib/utils';
 
 export const revalidate = 3600;
@@ -15,6 +20,34 @@ function escapeHtml(text = '') {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
+}
+
+function decodeHtmlEntities(text = '') {
+  const entities = {
+    '&nbsp;': ' ',
+    '&amp;': '&',
+    '&lt;': '<',
+    '&gt;': '>',
+    '&quot;': '"',
+    '&#39;': "'",
+    '&#x27;': "'",
+    '&apos;': "'",
+    '&mdash;': '\u2014',
+    '&ndash;': '\u2013',
+    '&copy;': '\u00A9',
+    '&reg;': '\u00AE',
+    '&trade;': '\u2122',
+    '&hellip;': '\u2026',
+    '&lsquo;': '\u2018',
+    '&rsquo;': '\u2019',
+    '&ldquo;': '\u201C',
+    '&rdquo;': '\u201D',
+  };
+  let decoded = text;
+  for (const [entity, char] of Object.entries(entities)) {
+    decoded = decoded.replace(new RegExp(entity, 'gi'), char);
+  }
+  return decoded;
 }
 
 function stripHtml(text = '') {
@@ -34,7 +67,9 @@ function formatPlainTextToHtml(content = '') {
   const normalized = content.replace(/\r\n/g, '\n').trim();
   if (!normalized) return '';
 
-  const lines = normalized.split('\n');
+  // Decode HTML entities first before processing
+  const decoded = decodeHtmlEntities(normalized);
+  const lines = decoded.split('\n');
   const html = [];
   let inUl = false;
   let inOl = false;
@@ -136,6 +171,8 @@ function stripCodeFenceWrappers(content = '') {
 
 function getRenderableContent(content = '') {
   let cleaned = stripCodeFenceWrappers(content);
+  // Decode HTML entities before processing
+  cleaned = decodeHtmlEntities(cleaned);
   const looksLikeHtml = /<([a-z][\w-]*)(\s[^>]*)?>/.test(cleaned);
   if (looksLikeHtml) return cleaned;
   return formatPlainTextToHtml(cleaned);
@@ -180,8 +217,9 @@ function calculateReadingTime(content = '') {
 
 export async function generateMetadata({ params }) {
   try {
+    const { slug } = await params;
     await connectDB();
-    const blog = await Blog.findOne({ slug: params.slug }).lean();
+    const blog = await Blog.findOne({ slug }).lean();
 
     if (!blog) {
       return {
@@ -190,10 +228,35 @@ export async function generateMetadata({ params }) {
       };
     }
 
+    // Handle category - could be ObjectId or string
+    let categoryName = 'uncategorized';
+    if (blog.category) {
+      const catValue = blog.category.toString();
+      const isObjectId = /^[0-9a-fA-F]{24}$/.test(catValue);
+      
+      if (isObjectId) {
+        const cat = await Category.findById(blog.category).lean();
+        if (cat) categoryName = cat.name;
+      } else {
+        categoryName = catValue;
+      }
+    }
+
+    // Get tags
+    let tagNames = [];
+    if (blog.tags && blog.tags.length > 0) {
+      try {
+        const tags = await Tag.find({ _id: { $in: blog.tags } }).lean();
+        tagNames = tags.map(t => t.name);
+      } catch (e) {
+        tagNames = [];
+      }
+    }
+
     return {
       title: blog.seoTitle || blog.title,
       description: blog.seoDescription || blog.excerpt,
-      keywords: blog.keywords || blog.tags || [],
+      keywords: blog.keywords || tagNames || [],
       openGraph: {
         title: blog.seoTitle || blog.title,
         description: blog.seoDescription || blog.excerpt,
@@ -226,8 +289,11 @@ export async function generateMetadata({ params }) {
 
 export default async function BlogPostPage({ params }) {
   try {
+    const { slug } = await params;
     await connectDB();
-    const blog = await Blog.findOne({ slug: params.slug }).lean();
+    
+    // First find the blog without populate to check what type category is
+    const blog = await Blog.findOne({ slug }).lean();
 
     if (!blog) {
       return (
@@ -243,14 +309,85 @@ export default async function BlogPostPage({ params }) {
       );
     }
 
-    const relatedBlogsRaw = await Blog.find({
-      category: blog.category,
+    // Handle category - could be ObjectId (new) or string (legacy)
+    let categoryDoc = null;
+    let categoryId;
+    let categoryName;
+    
+    if (blog.category) {
+      // Check if category is a string (legacy) or ObjectId
+      const categoryValue = blog.category.toString();
+      const isObjectId = /^[0-9a-fA-F]{24}$/.test(categoryValue);
+      
+      if (isObjectId) {
+        // It's an ObjectId - try to populate
+        try {
+          categoryDoc = await Category.findById(blog.category).lean();
+        } catch (e) {
+          console.warn('Failed to populate category:', e.message);
+        }
+      }
+      
+      if (categoryDoc) {
+        categoryId = categoryDoc._id;
+        categoryName = categoryDoc.name;
+      } else {
+        // Legacy: category is a string - try to find by name or use as-is
+        try {
+          categoryDoc = await Category.findOne({ name: categoryValue }).lean();
+          if (categoryDoc) {
+            categoryId = categoryDoc._id;
+            categoryName = categoryDoc.name;
+          } else {
+            // Category not found in database - use the string value
+            categoryId = null;
+            categoryName = categoryValue;
+          }
+        } catch (e) {
+          // If lookup fails, use the raw value
+          categoryId = null;
+          categoryName = categoryValue;
+        }
+      }
+    } else {
+      categoryName = 'Uncategorized';
+    }
+    
+    const categorySlug = slugify(categoryName);
+    
+    // Get tags
+    let tagNames = [];
+    if (blog.tags && blog.tags.length > 0) {
+      try {
+        const tags = await Tag.find({ _id: { $in: blog.tags } }).lean();
+        tagNames = tags.map(t => t.name);
+      } catch (e) {
+        // If tag lookup fails, use raw values
+        tagNames = blog.tags.map(t => t?.toString?.() || t);
+      }
+    }
+
+    // Query related blogs by category - handle both ObjectId and string
+    const relatedQuery = {
+      $or: [
+        { category: categoryId },
+        { category: categoryName }
+      ],
       _id: { $ne: blog._id },
-      published: true,
-    })
+      published: true
+    };
+    
+    const relatedBlogsRaw = await Blog.find(relatedQuery)
       .limit(3)
       .sort({ createdAt: -1 })
       .lean();
+
+    // Get all categories for related blogs mapping
+    const allCategories = await Category.find({}).lean();
+    const catMap = {};
+    allCategories.forEach(c => {
+      catMap[c._id.toString()] = c.name;
+    });
 
     let rawContent = getRenderableContent(blog.content || '');
     // Inject section images after H2 headings (Issue 1)
@@ -258,7 +395,18 @@ export default async function BlogPostPage({ params }) {
     const { html: renderableContent, headings } = addHeadingIds(rawContent);
     const readingTime = calculateReadingTime(renderableContent);
 
-    const categorySlug = slugify(blog.category);
+    // Split content for ad injection
+    const paragraphs = renderableContent.split('</p>');
+    const hasEnoughParagraphs = paragraphs.length > 3;
+    
+    let contentParts = [renderableContent];
+    if (hasEnoughParagraphs) {
+      const firstPart = paragraphs.slice(0, 1).join('</p>') + '</p>';
+      const middleIndex = Math.ceil(paragraphs.length / 2);
+      const secondPart = paragraphs.slice(1, middleIndex).join('</p>') + '</p>';
+      const thirdPart = paragraphs.slice(middleIndex).join('</p>');
+      contentParts = [firstPart, secondPart, thirdPart];
+    }
 
     return (
       <div className="min-h-screen bg-background">
@@ -269,7 +417,7 @@ export default async function BlogPostPage({ params }) {
             <Link href="/blog" className="hover:text-slate-700">Blog</Link>
             <span>/</span>
             <Link href={`/blog/${categorySlug}`} className="capitalize hover:text-slate-700">
-              {blog.category}
+              {categoryName}
             </Link>
             <span>/</span>
             <span className="max-w-[320px] truncate text-slate-700">{blog.title}</span>
@@ -278,12 +426,12 @@ export default async function BlogPostPage({ params }) {
           <header className="rounded-xl border border-slate-200 bg-white p-5">
             <div className="mb-3 flex flex-wrap gap-2">
               <Link
-                href={`/blog?category=${encodeURIComponent(blog.category)}`}
+                href={`/blog?category=${encodeURIComponent(categoryName)}`}
                 className="rounded-full bg-orange-100 px-3 py-1 text-xs font-medium text-orange-700 hover:bg-orange-200 transition-colors"
               >
-                {blog.category}
+                {categoryName}
               </Link>
-              {blog.tags?.slice(0, 3).map((tag) => (
+              {tagNames.slice(0, 3).map((tag) => (
                 <Link
                   key={tag}
                   href={`/blog/tag/${encodeURIComponent(tag)}`}
@@ -320,14 +468,23 @@ export default async function BlogPostPage({ params }) {
 
           <section className="mt-8 grid grid-cols-1 gap-8 xl:grid-cols-[1fr_280px]">
             <article className="min-w-0">
-              <div
-                className="blog-content leading-relaxed text-slate-700"
-                dangerouslySetInnerHTML={{ __html: renderableContent }}
-              />
+              <div className="blog-content leading-relaxed text-slate-700">
+                {contentParts.length > 1 ? (
+                  <>
+                    <div dangerouslySetInnerHTML={{ __html: contentParts[0] }} />
+                    <ArticleAd />
+                    <div dangerouslySetInnerHTML={{ __html: contentParts[1] }} />
+                    <ArticleAd />
+                    <div dangerouslySetInnerHTML={{ __html: contentParts[2] }} />
+                  </>
+                ) : (
+                  <div dangerouslySetInnerHTML={{ __html: contentParts[0] }} />
+                )}
+              </div>
 
-              {blog.tags?.length ? (
+              {tagNames.length ? (
                 <div className="mt-8 flex flex-wrap gap-2 border-t border-slate-200 pt-6">
-                  {blog.tags.map((tag, index) => (
+                  {tagNames.map((tag, index) => (
                     <Link
                       key={`${tag}-${index}`}
                       href={`/blog/tag/${encodeURIComponent(tag)}`}
@@ -355,10 +512,13 @@ export default async function BlogPostPage({ params }) {
                   </div>
                 </div>
               ) : null}
+              
+              <MultiplexAd />
             </article>
 
             <aside className="space-y-4 xl:sticky xl:top-24 xl:self-start">
               <TableOfContents headings={headings} />
+              <SidebarAd />
             </aside>
           </section>
 
@@ -366,31 +526,38 @@ export default async function BlogPostPage({ params }) {
             <section className="mt-12">
               <h2 className="mb-4 text-xl font-bold text-slate-900">Related Articles</h2>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {relatedBlogsRaw.map((relatedBlog) => (
-                  <Link
-                    key={relatedBlog._id}
-                    href={`/blog/${slugify(relatedBlog.category)}/${relatedBlog.slug}`}
-                    className="group block overflow-hidden rounded-xl border border-slate-200 bg-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
-                  >
-                    <div className="relative h-40 bg-slate-100">
-                      <Image
-                        src={fixUnsplashUrl(relatedBlog.featuredImage)}
-                        alt={relatedBlog.title}
-                        fill
-                        sizes="(max-width: 768px) 100vw, 33vw"
-                        className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-                      />
-                    </div>
-                    <div className="p-3">
-                      <h3 className="line-clamp-2 text-sm font-semibold text-slate-900 group-hover:text-orange-600">
-                        {relatedBlog.title}
-                      </h3>
-                      <p className="mt-1 text-xs text-slate-500">
-                        {new Date(relatedBlog.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                      </p>
-                    </div>
-                  </Link>
-                ))}
+                {relatedBlogsRaw.map((relatedBlog) => {
+                  // Handle category resolution for related blogs
+                  const rawRelatedCat = relatedBlog.category?.toString?.() || relatedBlog.category;
+                  const relatedCatName = relatedBlog.category?.name || catMap[rawRelatedCat] || rawRelatedCat || 'uncategorized';
+                  const relatedCatSlug = slugify(relatedCatName);
+                  
+                  return (
+                    <Link
+                      key={relatedBlog._id}
+                      href={`/blog/${relatedCatSlug}/${relatedBlog.slug}`}
+                      className="group block overflow-hidden rounded-xl border border-slate-200 bg-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
+                    >
+                      <div className="relative h-40 bg-slate-100">
+                        <Image
+                          src={fixUnsplashUrl(relatedBlog.featuredImage)}
+                          alt={relatedBlog.title}
+                          fill
+                          sizes="(max-width: 768px) 100vw, 33vw"
+                          className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                        />
+                      </div>
+                      <div className="p-3">
+                        <h3 className="line-clamp-2 text-sm font-semibold text-slate-900 group-hover:text-orange-600">
+                          {relatedBlog.title}
+                        </h3>
+                        <p className="mt-1 text-xs text-slate-500">
+                          {new Date(relatedBlog.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                        </p>
+                      </div>
+                    </Link>
+                  );
+                })}
               </div>
             </section>
           ) : null}

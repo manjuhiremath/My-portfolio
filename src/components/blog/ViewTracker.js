@@ -8,7 +8,6 @@ export default function ViewTracker({ slug }) {
 
     fetch(`/api/blogs/${slug}`, {
       method: 'GET',
-      cache: 'no-store',
     }).catch(() => {
       // Intentionally ignore tracking errors to avoid affecting UX.
     });
