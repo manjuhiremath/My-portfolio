@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Archivo, Space_Grotesk } from 'next/font/google';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -301,16 +301,17 @@ export default function AIBlogGenerator() {
     loading: false,
   });
 
-  useEffect(() => {
-    fetchCategories();
-    fetchAIModels();
+  const fetchCategories = useCallback(async () => {
+    try {
+      const res = await fetch('/api/categories');
+      const data = await res.json();
+      setCategories(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error('Failed to fetch categories:', err);
+    }
   }, []);
 
-  const freeModels = aiModels.filter(isFreeModel);
-  const textModels = freeModels.filter((model) => !isLikelyImageGenerationModel(model));
-  const imageModels = freeModels.filter((model) => isLikelyImageGenerationModel(model));
-
-  const fetchAIModels = async () => {
+  const fetchAIModels = useCallback(async () => {
     try {
       setAiModelsLoading(true);
       const res = await fetch('/api/ai/models');
@@ -336,7 +337,16 @@ export default function AIBlogGenerator() {
     } finally {
       setAiModelsLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchCategories();
+    fetchAIModels();
+  }, [fetchCategories, fetchAIModels]);
+
+  const freeModels = aiModels.filter(isFreeModel);
+  const textModels = freeModels.filter((model) => !isLikelyImageGenerationModel(model));
+  const imageModels = freeModels.filter((model) => isLikelyImageGenerationModel(model));
 
   useEffect(() => {
     if (seoData.slug && keywordData.category && keywordData.subcategory) {
@@ -417,16 +427,6 @@ export default function AIBlogGenerator() {
 
   const wordCount = generatedContent ? generatedContent.replace(/<[^>]*>/g, '').split(/\s+/).filter(Boolean).length : 0;
   const readingTime = Math.ceil(wordCount / 200);
-
-  const fetchCategories = async () => {
-    try {
-      const res = await fetch('/api/categories');
-      const data = await res.json();
-      setCategories(Array.isArray(data) ? data : []);
-    } catch (err) {
-      console.error('Failed to fetch categories:', err);
-    }
-  };
 
   const handleCreateCategory = async (name, parentId = null) => {
     setCreateModal(prev => ({ ...prev, loading: true }));

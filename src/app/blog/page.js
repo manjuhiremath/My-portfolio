@@ -6,12 +6,8 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import Navigation from '@/components/Navigation';
+import Footer from '@/components/Footer';
 import BlogCard from '@/components/blog/BlogCard';
-
-const Footer = dynamic(() => import('@/components/Footer'), {
-  ssr: false,
-  loading: () => <div className="h-20" />,
-});
 
 function BlogContent() {
   const searchParams = useSearchParams();

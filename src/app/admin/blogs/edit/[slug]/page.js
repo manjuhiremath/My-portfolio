@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
@@ -176,20 +176,20 @@ export default function EditBlog() {
   const [subcategories, setSubcategories] = useState([]);
   const [createModal, setCreateModal] = useState({ isOpen: false, type: '', name: '', loading: false });
 
+  const fetchCategories = useCallback(async () => {
+    try {
+      const res = await fetch('/api/categories');
+      if (res.ok) {
+        const cats = await res.json();
+        setCategories(cats);
+      }
+    } catch (error) {
+      console.error('Failed to fetch categories');
+    }
+  }, []);
+
   // Fetch categories and blog data on mount
   useEffect(() => {
-    async function fetchCategories() {
-      try {
-        const res = await fetch('/api/categories');
-        if (res.ok) {
-          const cats = await res.json();
-          setCategories(cats);
-        }
-      } catch (error) {
-        console.error('Failed to fetch categories');
-      }
-    }
-
     async function fetchBlog() {
       try {
         const res = await fetch(`/api/blogs/${slug}`);
@@ -222,7 +222,7 @@ export default function EditBlog() {
     if (slug) {
       fetchBlog();
     }
-  }, [slug]);
+  }, [slug, fetchCategories]);
 
   // Update subcategories when category changes
   useEffect(() => {
@@ -276,9 +276,9 @@ export default function EditBlog() {
 
   const parentCategories = categories.filter(c => !c.parent);
 
-  // Auto-generate slug from title
+  // Auto-generate slug from title (only if slug is empty)
   useEffect(() => {
-    if (formData.title) {
+    if (formData.title && !formData.slug) {
       const generatedSlug = formData.title
         .toLowerCase()
         .replace(/[^\w\s-]/g, '') // Remove special characters
@@ -287,7 +287,7 @@ export default function EditBlog() {
         .trim();
       setFormData(prev => ({ ...prev, slug: generatedSlug }));
     }
-  }, [formData.title]);
+  }, [formData.title, formData.slug]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;

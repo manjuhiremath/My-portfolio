@@ -16,11 +16,10 @@ export async function GET(req){
     
     const query = {}
     
-    // Default to fetching only published blogs for public API
-    if (published === null || published === '') {
+    if (published === 'true') {
       query.published = true
-    } else {
-      query.published = published === 'true'
+    } else if (published === 'false') {
+      query.published = false
     }
     
     if (category && category !== 'all') {

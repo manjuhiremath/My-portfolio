@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { Archivo, Space_Grotesk } from 'next/font/google';
@@ -206,12 +206,7 @@ export default function CreateBlog() {
   const [categories, setCategories] = useState([]);
   const [createModal, setCreateModal] = useState({ isOpen: false, type: '', name: '', loading: false });
 
-  // Fetch categories on mount
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  async function fetchCategories() {
+  const fetchCategories = useCallback(async () => {
     try {
       const res = await fetch('/api/categories');
       if (res.ok) {
@@ -221,7 +216,12 @@ export default function CreateBlog() {
     } catch (error) {
       console.error('Failed to fetch categories');
     }
-  }
+  }, []);
+
+  // Fetch categories on mount
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
 
   const handleCreateCategory = async (name, parentId = null) => {
     setCreateModal(prev => ({ ...prev, loading: true }));

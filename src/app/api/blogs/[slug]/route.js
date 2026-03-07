@@ -16,15 +16,9 @@ export async function GET(req,{params}){
     let blog
 
     if (isValidObjectId(params.slug)) {
-      blog = await Blog.findById(params.slug)
-      if (blog) {
-        await Blog.findByIdAndUpdate(params.slug, { $inc: { views: 1 } })
-      }
+      blog = await Blog.findByIdAndUpdate(params.slug, { $inc: { views: 1 } }, { returnDocument: 'after' })
     } else {
-      blog = await Blog.findOne({ slug: params.slug })
-      if (blog) {
-        await Blog.findOneAndUpdate({ slug: params.slug }, { $inc: { views: 1 } })
-      }
+      blog = await Blog.findOneAndUpdate({ slug: params.slug }, { $inc: { views: 1 } }, { returnDocument: 'after' })
     }
 
     if (!blog) {

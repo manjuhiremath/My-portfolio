@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { Archivo, Space_Grotesk } from 'next/font/google';
 import { toast } from 'sonner';
@@ -39,15 +39,7 @@ export default function AdminBlogs() {
     totalPages: 0
   });
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  useEffect(() => {
-    fetchBlogs();
-  }, [filters]);
-
-  async function fetchCategories() {
+  const fetchCategories = useCallback(async () => {
     try {
       const res = await fetch('/api/categories');
       const data = await res.json();
@@ -55,9 +47,9 @@ export default function AdminBlogs() {
     } catch (error) {
       console.error('Failed to fetch categories:', error);
     }
-  }
+  }, []);
 
-  async function fetchBlogs() {
+  const fetchBlogs = useCallback(async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
@@ -78,7 +70,15 @@ export default function AdminBlogs() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [filters]);
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
+
+  useEffect(() => {
+    fetchBlogs();
+  }, [fetchBlogs]);
 
   function handleFilterChange(name, value) {
     setFilters(prev => ({ ...prev, [name]: value, page: 1 }));
