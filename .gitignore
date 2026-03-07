@@ -48,3 +48,4 @@ AGENTS.md
 .claude/
 package-lock.json
 .kiro/
+.groq/

@@ -38,7 +38,9 @@ function cleanExcerpt(text = '') {
 export default function BlogCard({ blog, categoryColor = '#6366f1', variant = 'default' }) {
   if (!blog) return null;
 
-  const categorySlug = slugify(blog.category);
+  // Handle category - could be string name (pre-mapped), or object with name
+  const categoryValue = blog.category?.name || blog.category || 'Uncategorized';
+  const categorySlug = slugify(categoryValue);
   const href = `/blog/${categorySlug}/${blog.slug}`;
   const imageUrl = fixUnsplashUrl(blog.featuredImage);
 
@@ -64,7 +66,7 @@ export default function BlogCard({ blog, categoryColor = '#6366f1', variant = 'd
             {blog.title}
           </h3>
           <div className="flex items-center gap-2 mt-1.5 text-xs text-slate-400">
-            <span className="font-medium" style={{ color: categoryColor }}>{blog.category}</span>
+            <span className="font-medium" style={{ color: categoryColor }}>{categoryValue || 'Uncategorized'}</span>
             <span className="text-slate-300">·</span>
             <span>{formatDate(blog.createdAt)}</span>
           </div>
@@ -98,7 +100,7 @@ export default function BlogCard({ blog, categoryColor = '#6366f1', variant = 'd
             className="rounded-lg px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-lg backdrop-blur-sm"
             style={{ backgroundColor: categoryColor }}
           >
-            {blog.category || 'General'}
+            {categoryValue || 'General'}
           </span>
         </div>
 
@@ -121,21 +123,26 @@ export default function BlogCard({ blog, categoryColor = '#6366f1', variant = 'd
 
         {/* Tags */}
         {blog.tags?.length > 0 && (
-          <div className="mt-2.5 flex flex-wrap gap-1.5">
-            {blog.tags.slice(0, 3).map((tag) => (
+          <div className="mt-2.5 flex items-center flex-nowrap gap-1.5 overflow-hidden">
+            {blog.tags.slice(0, 2).map((tag) => (
               <span
-                key={tag}
-                className="rounded-md bg-slate-50 px-2 py-0.5 text-[10px] font-medium text-slate-500 border border-slate-100"
+                key={tag?._id || tag}
+                className="whitespace-nowrap rounded-md bg-slate-50 px-2 py-0.5 text-[10px] font-medium text-slate-500 border border-slate-100"
               >
-                #{tag}
+                #{tag?.name || tag}
               </span>
             ))}
+            {blog.tags.length > 2 && (
+              <span className="text-[10px] font-bold text-orange-500 whitespace-nowrap bg-orange-50 px-1.5 py-0.5 rounded-md border border-orange-100">
+                +{blog.tags.length - 2}
+              </span>
+            )}
           </div>
         )}
 
         <div className="mt-3 flex items-center justify-between border-t border-slate-100 pt-3 text-xs text-slate-400">
           <span className="font-semibold uppercase tracking-wide" style={{ color: categoryColor }}>
-            {blog.category || 'Insights'}
+            {categoryValue || 'Insights'}
           </span>
           <div className="flex items-center gap-3">
             <span className="flex items-center gap-1">

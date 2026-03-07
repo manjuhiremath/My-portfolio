@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Archivo, Space_Grotesk } from 'next/font/google';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -301,16 +301,17 @@ export default function AIBlogGenerator() {
     loading: false,
   });
 
-  useEffect(() => {
-    fetchCategories();
-    fetchAIModels();
+  const fetchCategories = useCallback(async () => {
+    try {
+      const res = await fetch('/api/categories');
+      const data = await res.json();
+      setCategories(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error('Failed to fetch categories:', err);
+    }
   }, []);
 
-  const freeModels = aiModels.filter(isFreeModel);
-  const textModels = freeModels.filter((model) => !isLikelyImageGenerationModel(model));
-  const imageModels = freeModels.filter((model) => isLikelyImageGenerationModel(model));
-
-  const fetchAIModels = async () => {
+  const fetchAIModels = useCallback(async () => {
     try {
       setAiModelsLoading(true);
       const res = await fetch('/api/ai/models');
@@ -336,7 +337,16 @@ export default function AIBlogGenerator() {
     } finally {
       setAiModelsLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchCategories();
+    fetchAIModels();
+  }, [fetchCategories, fetchAIModels]);
+
+  const freeModels = aiModels.filter(isFreeModel);
+  const textModels = freeModels.filter((model) => !isLikelyImageGenerationModel(model));
+  const imageModels = freeModels.filter((model) => isLikelyImageGenerationModel(model));
 
   useEffect(() => {
     if (seoData.slug && keywordData.category && keywordData.subcategory) {
@@ -417,16 +427,6 @@ export default function AIBlogGenerator() {
 
   const wordCount = generatedContent ? generatedContent.replace(/<[^>]*>/g, '').split(/\s+/).filter(Boolean).length : 0;
   const readingTime = Math.ceil(wordCount / 200);
-
-  const fetchCategories = async () => {
-    try {
-      const res = await fetch('/api/categories');
-      const data = await res.json();
-      setCategories(Array.isArray(data) ? data : []);
-    } catch (err) {
-      console.error('Failed to fetch categories:', err);
-    }
-  };
 
   const handleCreateCategory = async (name, parentId = null) => {
     setCreateModal(prev => ({ ...prev, loading: true }));
@@ -884,7 +884,7 @@ export default function AIBlogGenerator() {
       if (!res.ok) throw new Error('Failed to create blog');
       const blog = await res.json();
       
-      window.location.href = `/admin/blogs/edit/${blog.slug}`;
+      window.location.href = `/admin/blog/blogs/edit/${blog.slug}`;
     } catch (err) {
       setError(err.message);
     } finally {
@@ -1557,7 +1557,7 @@ export default function AIBlogGenerator() {
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl md:text-3xl font-archivo font-bold text-[#18181B]">AI Blog Generator</h1>
-          <Link href="/admin/blogs" className="text-indigo-600 hover:text-indigo-800 font-space-grotesk cursor-pointer">
+          <Link href="/admin/blog/blogs" className="text-indigo-600 hover:text-indigo-800 font-space-grotesk cursor-pointer">
             ← Back to Blogs
           </Link>
         </div>

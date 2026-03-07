@@ -4,9 +4,9 @@ import mongoose from 'mongoose';
 
 export async function PUT(req, { params }) {
   try {
+    const { id } = await params;
     await connectDB();
 
-    const { id } = params;
     const body = await req.json();
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -48,9 +48,8 @@ export async function PUT(req, { params }) {
 
 export async function DELETE(req, { params }) {
   try {
+    const { id } = await params;
     await connectDB();
-
-    const { id } = params;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return Response.json(

@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { connectDB } from '@/lib/mongodb';
 import Blog from '@/models/Blog';
+import Tag from '@/models/Tag';
+import Category from '@/models/Category';
 import BlogCard from '@/components/blog/BlogCard';
 import Pagination from '@/components/Pagination';
 
@@ -14,16 +16,24 @@ function readableLabel(text = '') {
 }
 
 export async function generateMetadata({ params }) {
-  const tagName = decodeURIComponent(params.tag);
-  const label = readableLabel(params.tag);
+  const { tag: rawTag } = await params;
+  const tagSlug = decodeURIComponent(rawTag).toLowerCase();
 
   try {
     await connectDB();
+    const tag = await Tag.findOne({ slug: tagSlug }).lean();
+    
+    if (!tag) {
+      const label = readableLabel(rawTag);
+      return { title: `#${label}`, description: `Articles tagged with ${label}.` };
+    }
+
     const total = await Blog.countDocuments({
-      tags: { $regex: new RegExp(`^${tagName}$`, 'i') },
+      tags: tag._id,
       published: true,
     });
 
+    const label = tag.name;
     return {
       title: `#${label} — Articles & Guides`,
       description: `Browse ${total} article${total === 1 ? '' : 's'} tagged with #${label}. Practical insights and tutorials.`,
@@ -31,36 +41,73 @@ export async function generateMetadata({ params }) {
         title: `#${label} — Articles & Guides`,
         description: `Browse articles tagged with #${label}.`,
         type: 'website',
-        url: `/blog/tag/${params.tag}`,
+        url: `/blog/tag/${rawTag}`,
       },
     };
   } catch {
+    const label = readableLabel(rawTag);
     return { title: `#${label}`, description: `Articles tagged with ${label}.` };
   }
 }
 
 async function getTagBlogs(tag, page = 1) {
   await connectDB();
-  const tagName = decodeURIComponent(tag);
+  const tagSlug = tag.toLowerCase();
+  
+  const tagDoc = await Tag.findOne({ slug: tagSlug }).lean();
+  
+  if (!tagDoc) {
+    return {
+      tagName: decodeURIComponent(tag),
+      blogs: [],
+      total: 0,
+      totalPages: 0,
+      currentPage: page,
+    };
+  }
+  
   const skip = (page - 1) * POSTS_PER_PAGE;
 
-  const [blogs, total] = await Promise.all([
+  const [blogsRaw, total, allTags, allCategories] = await Promise.all([
     Blog.find({
-      tags: { $regex: new RegExp(`^${tagName}$`, 'i') },
+      tags: tagDoc._id,
       published: true,
     })
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(POSTS_PER_PAGE)
+      .populate('category')
+      .populate('tags')
       .lean(),
     Blog.countDocuments({
-      tags: { $regex: new RegExp(`^${tagName}$`, 'i') },
+      tags: tagDoc._id,
       published: true,
     }),
+    Tag.find({}).lean(),
+    Category.find({}).lean()
   ]);
 
+  // Create lookup maps for robust resolution
+  const tagMap = {};
+  allTags.forEach(t => {
+    tagMap[t._id.toString()] = t.name;
+  });
+
+  const catMap = {};
+  allCategories.forEach(c => {
+    catMap[c._id.toString()] = c.name;
+  });
+
+  // Map blogs to ensure clean data for BlogCard
+  const blogs = blogsRaw.map(blog => ({
+    ...blog,
+    category: blog.category?.name || catMap[blog.category?.toString?.()] || blog.category,
+    tags: (blog.tags || []).map(t => t?.name || tagMap[t?.toString?.()] || t)
+  }));
+
   return {
-    tagName,
+    tagName: tagDoc.name,
+    tagColor: tagDoc.color || '#f97316',
     blogs,
     total,
     totalPages: Math.ceil(total / POSTS_PER_PAGE),
@@ -69,9 +116,11 @@ async function getTagBlogs(tag, page = 1) {
 }
 
 export default async function TagPage({ params, searchParams }) {
-  const page = Math.max(1, Number(searchParams?.page) || 1);
-  const data = await getTagBlogs(params.tag, page);
-  const label = readableLabel(params.tag);
+  const { tag } = await params;
+  const { page: pageParam } = await searchParams;
+  const page = Math.max(1, Number(pageParam) || 1);
+  const data = await getTagBlogs(tag, page);
+  const label = readableLabel(tag);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-white">

@@ -24,15 +24,15 @@ export default function BlogNavigation() {
     async function fetchData() {
       try {
         const [catsRes, blogsRes] = await Promise.all([
-          fetch('/api/categories', { cache: 'no-store' }),
-          fetch('/api/blogs?published=true&limit=1', { cache: 'no-store' })
+          fetch('/api/categories'),
+          fetch('/api/blogs?published=true&limit=1')
         ]);
         
         const catsData = await catsRes.json();
         const blogsData = await blogsRes.json();
         
         setCategories(Array.isArray(catsData) ? catsData.filter(c => !c.parent) : []);
-        setTotalBlogs(blogsData.total || 0);
+        setTotalBlogs(blogsData.pagination?.total || blogsData.total || 0);
       } catch (error) {
         console.error('Failed to load nav data:', error);
       }

@@ -1,8 +1,12 @@
 'use client';
 
 import { Suspense, useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { FiSearch, FiX } from 'react-icons/fi';
 import BlogCard from '@/components/blog/BlogCard';
+import BannerAd from '@/components/ads/BannerAd';
+import SidebarAd from '@/components/ads/SidebarAd';
+import MultiplexAd from '@/components/ads/MultiplexAd';
 
 // Editorial Components
 import FeaturedHero from '@/components/blog/editorial/FeaturedHero';
@@ -13,23 +17,28 @@ import EditorPicks from '@/components/blog/editorial/EditorPicks';
 import LatestBlogsGrid from '@/components/blog/editorial/LatestBlogsGrid';
 
 function getCategoryColor(categories, categoryName) {
-  const category = categories.find((item) => item.name === categoryName);
+  const category = categories.find((item) => 
+    item.name === categoryName || 
+    item.slug === categoryName || 
+    item._id === categoryName
+  );
   return category?.color || '#6366f1';
 }
 
 function BlogContent() {
+  const searchParams = useSearchParams();
   const [blogs, setBlogs] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [tagsList, setTagsList] = useState([]);
   const [activeFilter, setActiveFilter] = useState('all');
   const [query, setQuery] = useState('');
   const [sortBy, setSortBy] = useState('newest');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const categoryFromUrl = params.get('category');
-    if (categoryFromUrl) setActiveFilter(categoryFromUrl);
-  }, []);
+    const categoryFromUrl = searchParams.get('category');
+    setActiveFilter(categoryFromUrl || 'all');
+  }, [searchParams]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -37,23 +46,26 @@ function BlogContent() {
     async function fetchData() {
       try {
         setLoading(true);
-        const [blogsResponse, categoriesResponse] = await Promise.all([
+        const [blogsResponse, categoriesResponse, tagsResponse] = await Promise.all([
           fetch('/api/blogs?published=true&limit=300', {
             signal: controller.signal,
-            cache: 'no-store',
           }),
           fetch('/api/categories', {
             signal: controller.signal,
-            cache: 'no-store',
+          }),
+          fetch('/api/tags', {
+            signal: controller.signal,
           }),
         ]);
 
         const blogsData = await blogsResponse.json();
         const categoriesData = await categoriesResponse.json();
+        const tagsData = await tagsResponse.json();
 
         const blogRows = Array.isArray(blogsData) ? blogsData : blogsData.blogs || [];
         setBlogs(blogRows);
         setCategories(Array.isArray(categoriesData) ? categoriesData : []);
+        setTagsList(Array.isArray(tagsData) ? tagsData : []);
       } catch (error) {
         if (error.name !== 'AbortError') {
           console.error('Failed to load blog content:', error);
@@ -67,6 +79,39 @@ function BlogContent() {
     return () => controller.abort();
   }, []);
 
+  const tagMap = useMemo(() => {
+    const map = {};
+    tagsList.forEach(t => {
+      map[t._id] = t.name;
+    });
+    return map;
+  }, [tagsList]);
+
+  const catMap = useMemo(() => {
+    const map = {};
+    categories.forEach(c => {
+      map[c._id] = c.name;
+      map[c.slug] = c.name;
+    });
+    return map;
+  }, [categories]);
+
+  const mappedBlogs = useMemo(() => {
+    return blogs.map(blog => {
+      // Resolve category name
+      const categoryName = blog.category?.name || catMap[blog.category] || blog.category || 'Uncategorized';
+      
+      // Resolve tag names
+      const resolvedTags = (blog.tags || []).map(t => t?.name || tagMap[t] || t);
+      
+      return {
+        ...blog,
+        category: categoryName,
+        tags: resolvedTags
+      };
+    });
+  }, [blogs, catMap, tagMap]);
+
   const topLevelCategories = useMemo(
     () => categories.filter((item) => !item.parent).map((item) => item.name),
     [categories]
@@ -74,56 +119,58 @@ function BlogContent() {
 
   // ─── "All Posts" editorial data ───
   const featuredBlog = useMemo(
-    () => [...blogs].sort((a, b) => (b.views || 0) - (a.views || 0))[0],
-    [blogs]
+    () => [...mappedBlogs].sort((a, b) => (b.views || 0) - (a.views || 0))[0],
+    [mappedBlogs]
   );
 
   const topStories = useMemo(
-    () => [...blogs]
+    () => [...mappedBlogs]
       .filter(b => b._id !== featuredBlog?._id)
       .sort((a, b) => (b.views || 0) - (a.views || 0))
       .slice(0, 4),
-    [blogs, featuredBlog]
+    [mappedBlogs, featuredBlog]
   );
 
   const trendingBlogs = useMemo(
-    () => [...blogs]
+    () => [...mappedBlogs]
       .sort((a, b) => (b.views || 0) - (a.views || 0))
       .slice(0, 5),
-    [blogs]
+    [mappedBlogs]
   );
 
   const recentBlogs = useMemo(
-    () => [...blogs]
+    () => [...mappedBlogs]
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
       .slice(0, 5),
-    [blogs]
+    [mappedBlogs]
   );
 
   const editorPicks = useMemo(
-    () => [...blogs]
+    () => [...mappedBlogs]
       .filter(b => b.views > 100)
       .sort((a, b) => 0.5 - Math.random())
       .slice(0, 3),
-    [blogs]
+    [mappedBlogs]
   );
 
   const popularTags = useMemo(() => {
-    const tags = blogs.flatMap(b => b.tags || []);
+    const tags = mappedBlogs.flatMap(b => b.tags || []);
     const counts = tags.reduce((acc, tag) => {
-      acc[tag] = (acc[tag] || 0) + 1;
+      if (tag && typeof tag === 'string') {
+        acc[tag] = (acc[tag] || 0) + 1;
+      }
       return acc;
     }, {});
     return Object.keys(counts)
       .sort((a, b) => counts[b] - counts[a])
       .slice(0, 10);
-  }, [blogs]);
+  }, [mappedBlogs]);
 
   // ─── Category-specific editorial data (Issues 7, 8, 9) ───
   const categoryBlogs = useMemo(() => {
     if (activeFilter === 'all' || query.trim()) return [];
-    return blogs.filter(b => b.category?.toLowerCase() === activeFilter.toLowerCase());
-  }, [activeFilter, blogs, query]);
+    return mappedBlogs.filter(b => b.category?.toLowerCase() === activeFilter.toLowerCase());
+  }, [activeFilter, mappedBlogs, query]);
 
   const categoryFeatured = useMemo(
     () => categoryBlogs.length ? [...categoryBlogs].sort((a, b) => (b.views || 0) - (a.views || 0))[0] : null,
@@ -149,14 +196,16 @@ function BlogContent() {
   // ─── Search/filter view data ───
   const filteredBlogs = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
-    const rows = blogs.filter((blog) => {
+    const rows = mappedBlogs.filter((blog) => {
+      const categoryName = blog.category;
       const matchesCategory =
-        activeFilter === 'all' || blog.category?.toLowerCase() === activeFilter.toLowerCase();
+        activeFilter === 'all' || categoryName?.toLowerCase() === activeFilter.toLowerCase();
+      const tagNames = blog.tags || [];
       const matchesQuery =
         !normalizedQuery ||
         blog.title?.toLowerCase().includes(normalizedQuery) ||
         blog.excerpt?.toLowerCase().includes(normalizedQuery) ||
-        blog.tags?.some((tag) => String(tag).toLowerCase().includes(normalizedQuery));
+        tagNames.some((tag) => String(tag).toLowerCase().includes(normalizedQuery));
       return matchesCategory && matchesQuery;
     });
 
@@ -169,7 +218,7 @@ function BlogContent() {
       const rightDate = new Date(right.createdAt || 0).getTime();
       return rightDate - leftDate;
     });
-  }, [activeFilter, blogs, query, sortBy]);
+  }, [activeFilter, mappedBlogs, query, sortBy]);
 
   const isEditorialView = activeFilter === 'all' && !query.trim();
   const isCategoryEditorialView = activeFilter !== 'all' && !query.trim();
@@ -210,6 +259,7 @@ function BlogContent() {
     <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-white">
       {/* Main Content */}
       <main className="mx-auto max-w-7xl px-4 py-6 sm:py-8 lg:py-12 lg:px-8">
+        <BannerAd />
         {isEditorialView ? (
           /* ─── ALL POSTS EDITORIAL VIEW ─── */
           <div className="space-y-10 lg:space-y-14">
@@ -217,7 +267,7 @@ function BlogContent() {
             <section aria-label="Featured article">
               <FeaturedHero
                 blog={featuredBlog}
-                categoryColor={getCategoryColor(categories, featuredBlog?.category)}
+                categoryColor={getCategoryColor(categories, featuredBlog?.category?.name || featuredBlog?.category)}
               />
             </section>
 
@@ -231,7 +281,7 @@ function BlogContent() {
                 />
 
                 <LatestBlogsGrid
-                  blogs={[...blogs]
+                  blogs={[...mappedBlogs]
                     .filter(b => b._id !== featuredBlog?._id && !topStories.some(t => t._id === b._id))
                     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                     .slice(0, 6)
@@ -245,6 +295,7 @@ function BlogContent() {
               {/* Sidebar: 4 Columns */}
               <aside className="lg:col-span-4">
                 <div className="lg:sticky lg:top-28 space-y-8">
+                  <SidebarAd />
                   <TrendingSidebar
                     trendingBlogs={trendingBlogs}
                     recentBlogs={recentBlogs}
@@ -264,7 +315,7 @@ function BlogContent() {
                 <CategorySection
                   key={category}
                   category={category}
-                  blogs={blogs.filter(b => b.category === category)}
+                  blogs={mappedBlogs.filter(b => b.category === category)}
                   categoryColor={getCategoryColor(categories, category)}
                 />
               ))}
@@ -322,7 +373,7 @@ function BlogContent() {
                       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                       .slice(0, 5)}
                     popularTags={
-                      [...new Set(categoryBlogs.flatMap(b => b.tags || []))].slice(0, 10)
+                      [...new Set(categoryBlogs.flatMap(b => (b.tags || []).map(t => t?.name || t)))].slice(0, 10)
                     }
                   />
                 </div>
@@ -334,7 +385,7 @@ function BlogContent() {
               <section className="border-t border-slate-200 pt-8">
                 <h2 className="text-lg font-bold tracking-tight text-slate-900 uppercase mb-5">All {activeFilter} Articles</h2>
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                  {categoryBlogs
+                    {categoryBlogs
                     .filter(b =>
                       b._id !== categoryFeatured?._id &&
                       !categoryTrending.some(t => t._id === b._id) &&
@@ -344,7 +395,7 @@ function BlogContent() {
                       <BlogCard
                         key={blog._id}
                         blog={blog}
-                        categoryColor={getCategoryColor(categories, blog.category)}
+                        categoryColor={getCategoryColor(categories, blog.category?.name || blog.category)}
                       />
                     ))}
                 </div>
@@ -405,17 +456,18 @@ function BlogContent() {
               </div>
             ) : (
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {filteredBlogs.map((blog) => (
+              {filteredBlogs.map((blog) => (
                   <BlogCard
                     key={blog._id}
                     blog={blog}
-                    categoryColor={getCategoryColor(categories, blog.category)}
+                    categoryColor={getCategoryColor(categories, blog.category?.name || blog.category)}
                   />
                 ))}
               </div>
             )}
           </div>
         )}
+        <MultiplexAd />
       </main>
     </div>
   );

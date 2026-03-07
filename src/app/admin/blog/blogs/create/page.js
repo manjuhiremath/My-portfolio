@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useState, useEffect, useRef } from 'react';
+import { Suspense, useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { Archivo, Space_Grotesk } from 'next/font/google';
@@ -17,15 +17,12 @@ const spaceGrotesk = Space_Grotesk({
   variable: '--font-space-grotesk',
 });
 
-// Dynamically import ReactQuill and register table embed blot
 const ReactQuill = dynamic(
   () => import('react-quill-new').then((mod) => {
     const Quill = mod.default.Quill || mod.Quill;
     if (Quill && !Quill.imports['formats/table-embed']) {
       const BlockEmbed = Quill.import('blots/block/embed');
 
-      // Treat entire table as an opaque atomic block (like an image)
-      // Quill won't try to parse the internal HTML structure
       class TableEmbed extends BlockEmbed {
         static create(value) {
           const node = super.create();
@@ -191,7 +188,6 @@ function CreateBlogInner() {
     title: '',
     slug: '',
     category: '',
-    subcategory: '',
     featuredImage: '',
     excerpt: '',
     content: '',
@@ -224,8 +220,6 @@ function CreateBlogInner() {
             seoTitle: draft.title || '',
             seoDescription: draft.excerpt ? draft.excerpt.substring(0, 160) : '',
           }));
-          // Optionally clear it so it doesn't pollute future creations
-          // localStorage.removeItem('blogDraftContent');
         } catch(e) {
           console.error("Failed to parse draft data", e);
         }
@@ -233,12 +227,7 @@ function CreateBlogInner() {
     }
   }, [searchParams]);
 
-  // Fetch categories on mount
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  async function fetchCategories() {
+  const fetchCategories = useCallback(async () => {
     try {
       const res = await fetch('/api/categories');
       if (res.ok) {
@@ -248,9 +237,13 @@ function CreateBlogInner() {
     } catch (error) {
       console.error('Failed to fetch categories');
     }
-  }
+  }, []);
 
-  const handleCreateCategory = async (name, parentId = null) => {
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
+
+  const handleCreateCategory = async (name) => {
     setCreateModal(prev => ({ ...prev, loading: true }));
     try {
       const res = await fetch('/api/categories', {
@@ -259,7 +252,6 @@ function CreateBlogInner() {
         body: JSON.stringify({
           name: name.trim(),
           slug: name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, ''),
-          parent: parentId,
         }),
       });
 
@@ -268,11 +260,7 @@ function CreateBlogInner() {
       const newCategory = await res.json();
       await fetchCategories();
 
-      if (parentId) {
-        setFormData(prev => ({ ...prev, subcategory: newCategory.name }));
-      } else {
-        setFormData(prev => ({ ...prev, category: newCategory.name, subcategory: '' }));
-      }
+      setFormData(prev => ({ ...prev, category: newCategory.name }));
 
       setCreateModal({ isOpen: false, type: '', name: '', loading: false });
     } catch (err) {
@@ -281,19 +269,12 @@ function CreateBlogInner() {
     }
   };
 
-  const openCreateModal = (type, name) => {
-    setCreateModal({ isOpen: true, type, name, loading: false });
+  const openCreateModal = (name) => {
+    setCreateModal({ isOpen: true, type: 'category', name, loading: false });
   };
 
   const parentCategories = categories.filter(c => !c.parent);
-  const subcategories = formData.category
-    ? categories.filter(c => {
-        const parent = parentCategories.find(p => p.name === formData.category);
-        return parent && c.parent?.toString() === parent._id.toString();
-      })
-    : [];
 
-  // Parse table HTML into editable 2D array
   const parseTableHTML = (html) => {
     const temp = document.createElement('div');
     temp.innerHTML = html;
@@ -317,7 +298,6 @@ function CreateBlogInner() {
       rows.push(cells);
     });
 
-    // If no thead/tbody, just get all rows
     if (rows.length === 0) {
       table.querySelectorAll('tr').forEach(tr => {
         const cells = [];
@@ -329,7 +309,6 @@ function CreateBlogInner() {
     return { data: rows, hasHeader };
   };
 
-  // Rebuild table HTML from 2D array
   const buildTableHTML = (data, hasHeader) => {
     if (!data || data.length === 0) return '';
     let html = '<table style="width:100%;border-collapse:collapse;">';
@@ -355,7 +334,6 @@ function CreateBlogInner() {
     return html;
   };
 
-  // Double-click handler for table embeds
   useEffect(() => {
     const handleDblClick = (e) => {
       const embedNode = e.target.closest('.ql-table-embed');
@@ -374,7 +352,6 @@ function CreateBlogInner() {
     }
   });
 
-  // Update a cell value in the editing table
   const updateEditCell = (rowIdx, colIdx, value) => {
     setEditingTable(prev => {
       const newData = prev.data.map(row => [...row]);
@@ -383,7 +360,6 @@ function CreateBlogInner() {
     });
   };
 
-  // Add row to editing table
   const addEditRow = () => {
     setEditingTable(prev => {
       const cols = prev.data[0]?.length || 3;
@@ -392,7 +368,6 @@ function CreateBlogInner() {
     });
   };
 
-  // Remove row from editing table
   const removeEditRow = (rowIdx) => {
     setEditingTable(prev => {
       if (prev.data.length <= 1) return prev;
@@ -401,7 +376,6 @@ function CreateBlogInner() {
     });
   };
 
-  // Add column to editing table
   const addEditCol = () => {
     setEditingTable(prev => {
       const newData = prev.data.map(row => [...row, '']);
@@ -409,7 +383,6 @@ function CreateBlogInner() {
     });
   };
 
-  // Remove column from editing table
   const removeEditCol = (colIdx) => {
     setEditingTable(prev => {
       if ((prev.data[0]?.length || 0) <= 1) return prev;
@@ -418,16 +391,13 @@ function CreateBlogInner() {
     });
   };
 
-  // Save edited table back to the embed
   const saveEditedTable = () => {
     if (!editingTable) return;
     const newHTML = buildTableHTML(editingTable.data, editingTable.hasHeader);
 
     if (editingTable.node) {
-      // Update the DOM node directly
       editingTable.node.innerHTML = newHTML;
 
-      // Sync Quill state
       if (quillRef.current) {
         const quill = quillRef.current.getEditor();
         const updatedContent = quill.root.innerHTML;
@@ -438,7 +408,6 @@ function CreateBlogInner() {
     setEditingTable(null);
   };
 
-  // Delete the table embed entirely
   const deleteEditedTable = () => {
     if (!editingTable?.node) return;
     editingTable.node.remove();
@@ -450,7 +419,6 @@ function CreateBlogInner() {
     setEditingTable(null);
   };
 
-  // Auto-generate slug from title
   useEffect(() => {
     if (formData.title) {
       const generatedSlug = formData.title
@@ -493,7 +461,6 @@ function CreateBlogInner() {
     setShowTableModal(false);
   };
 
-  // ========== DRAG & DROP IMAGE UPLOAD ==========
   const [isDraggingOver, setIsDraggingOver] = useState(false);
 
   const handleEditorDrop = async (e) => {
@@ -548,13 +515,11 @@ function CreateBlogInner() {
     setIsDraggingOver(false);
   };
 
-  // ========== BLOCK REORDER ==========
   const [showReorder, setShowReorder] = useState(false);
   const [reorderBlocks, setReorderBlocks] = useState([]);
   const [dragIdx, setDragIdx] = useState(null);
 
   const openReorderModal = () => {
-    // Split HTML content into block-level elements
     const temp = document.createElement('div');
     temp.innerHTML = formData.content || '';
     const blocks = [];
@@ -660,13 +625,11 @@ function CreateBlogInner() {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Validate file type
     if (!file.type.startsWith('image/')) {
       setUploadError('Please select an image file');
       return;
     }
 
-    // Validate file size (5MB max)
     if (file.size > 5 * 1024 * 1024) {
       setUploadError('File size must be less than 5MB');
       return;
@@ -704,7 +667,6 @@ function CreateBlogInner() {
     setError('');
 
     try {
-      // Prepare data for submission
       const dataToSubmit = {
         ...formData,
         tags: formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag),
@@ -719,7 +681,7 @@ function CreateBlogInner() {
       });
 
       if (res.ok) {
-        router.push('/admin/blogs');
+        router.push('/admin/blog/blogs');
       } else {
         const errorData = await res.json();
         setError(errorData.message || 'Failed to create blog');
@@ -795,22 +757,10 @@ function CreateBlogInner() {
               <SearchableDropdown
                 label="Category *"
                 value={formData.category}
-                onChange={(val) => setFormData(prev => ({ ...prev, category: val, subcategory: '' }))}
+                onChange={(val) => setFormData(prev => ({ ...prev, category: val }))}
                 options={parentCategories}
                 placeholder="Select or create category"
-                onCreateNew={(name) => openCreateModal('category', name)}
-              />
-            </div>
-
-            <div>
-              <SearchableDropdown
-                label="Subcategory"
-                value={formData.subcategory}
-                onChange={(val) => setFormData(prev => ({ ...prev, subcategory: val }))}
-                options={subcategories}
-                placeholder={formData.category ? (subcategories.length === 0 ? 'No subcategories - create one' : 'Select or create subcategory') : 'Select Category first'}
-                disabled={!formData.category}
-                onCreateNew={formData.category ? (name) => openCreateModal('subcategory', name) : null}
+                onCreateNew={(name) => openCreateModal(name)}
               />
             </div>
 
@@ -982,7 +932,7 @@ function CreateBlogInner() {
           <div className="flex justify-end space-x-4 pt-6 border-t border-[#3F3F46]/10">
             <button
               type="button"
-              onClick={() => router.push('/admin/blogs')}
+              onClick={() => router.push('/admin/blog/blogs')}
               className="px-6 py-2 border border-[#3F3F46]/20 text-[#18181B] rounded-md hover:bg-[#3F3F46]/5 transition-colors duration-200 cursor-pointer font-space-grotesk"
             >
               Cancel
@@ -997,7 +947,6 @@ function CreateBlogInner() {
           </div>
         </form>
 
-        {/* Table Insert Modal */}
         {showTableModal && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4">
@@ -1044,7 +993,6 @@ function CreateBlogInner() {
           </div>
         )}
 
-        {/* Table Edit Modal */}
         {editingTable && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-lg p-6 max-w-3xl w-full mx-4 max-h-[80vh] overflow-auto">
@@ -1106,7 +1054,6 @@ function CreateBlogInner() {
                         </td>
                       </tr>
                     ))}
-                    {/* Column remove buttons */}
                     <tr>
                       {editingTable.data[0]?.map((_, colIdx) => (
                         <td key={colIdx} style={{ border: 'none', padding: '4px', textAlign: 'center' }}>
@@ -1156,7 +1103,6 @@ function CreateBlogInner() {
           </div>
         )}
 
-        {/* Table embed hover styles */}
         <style jsx global>{`
           .ql-table-embed {
             cursor: pointer;
@@ -1184,7 +1130,6 @@ function CreateBlogInner() {
           }
         `}</style>
 
-        {/* Reorder Blocks Modal */}
         {showReorder && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[80vh] flex flex-col">
@@ -1211,17 +1156,13 @@ function CreateBlogInner() {
                           : 'border-[#3F3F46]/15 bg-white hover:bg-gray-50'
                       }`}
                     >
-                      {/* Drag handle */}
                       <span className="text-[#3F3F46]/40 text-sm flex-shrink-0 cursor-grab">⠿</span>
-                      {/* Block type icon */}
                       <span className="w-6 h-6 rounded bg-gray-100 flex items-center justify-center text-xs font-bold text-[#3F3F46] flex-shrink-0">
                         {getBlockIcon(block.tag)}
                       </span>
-                      {/* Block preview */}
                       <span className="flex-1 text-sm text-[#18181B] truncate">
                         {getBlockLabel(block)}
                       </span>
-                      {/* Remove button */}
                       <button
                         type="button"
                         onClick={(e) => { e.stopPropagation(); removeReorderBlock(idx); }}
@@ -1255,23 +1196,15 @@ function CreateBlogInner() {
           </div>
         )}
 
-        {/* Create Category Modal */}
         {createModal.isOpen && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl">
               <h3 className="text-lg font-semibold text-[#18181B] mb-2">
-                Create New {createModal.type === 'subcategory' ? 'Subcategory' : 'Category'}
+                Create New Category
               </h3>
               <p className="text-sm text-[#3F3F46] mb-4">
-                Create &quot;<span className="font-medium text-[#18181B]">{createModal.name}</span>&quot; as a new {createModal.type === 'subcategory' ? 'subcategory' : 'category'}.
+                Create &quot;<span className="font-medium text-[#18181B]">{createModal.name}</span>&quot; as a new category.
               </p>
-
-              {createModal.type === 'subcategory' && formData.category && (
-                <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-                  <span className="text-xs text-[#3F3F46] uppercase tracking-wide">Parent Category</span>
-                  <p className="font-medium text-[#18181B]">{formData.category}</p>
-                </div>
-              )}
 
               <div className="flex gap-3">
                 <button
@@ -1282,10 +1215,7 @@ function CreateBlogInner() {
                   Cancel
                 </button>
                 <button
-                  onClick={() => {
-                    const parentCategory = categories.find(c => c.name === formData.category);
-                    handleCreateCategory(createModal.name, createModal.type === 'subcategory' ? parentCategory?._id : null);
-                  }}
+                  onClick={() => handleCreateCategory(createModal.name)}
                   disabled={createModal.loading}
                   className="flex-1 py-2 px-4 bg-[#2563EB] text-white rounded-lg hover:bg-[#1d4ed8] disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
                 >
@@ -1298,7 +1228,7 @@ function CreateBlogInner() {
                       Creating...
                     </>
                   ) : (
-                    <>Create {createModal.type === 'subcategory' ? 'Subcategory' : 'Category'}</>
+                    <>Create Category</>
                   )}
                 </button>
               </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
@@ -159,7 +159,6 @@ export default function EditBlog() {
     title: '',
     slug: '',
     category: '',
-    subcategory: '',
     featuredImage: '',
     excerpt: '',
     content: '',
@@ -174,37 +173,55 @@ export default function EditBlog() {
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState('');
   const [categories, setCategories] = useState([]);
-  const [subcategories, setSubcategories] = useState([]);
   const [createModal, setCreateModal] = useState({ isOpen: false, type: '', name: '', loading: false });
+
+  const fetchCategories = useCallback(async () => {
+    try {
+      const res = await fetch('/api/categories');
+      if (res.ok) {
+        const cats = await res.json();
+        setCategories(cats);
+      }
+    } catch (error) {
+      console.error('Failed to fetch categories');
+    }
+  }, []);
 
   // Fetch categories and blog data on mount
   useEffect(() => {
-    async function fetchCategories() {
-      try {
-        const res = await fetch('/api/categories');
-        if (res.ok) {
-          const cats = await res.json();
-          setCategories(cats);
-        }
-      } catch (error) {
-        console.error('Failed to fetch categories');
-      }
-    }
-
     async function fetchBlog() {
       try {
         const res = await fetch(`/api/blogs/${slug}`);
         if (res.ok) {
           const blog = await res.json();
+          
+          // Handle category - could be object (populated) or ObjectId (legacy)
+          let categoryValue = '';
+          if (blog.category) {
+            if (typeof blog.category === 'object' && blog.category.name) {
+              categoryValue = blog.category.name;
+            } else if (typeof blog.category === 'string') {
+              categoryValue = blog.category;
+            }
+          }
+          
+          // Handle tags - could be array of objects (populated) or array of strings/ObjectIds (legacy)
+          let tagsValue = '';
+          if (blog.tags && Array.isArray(blog.tags)) {
+            tagsValue = blog.tags.map(t => {
+              if (typeof t === 'object' && t.name) return t.name;
+              return t;
+            }).join(', ');
+          }
+          
           setFormData({
             title: blog.title || '',
             slug: blog.slug || '',
-            category: blog.category || '',
-            subcategory: blog.subcategory || '',
+            category: categoryValue,
             featuredImage: blog.featuredImage || '',
             excerpt: blog.excerpt || '',
             content: blog.content || '',
-            tags: blog.tags ? blog.tags.join(', ') : '',
+            tags: tagsValue,
             seoTitle: blog.seoTitle || '',
             seoDescription: blog.seoDescription || '',
             published: blog.published || false,
@@ -223,24 +240,9 @@ export default function EditBlog() {
     if (slug) {
       fetchBlog();
     }
-  }, [slug]);
+  }, [slug, fetchCategories]);
 
-  // Update subcategories when category changes
-  useEffect(() => {
-    if (formData.category && categories.length > 0) {
-      const parentCat = categories.find(c => c.name === formData.category && !c.parent);
-      if (parentCat) {
-        const subs = categories.filter(c => c.parent?.toString() === parentCat._id.toString());
-        setSubcategories(subs);
-      } else {
-        setSubcategories([]);
-      }
-    } else {
-      setSubcategories([]);
-    }
-  }, [formData.category, categories]);
-
-  const handleCreateCategory = async (name, parentId = null) => {
+  const handleCreateCategory = async (name) => {
     setCreateModal(prev => ({ ...prev, loading: true }));
     try {
       const res = await fetch('/api/categories', {
@@ -249,7 +251,6 @@ export default function EditBlog() {
         body: JSON.stringify({
           name: name.trim(),
           slug: name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, ''),
-          parent: parentId,
         }),
       });
 
@@ -258,11 +259,7 @@ export default function EditBlog() {
       const newCategory = await res.json();
       await fetchCategories();
 
-      if (parentId) {
-        setFormData(prev => ({ ...prev, subcategory: newCategory.name }));
-      } else {
-        setFormData(prev => ({ ...prev, category: newCategory.name, subcategory: '' }));
-      }
+      setFormData(prev => ({ ...prev, category: newCategory.name }));
 
       setCreateModal({ isOpen: false, type: '', name: '', loading: false });
     } catch (err) {
@@ -271,15 +268,15 @@ export default function EditBlog() {
     }
   };
 
-  const openCreateModal = (type, name) => {
-    setCreateModal({ isOpen: true, type, name, loading: false });
+  const openCreateModal = (name) => {
+    setCreateModal({ isOpen: true, type: 'category', name, loading: false });
   };
 
   const parentCategories = categories.filter(c => !c.parent);
 
-  // Auto-generate slug from title
+  // Auto-generate slug from title (only if slug is empty)
   useEffect(() => {
-    if (formData.title) {
+    if (formData.title && !formData.slug) {
       const generatedSlug = formData.title
         .toLowerCase()
         .replace(/[^\w\s-]/g, '') // Remove special characters
@@ -288,7 +285,7 @@ export default function EditBlog() {
         .trim();
       setFormData(prev => ({ ...prev, slug: generatedSlug }));
     }
-  }, [formData.title]);
+  }, [formData.title, formData.slug]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -413,7 +410,7 @@ export default function EditBlog() {
       });
 
       if (res.ok) {
-        router.push('/admin/blogs');
+        router.push('/admin/blog/blogs');
       } else {
         const errorData = await res.json();
         setError(errorData.message || 'Failed to update blog');
@@ -436,7 +433,7 @@ export default function EditBlog() {
       });
 
       if (res.ok) {
-        router.push('/admin/blogs');
+        router.push('/admin/blog/blogs');
       } else {
         setError('Failed to delete blog');
       }
@@ -529,22 +526,10 @@ export default function EditBlog() {
               <SearchableDropdown
                 label="Category *"
                 value={formData.category}
-                onChange={(val) => setFormData(prev => ({ ...prev, category: val, subcategory: '' }))}
+                onChange={(val) => setFormData(prev => ({ ...prev, category: val }))}
                 options={parentCategories}
                 placeholder="Select or create category"
-                onCreateNew={(name) => openCreateModal('category', name)}
-              />
-            </div>
-
-            <div>
-              <SearchableDropdown
-                label="Subcategory"
-                value={formData.subcategory}
-                onChange={(val) => setFormData(prev => ({ ...prev, subcategory: val }))}
-                options={subcategories}
-                placeholder={formData.category ? (subcategories.length === 0 ? 'No subcategories - create one' : 'Select or create subcategory') : 'Select Category first'}
-                disabled={!formData.category}
-                onCreateNew={formData.category ? (name) => openCreateModal('subcategory', name) : null}
+                onCreateNew={(name) => openCreateModal(name)}
               />
             </div>
 
@@ -689,7 +674,7 @@ export default function EditBlog() {
           <div className="flex justify-end space-x-4 pt-6 border-t border-[#3F3F46]/10">
             <button
               type="button"
-              onClick={() => router.push('/admin/blogs')}
+              onClick={() => router.push('/admin/blog/blogs')}
               className="px-6 py-2 border border-[#3F3F46]/20 text-[#18181B] rounded-md hover:bg-[#3F3F46]/5 transition-colors duration-200 cursor-pointer font-space-grotesk"
             >
               Cancel
@@ -756,18 +741,11 @@ export default function EditBlog() {
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl">
               <h3 className="text-lg font-semibold text-[#18181B] mb-2">
-                Create New {createModal.type === 'subcategory' ? 'Subcategory' : 'Category'}
+                Create New Category
               </h3>
               <p className="text-sm text-[#3F3F46] mb-4">
-                Create &quot;<span className="font-medium text-[#18181B]">{createModal.name}</span>&quot; as a new {createModal.type === 'subcategory' ? 'subcategory' : 'category'}.
+                Create &quot;<span className="font-medium text-[#18181B]">{createModal.name}</span>&quot; as a new category.
               </p>
-
-              {createModal.type === 'subcategory' && formData.category && (
-                <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-                  <span className="text-xs text-[#3F3F46] uppercase tracking-wide">Parent Category</span>
-                  <p className="font-medium text-[#18181B]">{formData.category}</p>
-                </div>
-              )}
 
               <div className="flex gap-3">
                 <button
@@ -778,10 +756,7 @@ export default function EditBlog() {
                   Cancel
                 </button>
                 <button
-                  onClick={() => {
-                    const parentCategory = categories.find(c => c.name === formData.category);
-                    handleCreateCategory(createModal.name, createModal.type === 'subcategory' ? parentCategory?._id : null);
-                  }}
+                  onClick={() => handleCreateCategory(createModal.name)}
                   disabled={createModal.loading}
                   className="flex-1 py-2 px-4 bg-[#2563EB] text-white rounded-lg hover:bg-[#1d4ed8] disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
                 >
@@ -794,7 +769,7 @@ export default function EditBlog() {
                       Creating...
                     </>
                   ) : (
-                    <>Create {createModal.type === 'subcategory' ? 'Subcategory' : 'Category'}</>
+                    <>Create Category</>
                   )}
                 </button>
               </div>

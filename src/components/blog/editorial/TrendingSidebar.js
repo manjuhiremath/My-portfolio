@@ -15,7 +15,8 @@ export default function TrendingSidebar({ trendingBlogs, recentBlogs, popularTag
         </div>
         <div className="divide-y divide-slate-100 pt-3">
           {(trendingBlogs || []).slice(0, 5).map((blog, index) => {
-            const categorySlug = slugify(blog.category);
+            const categoryName = blog.category?.name || blog.category;
+            const categorySlug = slugify(categoryName);
             const href = `/blog/${categorySlug}/${blog.slug}`;
 
             return (
@@ -28,7 +29,7 @@ export default function TrendingSidebar({ trendingBlogs, recentBlogs, popularTag
                     {blog.title}
                   </h3>
                   <p className="mt-1 text-[11px] font-medium text-slate-400">
-                    {blog.category} · {(blog.views || 0).toLocaleString()} views
+                    {categoryName} · {(blog.views || 0).toLocaleString()} views
                   </p>
                 </div>
               </Link>
@@ -47,13 +48,14 @@ export default function TrendingSidebar({ trendingBlogs, recentBlogs, popularTag
         </div>
         <div className="divide-y divide-slate-100 pt-3">
           {(recentBlogs || []).map((blog) => {
-            const categorySlug = slugify(blog.category);
+            const categoryName = blog.category?.name || blog.category;
+            const categorySlug = slugify(categoryName);
             const href = `/blog/${categorySlug}/${blog.slug}`;
 
             return (
               <Link key={blog._id} href={href} className="group block py-2.5 first:pt-0 last:pb-0">
                 <p className="text-[10px] font-bold text-orange-600 uppercase tracking-wider">
-                  {blog.category}
+                  {categoryName}
                 </p>
                 <h3 className="mt-1 line-clamp-2 text-sm font-semibold leading-snug text-slate-900 group-hover:text-orange-600 transition-colors">
                   {blog.title}

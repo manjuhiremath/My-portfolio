@@ -39,7 +39,6 @@ export default function AdminDashboardPage() {
         setLoading(true);
         const response = await fetch('/api/admin/dashboard/stats', {
           signal: controller.signal,
-          cache: 'no-store',
         });
         const data = await response.json();
         if (!response.ok || data.success === false) {
@@ -89,13 +88,13 @@ export default function AdminDashboardPage() {
         actions={[
           {
             label: 'Generate Blog',
-            href: '/admin/blogs/generate',
+            href: '/admin/blog/blogs/generate',
             icon: <FiZap className="h-3.5 w-3.5" />,
             variant: 'primary',
           },
           {
             label: 'Create Blog',
-            href: '/admin/blogs/create',
+            href: '/admin/blog/blogs/create',
             icon: <FiPlus className="h-3.5 w-3.5" />,
             variant: 'secondary',
           },
@@ -150,7 +149,7 @@ export default function AdminDashboardPage() {
             <article className="rounded-lg border border-slate-200 bg-white p-3">
               <div className="mb-2 flex items-center justify-between">
                 <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500">Monthly Views</h2>
-                <Link href="/admin/analytics" className="text-xs font-medium text-slate-700 hover:text-slate-900">
+                <Link href="/admin/blog/analytics" className="text-xs font-medium text-slate-700 hover:text-slate-900">
                   Full analytics
                 </Link>
               </div>
@@ -228,7 +227,7 @@ export default function AdminDashboardPage() {
                           <AdminStatusBadge value={blog.published ? 'Published' : 'Draft'} variant={blog.published ? 'success' : 'warning'} />
                         </td>
                         <td className="px-3 py-2 text-right">
-                          <Link href={`/admin/blogs/edit/${blog.slug}`} className="text-xs font-medium text-slate-700 hover:text-slate-900">
+                          <Link href={`/admin/blog/blogs/edit/${blog.slug}`} className="text-xs font-medium text-slate-700 hover:text-slate-900">
                             Edit
                           </Link>
                         </td>
@@ -247,7 +246,7 @@ export default function AdminDashboardPage() {
                 {topArticles.slice(0, 6).map((article, index) => (
                   <Link
                     key={article._id}
-                    href={`/admin/blogs/edit/${article.slug}`}
+                    href={`/admin/blog/blogs/edit/${article.slug}`}
                     className="flex items-start justify-between rounded-md border border-slate-200 px-2 py-1.5 hover:bg-slate-50"
                   >
                     <div className="min-w-0">

@@ -16,6 +16,7 @@ import {
   FiSearch,
   FiSettings,
   FiTarget,
+  FiTag,
   FiX,
 } from 'react-icons/fi';
 
@@ -23,6 +24,7 @@ const NAV_ITEMS = [
   { label: 'Dashboard', href: '/admin/blog/dashboard', icon: FiGrid },
   { label: 'Blogs', href: '/admin/blog/blogs', icon: FiBookOpen },
   { label: 'Categories', href: '/admin/blog/categories', icon: FiLayers },
+  { label: 'Tags', href: '/admin/blog/tags', icon: FiTag },
   { label: 'Media', href: '/admin/blog/media', icon: FiImage },
   { label: 'SEO Tools', href: '/admin/blog/seo-tools', icon: FiTarget },
   { label: 'Analytics', href: '/admin/blog/analytics', icon: FiBarChart2 },

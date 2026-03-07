@@ -4,6 +4,7 @@ import Blog from '@/models/Blog';
 import Category from '@/models/Category';
 import BlogCard from '@/components/blog/BlogCard';
 import Pagination from '@/components/Pagination';
+import Tag from '@/models/Tag';
 
 export const revalidate = 3600;
 const POSTS_PER_PAGE = 9;
@@ -22,29 +23,58 @@ function readableLabel(text = '') {
 
 export async function generateMetadata({ params }) {
   try {
+    const { category: rawCategory } = await params;
     await connectDB();
-    const categorySlug = params.category.toLowerCase();
-    const category = await Category.findOne({ slug: categorySlug }).lean();
-    const categoryName = category?.name || readableLabel(params.category);
-    const totalBlogs = await Blog.countDocuments({
-      category: { $regex: new RegExp(`^${categoryName}$`, 'i') },
-      published: true,
-    });
+    const categorySlug = rawCategory.toLowerCase();
+    
+    // First try to find by slug
+    let category = await Category.findOne({ slug: categorySlug }).lean();
+    
+    // If not found by slug, try to find by ObjectId
+    if (!category) {
+      const mongoose = (await import('mongoose')).default;
+      if (mongoose.Types.ObjectId.isValid(categorySlug) && categorySlug.length === 24) {
+        category = await Category.findById(categorySlug).lean();
+      }
+    }
+    
+    // If still not found, try to find by name
+    if (!category) {
+      category = await Category.findOne({ name: { $regex: new RegExp(`^${categorySlug}$`, 'i') } }).lean();
+    }
+    
+    if (!category) {
+      return {
+        title: 'Blog Category',
+        description: 'Browse category articles.',
+      };
+    }
 
-    const title = category?.seoTitle || `${categoryName} Articles`;
+    // Query for both ObjectId and string category
+    const categoryQuery = {
+      $or: [
+        { category: category._id },
+        { category: category.name }
+      ],
+      published: true
+    };
+    
+    const totalBlogs = await Blog.countDocuments(categoryQuery);
+
+    const title = category.seoTitle || `${category.name} Articles`;
     const description =
-      category?.seoDescription ||
-      `Browse ${totalBlogs} ${categoryName.toLowerCase()} article${totalBlogs === 1 ? '' : 's'} with practical insights and tutorials.`;
+      category.seoDescription ||
+      `Browse ${totalBlogs} ${category.name.toLowerCase()} article${totalBlogs === 1 ? '' : 's'} with practical insights and tutorials.`;
 
     return {
       title,
       description,
-      keywords: category?.keywords || [categoryName.toLowerCase()],
+      keywords: category.keywords || [category.name.toLowerCase()],
       openGraph: {
         title,
         description,
         type: 'website',
-        url: `/blog/${params.category}`,
+        url: `/blog/${rawCategory}`,
       },
       twitter: {
         card: 'summary',
@@ -64,29 +94,67 @@ async function getCategoryBlogs(categorySlug, page = 1) {
   await connectDB();
 
   const decodedSlug = categorySlug.toLowerCase();
-  const category = await Category.findOne({ slug: decodedSlug }).lean();
-  const categoryName = category?.name || readableLabel(categorySlug);
+  
+  // First try to find by slug
+  let category = await Category.findOne({ slug: decodedSlug }).lean();
+  
+  // If not found by slug, try to find by ObjectId (for backwards compatibility)
+  if (!category) {
+    const mongoose = (await import('mongoose')).default;
+    if (mongoose.Types.ObjectId.isValid(decodedSlug) && decodedSlug.length === 24) {
+      category = await Category.findById(decodedSlug).lean();
+    }
+  }
+  
+  // If still not found, try to find by name (for old blogs with string category)
+  if (!category) {
+    category = await Category.findOne({ name: { $regex: new RegExp(`^${decodedSlug}$`, 'i') } }).lean();
+  }
+  
+  if (!category) {
+    return null;
+  }
+  
   const skip = (page - 1) * POSTS_PER_PAGE;
 
-  const [blogs, totalBlogs] = await Promise.all([
-    Blog.find({
-      category: { $regex: new RegExp(`^${categoryName}$`, 'i') },
-      published: true,
-    })
+  // Query for both ObjectId and string category (backwards compatibility)
+  const categoryQuery = {
+    $or: [
+      { category: category._id },
+      { category: category.name }
+    ],
+    published: true
+  };
+
+  const [blogsRaw, totalBlogs, allTags] = await Promise.all([
+    Blog.find(categoryQuery)
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(POSTS_PER_PAGE)
+      .populate('category')
+      .populate('tags')
       .lean(),
-    Blog.countDocuments({
-      category: { $regex: new RegExp(`^${categoryName}$`, 'i') },
-      published: true,
-    }),
+    Blog.countDocuments(categoryQuery),
+    Tag.find({}).lean()
   ]);
 
+  // Create tag map for any unpopulated IDs
+  const tagMap = {};
+  allTags.forEach(t => {
+    tagMap[t._id.toString()] = t.name;
+  });
+
+  // Map blogs to ensure clean data for BlogCard
+  const blogs = blogsRaw.map(blog => ({
+    ...blog,
+    category: blog.category?.name || blog.category,
+    tags: (blog.tags || []).map(t => t?.name || tagMap[t?.toString?.()] || t)
+  }));
+
   return {
-    categoryName,
-    categorySlug: slugify(categoryName),
-    categoryColor: category?.color || '#6366f1',
+    categoryName: category.name,
+    categorySlug: category.slug,
+    categoryColor: category.color || '#6366f1',
     blogs,
     totalBlogs,
     totalPages: Math.ceil(totalBlogs / POSTS_PER_PAGE),
@@ -95,8 +163,10 @@ async function getCategoryBlogs(categorySlug, page = 1) {
 }
 
 export default async function CategoryPage({ params, searchParams }) {
-  const page = Math.max(1, Number(searchParams?.page) || 1);
-  const data = await getCategoryBlogs(params.category, page);
+  const { category } = await params;
+  const { page: pageParam } = await searchParams;
+  const page = Math.max(1, Number(pageParam) || 1);
+  const data = await getCategoryBlogs(category, page);
 
   if (!data) {
     return (

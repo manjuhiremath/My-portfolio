@@ -13,6 +13,7 @@ import {
   FiSearch,
   FiZap,
   FiTrash2,
+  FiExternalLink,
 } from 'react-icons/fi';
 import { toast } from 'sonner';
 import AdminActionToolbar from '@/components/admin/ui/AdminActionToolbar';
@@ -70,8 +71,8 @@ export default function AdminBlogsClient() {
       try {
         setLoading(true);
         const [blogsRes, categoriesRes] = await Promise.all([
-          fetch('/api/blogs?limit=300&published=all', { signal: controller.signal, cache: 'no-store' }),
-          fetch('/api/categories', { signal: controller.signal, cache: 'no-store' }),
+          fetch('/api/blogs?limit=300&published=all', { signal: controller.signal }),
+          fetch('/api/categories', { signal: controller.signal }),
         ]);
 
         const blogsJson = await blogsRes.json();
@@ -81,7 +82,7 @@ export default function AdminBlogsClient() {
           throw new Error(blogsJson.error || 'Failed to fetch blogs');
         }
         if (!categoriesRes.ok) {
-          throw new Error('Failed to fetch categories');
+          throw new Error(categoriesJson.error || 'Failed to fetch categories');
         }
 
         const rows = (blogsJson.blogs || []).map((blog) => ({
@@ -93,6 +94,7 @@ export default function AdminBlogsClient() {
         setCategories(Array.isArray(categoriesJson) ? categoriesJson : []);
       } catch (error) {
         if (error.name === 'AbortError') return;
+        console.error('Load data error:', error);
         toast.error(error.message || 'Failed to load blogs');
       } finally {
         setLoading(false);
@@ -116,7 +118,10 @@ export default function AdminBlogsClient() {
         status === 'all' ||
         (status === 'published' && blog.published) ||
         (status === 'draft' && !blog.published);
-      const matchesCategory = category === 'all' || blog.category === category;
+      const matchesCategory = category === 'all' || 
+        blog.category?.name === category || 
+        blog.category === category ||
+        (typeof blog.category === 'object' && blog.category?._id === category);
       return matchesQuery && matchesStatus && matchesCategory;
     });
 
@@ -133,7 +138,7 @@ export default function AdminBlogsClient() {
   async function refresh() {
     try {
       setLoading(true);
-      const response = await fetch('/api/blogs?limit=300&published=all', { cache: 'no-store' });
+      const response = await fetch('/api/blogs?limit=300&published=all');
       const data = await response.json();
       if (!response.ok || data.success === false) {
         throw new Error(data.error || 'Failed to refresh blogs');
@@ -162,6 +167,20 @@ export default function AdminBlogsClient() {
     } finally {
       setActiveAction(null);
     }
+  }
+
+  function previewBlog(target) {
+    const categoryName = target.category?.name || target.category || 'uncategorized';
+    // Use a simple slugify logic if utility not imported, or handle string directly
+    const categorySlug = String(categoryName)
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-');
+      
+    const url = `/blog/${categorySlug}/${target.slug}`;
+    window.open(url, '_blank');
   }
 
   async function togglePublish(target) {
@@ -208,8 +227,8 @@ export default function AdminBlogsClient() {
         title="Blogs"
         description="Compact blog operations table with quick SEO controls."
         actions={[
-          { label: 'Generate AI Blog', href: '/admin/blogs/generate', icon: <FiZap className="h-3.5 w-3.5" />, variant: 'secondary' },
-          { label: 'Create Blog', href: '/admin/blogs/create', icon: <FiPlus className="h-3.5 w-3.5" />, variant: 'primary' },
+          { label: 'Generate AI Blog', href: '/admin/blog/blogs/generate', icon: <FiZap className="h-3.5 w-3.5" />, variant: 'secondary' },
+          { label: 'Create Blog', href: '/admin/blog/blogs/create', icon: <FiPlus className="h-3.5 w-3.5" />, variant: 'primary' },
         ]}
       />
 
@@ -325,8 +344,7 @@ export default function AdminBlogsClient() {
                       <p className="truncate text-[11px] text-slate-500">{blog.slug}</p>
                     </td>
                     <td className="px-3 py-2 text-slate-600">
-                      {blog.category || 'Uncategorized'}
-                      {blog.subcategory ? ` / ${blog.subcategory}` : ''}
+                      {blog.category?.name || blog.category || 'Uncategorized'}
                     </td>
                     <td className="px-3 py-2">
                       <AdminStatusBadge value={`${blog.seoScore}/100`} variant={getSeoVariant(blog.seoScore)} />
@@ -338,9 +356,14 @@ export default function AdminBlogsClient() {
                     </td>
                     <td className="px-3 py-2">
                       <div className="ml-auto flex w-fit items-center gap-1">
-                        <Link href={`/admin/blogs/edit/${blog.slug}`} className="inline-flex h-7 items-center rounded border border-slate-300 px-2 text-[11px] font-medium text-slate-700 hover:bg-slate-50">
-                          Quick Edit
-                        </Link>
+                        <button
+                          type="button"
+                          onClick={() => previewBlog(blog)}
+                          className="inline-flex h-7 items-center rounded border border-slate-300 px-2 text-[11px] font-medium text-slate-700 hover:bg-slate-50"
+                        >
+                          <FiExternalLink className="mr-1 h-3 w-3" />
+                          Preview
+                        </button>
                         <div className="relative">
                           <button
                             type="button"
@@ -351,6 +374,12 @@ export default function AdminBlogsClient() {
                           </button>
                           {activeAction === blog._id ? (
                             <div className="absolute right-0 top-8 z-10 w-36 rounded-md border border-slate-200 bg-white p-1 shadow-lg">
+                              <Link
+                                href={`/admin/blog/blogs/edit/${blog.slug}`}
+                                className="flex h-7 w-full items-center rounded px-2 text-left text-[11px] text-slate-700 hover:bg-slate-100"
+                              >
+                                Quick Edit
+                              </Link>
                               <button
                                 type="button"
                                 onClick={() => togglePublish(blog)}

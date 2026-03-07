@@ -46,10 +46,11 @@ export default function TopStories({ blogs, getCategoryColor }) {
       {/* Stories Grid */}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:gap-8">
         {blogs.map((blog) => {
-          const categorySlug = slugify(blog.category);
+          const categoryName = blog.category?.name || blog.category;
+          const categorySlug = slugify(categoryName);
           const href = `/blog/${categorySlug}/${blog.slug}`;
           const imageUrl = fixUnsplashUrl(blog.featuredImage);
-          const categoryColor = getCategoryColor(blog.category);
+          const categoryColor = getCategoryColor(blog.category?.name || blog.category?._id || blog.category);
 
           return (
             <article key={blog._id} className="group">
@@ -71,7 +72,7 @@ export default function TopStories({ blogs, getCategoryColor }) {
                     className="rounded-lg px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-lg backdrop-blur-sm"
                     style={{ backgroundColor: categoryColor }}
                   >
-                    {blog.category}
+                    {categoryName}
                   </span>
                 </div>
 
@@ -85,7 +86,9 @@ export default function TopStories({ blogs, getCategoryColor }) {
               {/* Content */}
               <div className="space-y-2.5 pt-4">
                 <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider">
-                  <span className="text-orange-600">{blog.tags?.[0] || blog.category}</span>
+                  <span className="text-orange-600">
+                    {blog.tags?.[0]?.name || blog.tags?.[0] || categoryName}
+                  </span>
                   <span className="h-1 w-1 rounded-full bg-slate-300" />
                   <span className="text-slate-400">{formatDate(blog.createdAt)}</span>
                 </div>
