@@ -1,3 +1,4 @@
+import mongoose from "mongoose"
 import { connectDB } from "@/lib/mongodb"
 import Tag from "@/models/Tag"
 import Blog from "@/models/Blog"
@@ -7,6 +8,11 @@ export async function GET(req, { params }) {
   try {
     const { id } = await params;
     await connectDB()
+    
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return Response.json({ error: "Invalid tag ID" }, { status: 400 })
+    }
+    
     const tag = await Tag.findById(id).populate('categories')
     if (!tag) {
       return Response.json({ error: "Tag not found" }, { status: 404 })
@@ -21,6 +27,11 @@ export async function PUT(req, { params }) {
   try {
     const { id } = await params;
     await connectDB()
+    
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return Response.json({ error: "Invalid tag ID" }, { status: 400 })
+    }
+    
     const data = await req.json()
 
     const oldTag = await Tag.findById(id)
@@ -77,6 +88,10 @@ export async function DELETE(req, { params }) {
   try {
     const { id } = await params;
     await connectDB()
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return Response.json({ error: "Invalid tag ID" }, { status: 400 })
+    }
 
     // Remove tag from all categories
     await Category.updateMany(

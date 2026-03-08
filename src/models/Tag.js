@@ -20,6 +20,5 @@ const TagSchema = new mongoose.Schema({
   }],
 }, { timestamps: true })
 
-TagSchema.index({ slug: 1 })
 
 export default mongoose.models.Tag || mongoose.model("Tag", TagSchema)

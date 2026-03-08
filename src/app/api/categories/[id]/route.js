@@ -1,3 +1,4 @@
+import mongoose from "mongoose"
 import { connectDB } from "@/lib/mongodb"
 import Category from "@/models/Category"
 import Tag from "@/models/Tag"
@@ -7,6 +8,11 @@ export async function GET(req, { params }) {
   try {
     const { id } = await params;
     await connectDB()
+    
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return Response.json({ error: "Invalid category ID" }, { status: 400 })
+    }
+    
     const category = await Category.findById(id).populate('tags')
     if (!category) {
       return Response.json({ error: "Category not found" }, { status: 404 })
@@ -21,6 +27,11 @@ export async function PUT(req, { params }) {
   try {
     const { id } = await params;
     await connectDB()
+    
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return Response.json({ error: "Invalid category ID" }, { status: 400 })
+    }
+    
     const data = await req.json()
 
     const original = await Category.findById(id)
@@ -88,6 +99,10 @@ export async function DELETE(req, { params }) {
   try {
     const { id } = await params;
     await connectDB()
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return Response.json({ error: "Invalid category ID" }, { status: 400 })
+    }
 
     const category = await Category.findById(id)
     if (!category) {
