@@ -55,14 +55,26 @@ export async function GET(req){
    
    const skip = (page - 1) * limit
    
-   // Use lean to avoid populate issues with legacy string categories
+    // Use lean to avoid populate issues with legacy string categories
+    // Only populate tags if they contain valid ObjectIds
     const blogs = await Blog.find(query)
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
       .populate('category')
-      .populate('tags')
       .lean()
+    
+    // Manually populate tags only if they are valid ObjectIds
+    for (const blog of blogs) {
+      if (blog.tags && blog.tags.length > 0) {
+        const objectIdTags = blog.tags.filter(t => /^[0-9a-fA-F]{24}$/.test(String(t)))
+        if (objectIdTags.length > 0) {
+          const populatedTags = await Tag.find({ _id: { $in: objectIdTags } }).lean()
+          blog.tags = populatedTags
+        }
+        // Keep string tags as-is if no valid ObjectIds found
+      }
+    }
     
     console.log('Sample blog category:', blogs[0]?.category)
    
