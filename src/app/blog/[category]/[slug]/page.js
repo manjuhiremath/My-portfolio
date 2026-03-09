@@ -10,6 +10,7 @@ import TableOfContents from '@/components/blog/TableOfContents';
 import ArticleAd from '@/components/ads/ArticleAd';
 import SidebarAd from '@/components/ads/SidebarAd';
 import MultiplexAd from '@/components/ads/MultiplexAd';
+import { FiClock, FiEye } from 'react-icons/fi';
 import { fixUnsplashUrl, slugify } from '@/lib/utils';
 
 export const revalidate = 3600;
