@@ -217,6 +217,29 @@ function calculateReadingTime(content = '') {
   return Math.max(1, Math.round(words / 220));
 }
 
+/**
+ * Strip duplicate FAQ section from content if it already exists in blog.faq (Issue 12).
+ */
+function stripDuplicateFaq(content = '', hasFaqArray = false) {
+  if (!hasFaqArray) return content;
+  
+  // Look for <h2>Frequently Asked Questions</h2> and everything after it
+  const faqPatterns = [
+    /<h2>Frequently Asked Questions<\/h2>[\s\S]*$/i,
+    /<h3>Frequently Asked Questions<\/h3>[\s\S]*$/i,
+    /<h2[^>]*>FAQ(?:s)?<\/h2>[\s\S]*$/i
+  ];
+
+  let cleaned = content;
+  for (const pattern of faqPatterns) {
+    if (pattern.test(cleaned)) {
+      cleaned = cleaned.replace(pattern, '');
+      break;
+    }
+  }
+  return cleaned;
+}
+
 export async function generateMetadata({ params }) {
   try {
     const { slug } = await params;
@@ -387,6 +410,8 @@ export default async function BlogPostPage({ params }) {
     });
 
     let rawContent = getRenderableContent(blog.content || '');
+    // Strip duplicate FAQ if array exists (Issue 12)
+    rawContent = stripDuplicateFaq(rawContent, blog.faq?.length > 0);
     // Inject section images after H2 headings (Issue 1)
     rawContent = injectSectionImages(rawContent, blog.sectionImages || []);
     const { html: renderableContent, headings } = addHeadingIds(rawContent);

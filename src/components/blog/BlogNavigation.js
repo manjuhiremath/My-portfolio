@@ -32,7 +32,12 @@ export default function BlogNavigation() {
         const catsData = await catsRes.json();
         const blogsData = await blogsRes.json();
         
-        setCategories(Array.isArray(catsData) ? catsData.filter(c => !c.parent) : []);
+        const EXCLUDED_CATEGORIES = ['Content', 'Content Strategy'];
+        const filteredCats = Array.isArray(catsData) 
+          ? catsData.filter(c => !c.parent && !EXCLUDED_CATEGORIES.includes(c.name)) 
+          : [];
+        
+        setCategories(filteredCats);
         setTotalBlogs(blogsData.pagination?.total || blogsData.total || 0);
       } catch (error) {
         console.error('Failed to load nav data:', error);
