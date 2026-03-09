@@ -284,6 +284,12 @@ body {
   color: #334155; /* slate-700 */
 }
 
+.blog-content strong,
+.blog-content b {
+  font-weight: 800;
+  color: inherit;
+}
+
 .dark .blog-content p {
   color: #cbd5e1; /* slate-300 */
 }

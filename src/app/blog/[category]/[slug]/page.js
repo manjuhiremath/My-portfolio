@@ -60,9 +60,21 @@ function formatInlineMarkdown(text = '') {
   let formatted = escapeHtml(text);
   formatted = formatted.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
   formatted = formatted.replace(/`([^`]+)`/g, '<code>$1</code>');
-  formatted = formatted.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-  formatted = formatted.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+  formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  formatted = formatted.replace(/\*(.*?)\*/g, '<em>$1</em>');
   return formatted;
+}
+
+/**
+ * Process inline markdown (bold, links, code) within a string that may already contain HTML tags.
+ * Unlike formatInlineMarkdown, this does NOT escape HTML tags.
+ * We avoid single-star italic here because it frequently conflicts with bullet points in mixed-format AI content.
+ */
+function processInlineMarkdownInHtml(html = '') {
+  return html
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
 }
 
 function formatPlainTextToHtml(content = '') {
@@ -117,7 +129,7 @@ function formatPlainTextToHtml(content = '') {
         html.push('<ul>');
         inUl = true;
       }
-      html.push(`<li>${escapeHtml(ulMatch[1])}</li>`);
+      html.push(`<li>${formatInlineMarkdown(ulMatch[1])}</li>`);
       continue;
     }
 
@@ -128,7 +140,7 @@ function formatPlainTextToHtml(content = '') {
         html.push('<ol>');
         inOl = true;
       }
-      html.push(`<li>${escapeHtml(olMatch[1])}</li>`);
+      html.push(`<li>${formatInlineMarkdown(olMatch[1])}</li>`);
       continue;
     }
 
@@ -176,7 +188,7 @@ function getRenderableContent(content = '') {
   // Decode HTML entities before processing
   cleaned = decodeHtmlEntities(cleaned);
   const looksLikeHtml = /<([a-z][\w-]*)(\s[^>]*)?>/.test(cleaned);
-  if (looksLikeHtml) return cleaned;
+  if (looksLikeHtml) return processInlineMarkdownInHtml(cleaned);
   return formatPlainTextToHtml(cleaned);
 }
 
