@@ -30,7 +30,7 @@ export default function FeaturedHero({ blog, categoryColor = '#6366f1' }) {
   const imageUrl = fixUnsplashUrl(blog.featuredImage);
 
   return (
-    <article className="relative overflow-hidden rounded-2xl bg-white shadow-lg shadow-slate-200/50 lg:rounded-3xl">
+    <article className="relative overflow-hidden rounded-2xl bg-white dark:bg-slate-800 shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50 lg:rounded-3xl border border-slate-100 dark:border-slate-700">
       <div className="grid grid-cols-1 lg:grid-cols-12">
         {/* Image Side - 7 columns */}
         <div className="relative aspect-[16/10] lg:col-span-7 lg:aspect-auto lg:min-h-[480px] xl:min-h-[520px]">
@@ -62,7 +62,7 @@ export default function FeaturedHero({ blog, categoryColor = '#6366f1' }) {
             {/* Label */}
             <div className="flex items-center gap-2">
               <span className="h-1.5 w-8 rounded-full" style={{ backgroundColor: categoryColor }} />
-              <span className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">Featured Article</span>
+              <span className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Featured Article</span>
             </div>
 
             {/* Category badge - Desktop */}
@@ -78,20 +78,20 @@ export default function FeaturedHero({ blog, categoryColor = '#6366f1' }) {
 
             {/* Headline */}
             <Link href={href} className="group block">
-              <h1 className="text-xl font-bold leading-tight tracking-tight text-slate-900 transition-colors group-hover:text-orange-600 sm:text-2xl lg:text-2xl xl:text-3xl">
+              <h1 className="text-xl font-bold leading-tight tracking-tight text-slate-900 dark:text-white transition-colors group-hover:text-orange-600 sm:text-2xl lg:text-2xl xl:text-3xl">
                 {blog.title}
               </h1>
             </Link>
 
             {/* Excerpt */}
-            <p className="line-clamp-2 text-sm leading-relaxed text-slate-600 sm:text-base lg:line-clamp-3">
+            <p className="line-clamp-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400 sm:text-base lg:line-clamp-3">
               {blog.excerpt || 'Explore this featured article to stay ahead in the industry with expert insights and practical guidance.'}
             </p>
 
             {/* Meta info */}
             <div className="flex flex-wrap items-center gap-3 pt-1 text-sm text-slate-500">
               <div className="flex items-center gap-2">
-                <div className="relative h-8 w-8 overflow-hidden rounded-full bg-slate-200 ring-2 ring-white">
+                <div className="relative h-8 w-8 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700 ring-2 ring-white dark:ring-slate-700">
                   <Image
                     src="/Profilemanju.jpeg"
                     alt="Manjunath M"
@@ -99,19 +99,19 @@ export default function FeaturedHero({ blog, categoryColor = '#6366f1' }) {
                     className="object-cover"
                   />
                 </div>
-                <span className="font-semibold text-slate-700 text-sm">Manjunath M</span>
+                <span className="font-semibold text-slate-700 dark:text-slate-200 text-sm">Manjunath M</span>
               </div>
 
-              <span className="hidden sm:inline text-slate-300">•</span>
+              <span className="hidden sm:inline text-slate-300 dark:text-slate-600">•</span>
 
-              <div className="flex items-center gap-1.5 text-slate-500">
+              <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
                 <FiClock className="h-4 w-4" />
                 <span className="text-sm">{blog.readingTime ? `${blog.readingTime} min read` : calculateReadingTime(blog.content)}</span>
               </div>
             </div>
 
             {/* Date */}
-            <p className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+            <p className="text-xs font-medium text-slate-400 dark:text-slate-500 uppercase tracking-wider">
               {formatDate(blog.createdAt)}
             </p>
 
@@ -119,7 +119,7 @@ export default function FeaturedHero({ blog, categoryColor = '#6366f1' }) {
             <div className="pt-2">
               <Link
                 href={href}
-                className="group inline-flex items-center gap-2 rounded-lg bg-slate-900 px-5 py-3 text-sm font-bold uppercase tracking-wide text-white transition-all hover:bg-orange-600 hover:shadow-lg active:scale-[0.98] sm:px-6"
+                className="group inline-flex items-center gap-2 rounded-lg bg-slate-900 dark:bg-white px-5 py-3 text-sm font-bold uppercase tracking-wide text-white dark:text-slate-900 transition-all hover:bg-orange-600 hover:text-white hover:shadow-lg active:scale-[0.98] sm:px-6"
               >
                 Read Article
                 <FiArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />

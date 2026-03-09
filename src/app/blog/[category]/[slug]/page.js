@@ -419,11 +419,11 @@ export default async function BlogPostPage({ params }) {
             <span className="max-w-[320px] truncate text-slate-700 dark:text-slate-300">{blog.title}</span>
           </nav>
 
-          <header className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5">
+          <header className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5 shadow-sm">
             <div className="mb-3 flex flex-wrap gap-2">
               <Link
                 href={`/blog?category=${encodeURIComponent(categoryName)}`}
-                className="rounded-full bg-orange-100 dark:bg-orange-900/30 px-3 py-1 text-xs font-medium text-orange-700 dark:text-orange-400 hover:bg-orange-200 transition-colors"
+                className="rounded-full bg-orange-100 dark:bg-orange-900/30 px-3 py-1 text-xs font-bold uppercase tracking-wider text-orange-700 dark:text-orange-400 hover:bg-orange-200 transition-colors"
               >
                 {categoryName}
               </Link>
@@ -431,26 +431,39 @@ export default async function BlogPostPage({ params }) {
                 <Link
                   key={tag}
                   href={`/blog/tag/${encodeURIComponent(tag)}`}
-                  className="rounded-full bg-slate-100 dark:bg-slate-700 px-3 py-1 text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+                  className="rounded-full bg-slate-100 dark:bg-slate-700 px-3 py-1 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
                 >
                   #{tag}
                 </Link>
               ))}
             </div>
-            <h1 className="text-3xl font-bold leading-tight tracking-tight text-slate-900 dark:text-white sm:text-4xl">
+            <h1 className="text-3xl font-black leading-tight tracking-tight text-slate-900 dark:text-white sm:text-4xl lg:text-5xl">
               {blog.title}
             </h1>
-            <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
+            <div className="mt-4 flex flex-wrap items-center gap-4 text-xs font-medium text-slate-500 dark:text-slate-400">
+              <div className="flex items-center gap-2">
+                <div className="relative h-6 w-6 overflow-hidden rounded-full ring-2 ring-white dark:ring-slate-700">
+                  <Image src="/Profilemanju.jpeg" alt="Author" fill className="object-cover" />
+                </div>
+                <span className="text-slate-700 dark:text-slate-200">Manjunath M</span>
+              </div>
+              <span className="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-600" />
               <span>{new Date(blog.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
-              <span>•</span>
-              <span>{readingTime} min read</span>
-              <span>•</span>
-              <span>{(blog.views || 0).toLocaleString()} views</span>
+              <span className="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-600" />
+              <span className="flex items-center gap-1.5">
+                <FiClock className="h-3.5 w-3.5" />
+                {readingTime} min read
+              </span>
+              <span className="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-600" />
+              <span className="flex items-center gap-1.5">
+                <FiEye className="h-3.5 w-3.5" />
+                {(blog.views || 0).toLocaleString()} views
+              </span>
             </div>
           </header>
 
           {blog.featuredImage ? (
-            <div className="relative mt-6 h-[240px] overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 sm:h-[340px] lg:h-[440px]">
+            <div className="relative mt-6 h-[240px] overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 shadow-xl sm:h-[340px] lg:h-[480px]">
               <Image
                 src={fixUnsplashUrl(blog.featuredImage)}
                 alt={blog.title}
@@ -459,10 +472,11 @@ export default async function BlogPostPage({ params }) {
                 className="object-cover"
                 priority
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
             </div>
           ) : null}
 
-          <section className="mt-8 grid grid-cols-1 gap-8 xl:grid-cols-[1fr_280px]">
+          <section className="mt-8 grid grid-cols-1 gap-8 xl:grid-cols-[1fr_320px]">
             <article className="min-w-0">
               <div className="blog-content leading-relaxed text-slate-700 dark:text-slate-300">
                 {contentParts.length > 1 ? (
@@ -479,12 +493,12 @@ export default async function BlogPostPage({ params }) {
               </div>
 
               {tagNames.length ? (
-                <div className="mt-8 flex flex-wrap gap-2 border-t border-slate-200 dark:border-slate-700 pt-6">
+                <div className="mt-10 flex flex-wrap gap-2 border-t border-slate-200 dark:border-slate-700 pt-8">
                   {tagNames.map((tag, index) => (
                     <Link
                       key={`${tag}-${index}`}
                       href={`/blog/tag/${encodeURIComponent(tag)}`}
-                      className="rounded-full bg-slate-100 dark:bg-slate-700 px-3 py-1 text-xs text-slate-700 dark:text-slate-300 hover:bg-orange-50 dark:hover:bg-orange-900/30 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
+                      className="rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-1.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:border-orange-300 dark:hover:border-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-600 dark:hover:text-orange-400 transition-all"
                     >
                       #{tag}
                     </Link>
@@ -494,34 +508,44 @@ export default async function BlogPostPage({ params }) {
 
               {/* FAQ Schema */}
               {blog.faq?.length ? (
-                <div className="mt-8 border-t border-slate-200 dark:border-slate-700 pt-6">
-                  <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">Frequently Asked Questions</h2>
+                <div className="mt-10 border-t border-slate-200 dark:border-slate-700 pt-8">
+                  <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">Frequently Asked Questions</h2>
                   <div className="space-y-4">
                     {blog.faq.map((item, i) => (
-                      <details key={i} className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
-                        <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-slate-900 dark:text-white hover:text-orange-600 dark:hover:text-orange-400">
+                      <details key={i} className="group rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 transition-all">
+                        <summary className="cursor-pointer px-5 py-4 text-base font-bold text-slate-900 dark:text-white hover:text-orange-600 dark:hover:text-orange-400 list-none flex items-center justify-between">
                           {item.question}
+                          <span className="transition-transform group-open:rotate-180">
+                            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                          </span>
                         </summary>
-                        <p className="px-4 pb-3 text-sm text-slate-600 dark:text-slate-400">{item.answer}</p>
+                        <div className="px-5 pb-4 text-slate-600 dark:text-slate-400 leading-relaxed border-t border-slate-100 dark:border-slate-700 mt-2 pt-4">
+                          {item.answer}
+                        </div>
                       </details>
                     ))}
                   </div>
                 </div>
               ) : null}
               
-              <MultiplexAd />
+              <div className="mt-10">
+                <MultiplexAd />
+              </div>
             </article>
 
-            <aside className="space-y-4 xl:sticky xl:top-24 xl:self-start">
+            <aside className="space-y-6 xl:sticky xl:top-24 xl:self-start">
               <TableOfContents headings={headings} />
               <SidebarAd />
             </aside>
           </section>
 
           {relatedBlogsRaw?.length ? (
-            <section className="mt-12">
-              <h2 className="mb-4 text-xl font-bold text-slate-900 dark:text-white">Related Articles</h2>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <section className="mt-16 border-t border-slate-200 dark:border-slate-700 pt-12">
+              <h2 className="mb-8 text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
+                <span className="h-8 w-1.5 rounded-full bg-orange-500" />
+                Related Articles
+              </h2>
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {relatedBlogsRaw.map((relatedBlog) => {
                   // Handle category resolution for related blogs
                   const rawRelatedCat = relatedBlog.category?.toString?.() || relatedBlog.category;
@@ -532,24 +556,32 @@ export default async function BlogPostPage({ params }) {
                     <Link
                       key={relatedBlog._id}
                       href={`/blog/${relatedCatSlug}/${relatedBlog.slug}`}
-                      className="group block overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
+                      className="group block overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl shadow-sm"
                     >
-                      <div className="relative h-40 bg-slate-100 dark:bg-slate-700">
+                      <div className="relative h-48 bg-slate-100 dark:bg-slate-700">
                         <Image
                           src={fixUnsplashUrl(relatedBlog.featuredImage)}
                           alt={relatedBlog.title}
                           fill
                           sizes="(max-width: 768px) 100vw, 33vw"
-                          className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
                         />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                       </div>
-                      <div className="p-3">
-                        <h3 className="line-clamp-2 text-sm font-semibold text-slate-900 dark:text-white group-hover:text-orange-600">
+                      <div className="p-5">
+                        <p className="text-[10px] font-bold text-orange-600 dark:text-orange-400 uppercase tracking-widest mb-2">
+                          {relatedCatName}
+                        </p>
+                        <h3 className="line-clamp-2 text-base font-bold text-slate-900 dark:text-white group-hover:text-orange-600 transition-colors">
                           {relatedBlog.title}
                         </h3>
-                        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                          {new Date(relatedBlog.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                        </p>
+                        <div className="mt-4 flex items-center justify-between text-xs text-slate-400 dark:text-slate-500">
+                          <span>{new Date(relatedBlog.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                          <span className="flex items-center gap-1">
+                            <FiEye className="h-3 w-3" />
+                            {(relatedBlog.views || 0).toLocaleString()}
+                          </span>
+                        </div>
                       </div>
                     </Link>
                   );

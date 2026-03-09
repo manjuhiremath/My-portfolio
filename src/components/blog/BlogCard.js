@@ -62,12 +62,12 @@ export default function BlogCard({ blog, categoryColor = '#6366f1', variant = 'd
           />
         </div>
         <div className="flex-1 min-w-0">
-          <h3 className="line-clamp-2 text-sm font-semibold leading-tight text-slate-900 dark:text-white group-hover:text-orange-600 transition-colors">
+          <h3 className="line-clamp-2 text-sm font-bold leading-tight text-slate-900 dark:text-slate-100 group-hover:text-orange-600 transition-colors">
             {blog.title}
           </h3>
-          <div className="flex items-center gap-2 mt-1.5 text-xs text-slate-400">
-            <span className="font-medium" style={{ color: categoryColor }}>{categoryValue || 'Uncategorized'}</span>
-            <span className="text-slate-500 dark:text-slate-500">·</span>
+          <div className="flex items-center gap-2 mt-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+            <span style={{ color: categoryColor }}>{categoryValue || 'Uncategorized'}</span>
+            <span className="h-0.5 w-0.5 rounded-full bg-slate-300 dark:bg-slate-600" />
             <span>{formatDate(blog.createdAt)}</span>
           </div>
         </div>

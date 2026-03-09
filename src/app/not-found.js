@@ -25,7 +25,7 @@ export default function NotFound() {
         </h2>
         
         <p className="text-slate-600 dark:text-slate-400 mb-8 leading-relaxed">
-          The article or page you're searching for seems to have moved or doesn't exist. Let's get you back on track.
+          The article or page you&apos;re searching for seems to have moved or doesn&apos;t exist. Let&apos;s get you back on track.
         </p>
         
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

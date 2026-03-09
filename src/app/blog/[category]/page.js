@@ -204,16 +204,16 @@ export default async function CategoryPage({ params, searchParams }) {
           <span className="text-slate-700 dark:text-slate-200">{categoryName}</span>
         </nav>
 
-        <header className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5">
+        <header className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5 shadow-sm">
           <span
-            className="inline-flex rounded-full px-3 py-1 text-xs font-medium text-white"
+            className="inline-flex rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider text-white shadow-sm"
             style={{ backgroundColor: categoryColor }}
           >
             Category
           </span>
-          <h1 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 dark:text-white">{categoryName}</h1>
-          <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
-            {totalBlogs} article{totalBlogs === 1 ? '' : 's'} in this category.
+          <h1 className="mt-3 text-3xl font-black tracking-tight text-slate-900 dark:text-white sm:text-4xl">{categoryName}</h1>
+          <p className="mt-2 text-sm font-medium text-slate-600 dark:text-slate-400 max-w-2xl">
+            Explore our curated collection of {totalBlogs} article{totalBlogs === 1 ? '' : 's'} in the {categoryName.toLowerCase()} category.
           </p>
         </header>
 

@@ -14,10 +14,10 @@ export default function CategorySection({ category, blogs, categoryColor }) {
             className="h-4 w-1 rounded-full"
             style={{ backgroundColor: categoryColor }}
           />
-          <h2 className="text-lg font-bold tracking-tight text-slate-900 uppercase sm:text-xl">
+          <h2 className="text-lg font-bold tracking-tight text-slate-900 dark:text-white uppercase sm:text-xl">
             {category}
           </h2>
-          <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-500">
+          <span className="rounded-full bg-slate-100 dark:bg-slate-700 px-2.5 py-0.5 text-xs font-semibold text-slate-500 dark:text-slate-400">
             {blogs.length}
           </span>
         </div>

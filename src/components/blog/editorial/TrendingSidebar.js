@@ -6,14 +6,14 @@ export default function TrendingSidebar({ trendingBlogs, recentBlogs, popularTag
   return (
     <div className="space-y-6">
       {/* Trending / Most Read Section */}
-      <section className="rounded-xl bg-white p-5 shadow-sm shadow-slate-100 border border-slate-100">
-        <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
+      <section className="rounded-xl bg-white dark:bg-slate-800 p-5 shadow-sm shadow-slate-100 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700">
+        <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-700">
           <FiTrendingUp className="h-4 w-4 text-orange-500" />
-          <h2 className="text-sm font-bold tracking-tight text-slate-900 uppercase">
+          <h2 className="text-sm font-bold tracking-tight text-slate-900 dark:text-white uppercase">
             Trending Now
           </h2>
         </div>
-        <div className="divide-y divide-slate-100 pt-3">
+        <div className="divide-y divide-slate-100 dark:divide-slate-700 pt-3">
           {(trendingBlogs || []).slice(0, 5).map((blog, index) => {
             const categoryName = blog.category?.name || blog.category;
             const categorySlug = slugify(categoryName);
@@ -25,10 +25,10 @@ export default function TrendingSidebar({ trendingBlogs, recentBlogs, popularTag
                   {index + 1}
                 </span>
                 <div className="flex-1 min-w-0">
-                  <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-slate-900 group-hover:text-orange-600 transition-colors">
+                  <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-slate-900 dark:text-slate-100 group-hover:text-orange-600 transition-colors">
                     {blog.title}
                   </h3>
-                  <p className="mt-1 text-[11px] font-medium text-slate-400">
+                  <p className="mt-1 text-[11px] font-medium text-slate-400 dark:text-slate-500">
                     {categoryName} · {(blog.views || 0).toLocaleString()} views
                   </p>
                 </div>
@@ -39,14 +39,14 @@ export default function TrendingSidebar({ trendingBlogs, recentBlogs, popularTag
       </section>
 
       {/* Recent Posts Section */}
-      <section className="rounded-xl bg-white p-5 shadow-sm shadow-slate-100 border border-slate-100">
-        <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
+      <section className="rounded-xl bg-white dark:bg-slate-800 p-5 shadow-sm shadow-slate-100 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700">
+        <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-700">
           <FiClock className="h-4 w-4 text-orange-500" />
-          <h2 className="text-sm font-bold tracking-tight text-slate-900 uppercase">
+          <h2 className="text-sm font-bold tracking-tight text-slate-900 dark:text-white uppercase">
             Fresh Posts
           </h2>
         </div>
-        <div className="divide-y divide-slate-100 pt-3">
+        <div className="divide-y divide-slate-100 dark:divide-slate-700 pt-3">
           {(recentBlogs || []).map((blog) => {
             const categoryName = blog.category?.name || blog.category;
             const categorySlug = slugify(categoryName);
@@ -54,13 +54,13 @@ export default function TrendingSidebar({ trendingBlogs, recentBlogs, popularTag
 
             return (
               <Link key={blog._id} href={href} className="group block py-2.5 first:pt-0 last:pb-0">
-                <p className="text-[10px] font-bold text-orange-600 uppercase tracking-wider">
+                <p className="text-[10px] font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider">
                   {categoryName}
                 </p>
-                <h3 className="mt-1 line-clamp-2 text-sm font-semibold leading-snug text-slate-900 group-hover:text-orange-600 transition-colors">
+                <h3 className="mt-1 line-clamp-2 text-sm font-semibold leading-snug text-slate-900 dark:text-slate-100 group-hover:text-orange-600 transition-colors">
                   {blog.title}
                 </h3>
-                <p className="mt-1 text-[11px] text-slate-400 font-medium">
+                <p className="mt-1 text-[11px] text-slate-400 dark:text-slate-500 font-medium">
                   {new Date(blog.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                 </p>
               </Link>
@@ -71,15 +71,15 @@ export default function TrendingSidebar({ trendingBlogs, recentBlogs, popularTag
           href="/blog"
           className="group mt-3 inline-flex items-center gap-1 text-xs font-semibold text-orange-600 hover:text-orange-700 transition-colors"
         >
-          View All Recent <FiArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+          <span>View All Recent</span> <FiArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
         </Link>
       </section>
 
       {/* Popular Tags Section — Issue 2: Link to /blog/tag/[tag] */}
-      <section className="rounded-xl bg-white p-5 shadow-sm shadow-slate-100 border border-slate-100">
-        <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
+      <section className="rounded-xl bg-white dark:bg-slate-800 p-5 shadow-sm shadow-slate-100 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700">
+        <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-700">
           <FiTag className="h-4 w-4 text-orange-500" />
-          <h2 className="text-sm font-bold tracking-tight text-slate-900 uppercase">
+          <h2 className="text-sm font-bold tracking-tight text-slate-900 dark:text-white uppercase">
             Popular Tags
           </h2>
         </div>
@@ -88,7 +88,7 @@ export default function TrendingSidebar({ trendingBlogs, recentBlogs, popularTag
             <Link
               key={tag}
               href={`/blog/tag/${encodeURIComponent(tag)}`}
-              className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-600 transition-all hover:border-orange-300 hover:bg-orange-50 hover:text-orange-600"
+              className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/50 px-3 py-1.5 text-xs font-semibold text-slate-600 dark:text-slate-300 transition-all hover:border-orange-300 dark:hover:border-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-600 dark:hover:text-orange-400"
             >
               #{tag}
             </Link>
