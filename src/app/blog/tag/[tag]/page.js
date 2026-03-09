@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { connectDB } from '@/lib/mongodb';
 import Blog from '@/models/Blog';
 import Tag from '@/models/Tag';
@@ -62,13 +63,7 @@ async function getTagBlogs(tag, page = 1) {
   const tagDoc = await Tag.findOne({ slug: tagSlug }).lean();
   
   if (!tagDoc) {
-    return {
-      tagName: decodeURIComponent(tag),
-      blogs: [],
-      total: 0,
-      totalPages: 0,
-      currentPage: page,
-    };
+    return null;
   }
   
   const skip = (page - 1) * POSTS_PER_PAGE;
@@ -125,6 +120,11 @@ export default async function TagPage({ params, searchParams }) {
   const { page: pageParam } = await searchParams;
   const page = Math.max(1, Number(pageParam) || 1);
   const data = await getTagBlogs(tag, page);
+
+  if (!data) {
+    notFound();
+  }
+
   const label = readableLabel(tag);
 
   return (

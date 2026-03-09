@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { connectDB } from '@/lib/mongodb';
 import Blog from '@/models/Blog';
 import Category from '@/models/Category';
@@ -301,17 +302,7 @@ export default async function BlogPostPage({ params }) {
     const blog = await Blog.findOne({ slug }).lean();
 
     if (!blog) {
-      return (
-        <div className="min-h-screen bg-background">
-          <div className="mx-auto max-w-4xl px-4 py-16 text-center">
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Blog not found</h1>
-            <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">The article you are looking for does not exist.</p>
-            <Link href="/blog" className="mt-4 inline-block text-orange-600 hover:underline">
-              Back to blog
-            </Link>
-          </div>
-        </div>
-      );
+      notFound();
     }
 
     // Handle category - could be ObjectId (new) or string (legacy)

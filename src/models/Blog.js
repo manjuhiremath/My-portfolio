@@ -17,6 +17,7 @@ const BlogSchema = new mongoose.Schema({
   readingTime: { type: Number, default: 5 },
 
   featuredImage:String,
+  thumbnailImage:String,
 
   // Support both string array (legacy) and ObjectId array (new) for tags
   tags: [{

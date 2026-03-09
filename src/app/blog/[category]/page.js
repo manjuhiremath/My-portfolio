@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { connectDB } from '@/lib/mongodb';
 import Blog from '@/models/Blog';
 import Category from '@/models/Category';
@@ -182,14 +183,7 @@ export default async function CategoryPage({ params, searchParams }) {
   const data = await getCategoryBlogs(category, page);
 
   if (!data) {
-    return (
-      <div className="min-h-screen bg-background">
-        <div className="mx-auto max-w-5xl px-4 py-16 text-center">
-          <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">Category not found</h1>
-          <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">The category you requested does not exist.</p>
-        </div>
-      </div>
-    );
+    notFound();
   }
 
   const { categoryName, categorySlug, categoryColor, blogs, totalBlogs, totalPages, currentPage } = data;
