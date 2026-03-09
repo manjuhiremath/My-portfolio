@@ -72,6 +72,9 @@ export async function generateMetadata({ params }) {
       title,
       description,
       keywords: category.keywords || [category.name.toLowerCase()],
+      alternates: {
+        canonical: `/blog/${rawCategory}`,
+      },
       openGraph: {
         title,
         description,
@@ -134,7 +137,6 @@ async function getCategoryBlogs(categorySlug, page = 1) {
       .skip(skip)
       .limit(POSTS_PER_PAGE)
       .populate('category')
-      .populate('tags')
       .lean(),
     Blog.countDocuments(categoryQuery),
     Tag.find({}).lean()
@@ -143,14 +145,23 @@ async function getCategoryBlogs(categorySlug, page = 1) {
   // Create tag map for any unpopulated IDs
   const tagMap = {};
   allTags.forEach(t => {
-    tagMap[t._id.toString()] = t.name;
+    const id = t._id.toString();
+    tagMap[id] = t.name;
+    // Also map by name for legacy string references
+    tagMap[t.name] = t.name;
   });
 
   // Map blogs to ensure clean data for BlogCard
   const blogs = blogsRaw.map(blog => ({
     ...blog,
     category: blog.category?.name || blog.category,
-    tags: (blog.tags || []).map(t => t?.name || tagMap[t?.toString?.()] || t)
+    tags: (blog.tags || []).map(t => {
+      // Handle populated Tag objects,Ids, Object and legacy strings
+      if (!t) return null;
+      if (typeof t === 'string') return tagMap[t] || t;
+      if (t.name) return t.name;
+      return tagMap[t._id?.toString()] || tagMap[t.toString()] || null;
+    }).filter(Boolean)
   }));
 
   return {
@@ -174,8 +185,8 @@ export default async function CategoryPage({ params, searchParams }) {
     return (
       <div className="min-h-screen bg-background">
         <div className="mx-auto max-w-5xl px-4 py-16 text-center">
-          <h1 className="text-2xl font-semibold text-slate-900">Category not found</h1>
-          <p className="mt-2 text-sm text-slate-600">The category you requested does not exist.</p>
+          <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">Category not found</h1>
+          <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">The category you requested does not exist.</p>
         </div>
       </div>
     );
@@ -187,33 +198,33 @@ export default async function CategoryPage({ params, searchParams }) {
     <div className="min-h-screen bg-background">
       <main className="mx-auto max-w-7xl space-y-6 px-4 py-8 sm:px-6 lg:px-8">
         <BannerAd />
-        <nav className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
-          <Link href="/" className="hover:text-slate-700">
+        <nav className="flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+          <Link href="/" className="hover:text-slate-700 dark:hover:text-slate-200">
             Home
           </Link>
           <span>/</span>
-          <Link href="/blog" className="hover:text-slate-700">
+          <Link href="/blog" className="hover:text-slate-700 dark:hover:text-slate-200">
             Blog
           </Link>
           <span>/</span>
-          <span className="text-slate-700">{categoryName}</span>
+          <span className="text-slate-700 dark:text-slate-200">{categoryName}</span>
         </nav>
 
-        <header className="rounded-xl border border-slate-200 bg-white p-5">
+        <header className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5">
           <span
             className="inline-flex rounded-full px-3 py-1 text-xs font-medium text-white"
             style={{ backgroundColor: categoryColor }}
           >
             Category
           </span>
-          <h1 className="mt-3 text-3xl font-bold tracking-tight text-slate-900">{categoryName}</h1>
-          <p className="mt-2 text-sm text-slate-600">
+          <h1 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 dark:text-white">{categoryName}</h1>
+          <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
             {totalBlogs} article{totalBlogs === 1 ? '' : 's'} in this category.
           </p>
         </header>
 
         {blogs.length === 0 ? (
-          <section className="rounded-xl border border-slate-200 bg-white p-10 text-center text-sm text-slate-600">
+          <section className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-10 text-center text-sm text-slate-600 dark:text-slate-400">
             No published posts in this category yet.
           </section>
         ) : (

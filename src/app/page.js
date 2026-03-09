@@ -1,9 +1,28 @@
 'use client';
 
-import Hero from '@/components/portfolio/Hero';
-import Skills from '@/components/portfolio/Skills';
-import Projects from '@/components/portfolio/Projects';
-import Links from '@/components/portfolio/Links';
+import dynamic from 'next/dynamic';
+import { Suspense } from 'react';
+
+const Hero = dynamic(() => import('@/components/portfolio/Hero'), {
+  ssr: true,
+  loading: () => (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="w-32 h-32 rounded-full bg-gray-200 animate-pulse" />
+    </div>
+  ),
+});
+
+const Skills = dynamic(() => import('@/components/portfolio/Skills'), {
+  loading: () => <div className="py-20 text-center text-gray-500">Loading skills...</div>,
+});
+
+const Projects = dynamic(() => import('@/components/portfolio/Projects'), {
+  loading: () => <div className="py-20 text-center text-gray-500">Loading projects...</div>,
+});
+
+const Links = dynamic(() => import('@/components/portfolio/Links'), {
+  loading: () => <div className="py-20 text-center text-gray-500">Loading links...</div>,
+});
 
 export default function Home() {
     return (
@@ -14,13 +33,13 @@ export default function Home() {
                         Manjunath M
                     </a>
                     <div className="flex gap-6">
-                        <a href="#skills" className="text-gray-600 hover:text-gray-900 transition-colors duration-200 text-sm">
+                        <a href="#skills" className="text-gray-700 hover:text-gray-900 transition-colors duration-200 text-sm font-medium">
                             Skills
                         </a>
-                        <a href="#projects" className="text-gray-600 hover:text-gray-900 transition-colors duration-200 text-sm">
+                        <a href="#projects" className="text-gray-700 hover:text-gray-900 transition-colors duration-200 text-sm font-medium">
                             Projects
                         </a>
-                        <a href="#links" className="text-gray-600 hover:text-gray-900 transition-colors duration-200 text-sm">
+                        <a href="#links" className="text-gray-700 hover:text-gray-900 transition-colors duration-200 text-sm font-medium">
                             Contact
                         </a>
                     </div>
@@ -28,9 +47,12 @@ export default function Home() {
             </nav>
 
             <Hero />
-            <Skills />
-            <Projects />
-            <Links />
+            
+            <Suspense fallback={<div className="py-20 text-center text-gray-600" aria-live="polite">Loading...</div>}>
+                <Skills />
+                <Projects />
+                <Links />
+            </Suspense>
         </main>
     );
 }

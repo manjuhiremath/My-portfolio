@@ -253,10 +253,15 @@ export async function generateMetadata({ params }) {
       }
     }
 
+    const categorySlug = blog.category?.slug || slugify(categoryName);
+
     return {
       title: blog.seoTitle || blog.title,
       description: blog.seoDescription || blog.excerpt,
       keywords: blog.keywords || tagNames || [],
+      alternates: {
+        canonical: `/blog/${categorySlug}/${blog.slug}`,
+      },
       openGraph: {
         title: blog.seoTitle || blog.title,
         description: blog.seoDescription || blog.excerpt,
@@ -299,8 +304,8 @@ export default async function BlogPostPage({ params }) {
       return (
         <div className="min-h-screen bg-background">
           <div className="mx-auto max-w-4xl px-4 py-16 text-center">
-            <h1 className="text-2xl font-bold text-slate-900">Blog not found</h1>
-            <p className="mt-2 text-sm text-slate-600">The article you are looking for does not exist.</p>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Blog not found</h1>
+            <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">The article you are looking for does not exist.</p>
             <Link href="/blog" className="mt-4 inline-block text-orange-600 hover:underline">
               Back to blog
             </Link>
@@ -413,21 +418,21 @@ export default async function BlogPostPage({ params }) {
         <ViewTracker slug={params.slug} />
 
         <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <nav className="mb-5 flex flex-wrap items-center gap-2 text-xs text-slate-500">
-            <Link href="/blog" className="hover:text-slate-700">Blog</Link>
+          <nav className="mb-5 flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+            <Link href="/blog" className="hover:text-slate-700 dark:hover:text-slate-200">Blog</Link>
             <span>/</span>
-            <Link href={`/blog/${categorySlug}`} className="capitalize hover:text-slate-700">
+            <Link href={`/blog/${categorySlug}`} className="capitalize hover:text-slate-700 dark:hover:text-slate-200">
               {categoryName}
             </Link>
             <span>/</span>
-            <span className="max-w-[320px] truncate text-slate-700">{blog.title}</span>
+            <span className="max-w-[320px] truncate text-slate-700 dark:text-slate-300">{blog.title}</span>
           </nav>
 
-          <header className="rounded-xl border border-slate-200 bg-white p-5">
+          <header className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5">
             <div className="mb-3 flex flex-wrap gap-2">
               <Link
                 href={`/blog?category=${encodeURIComponent(categoryName)}`}
-                className="rounded-full bg-orange-100 px-3 py-1 text-xs font-medium text-orange-700 hover:bg-orange-200 transition-colors"
+                className="rounded-full bg-orange-100 dark:bg-orange-900/30 px-3 py-1 text-xs font-medium text-orange-700 dark:text-orange-400 hover:bg-orange-200 transition-colors"
               >
                 {categoryName}
               </Link>
@@ -435,16 +440,16 @@ export default async function BlogPostPage({ params }) {
                 <Link
                   key={tag}
                   href={`/blog/tag/${encodeURIComponent(tag)}`}
-                  className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 hover:bg-slate-200 transition-colors"
+                  className="rounded-full bg-slate-100 dark:bg-slate-700 px-3 py-1 text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
                 >
                   #{tag}
                 </Link>
               ))}
             </div>
-            <h1 className="text-3xl font-bold leading-tight tracking-tight text-slate-900 sm:text-4xl">
+            <h1 className="text-3xl font-bold leading-tight tracking-tight text-slate-900 dark:text-white sm:text-4xl">
               {blog.title}
             </h1>
-            <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-slate-500">
+            <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
               <span>{new Date(blog.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
               <span>•</span>
               <span>{readingTime} min read</span>
@@ -454,7 +459,7 @@ export default async function BlogPostPage({ params }) {
           </header>
 
           {blog.featuredImage ? (
-            <div className="relative mt-6 h-[240px] overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 sm:h-[340px] lg:h-[440px]">
+            <div className="relative mt-6 h-[240px] overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 sm:h-[340px] lg:h-[440px]">
               <Image
                 src={fixUnsplashUrl(blog.featuredImage)}
                 alt={blog.title}
@@ -468,7 +473,7 @@ export default async function BlogPostPage({ params }) {
 
           <section className="mt-8 grid grid-cols-1 gap-8 xl:grid-cols-[1fr_280px]">
             <article className="min-w-0">
-              <div className="blog-content leading-relaxed text-slate-700">
+              <div className="blog-content leading-relaxed text-slate-700 dark:text-slate-300">
                 {contentParts.length > 1 ? (
                   <>
                     <div dangerouslySetInnerHTML={{ __html: contentParts[0] }} />
@@ -483,12 +488,12 @@ export default async function BlogPostPage({ params }) {
               </div>
 
               {tagNames.length ? (
-                <div className="mt-8 flex flex-wrap gap-2 border-t border-slate-200 pt-6">
+                <div className="mt-8 flex flex-wrap gap-2 border-t border-slate-200 dark:border-slate-700 pt-6">
                   {tagNames.map((tag, index) => (
                     <Link
                       key={`${tag}-${index}`}
                       href={`/blog/tag/${encodeURIComponent(tag)}`}
-                      className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-700 hover:bg-orange-50 hover:text-orange-600 transition-colors"
+                      className="rounded-full bg-slate-100 dark:bg-slate-700 px-3 py-1 text-xs text-slate-700 dark:text-slate-300 hover:bg-orange-50 dark:hover:bg-orange-900/30 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
                     >
                       #{tag}
                     </Link>
@@ -498,15 +503,15 @@ export default async function BlogPostPage({ params }) {
 
               {/* FAQ Schema */}
               {blog.faq?.length ? (
-                <div className="mt-8 border-t border-slate-200 pt-6">
-                  <h2 className="text-xl font-bold text-slate-900 mb-4">Frequently Asked Questions</h2>
+                <div className="mt-8 border-t border-slate-200 dark:border-slate-700 pt-6">
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">Frequently Asked Questions</h2>
                   <div className="space-y-4">
                     {blog.faq.map((item, i) => (
-                      <details key={i} className="rounded-lg border border-slate-200 bg-white">
-                        <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-slate-900 hover:text-orange-600">
+                      <details key={i} className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
+                        <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-slate-900 dark:text-white hover:text-orange-600 dark:hover:text-orange-400">
                           {item.question}
                         </summary>
-                        <p className="px-4 pb-3 text-sm text-slate-600">{item.answer}</p>
+                        <p className="px-4 pb-3 text-sm text-slate-600 dark:text-slate-400">{item.answer}</p>
                       </details>
                     ))}
                   </div>
@@ -524,7 +529,7 @@ export default async function BlogPostPage({ params }) {
 
           {relatedBlogsRaw?.length ? (
             <section className="mt-12">
-              <h2 className="mb-4 text-xl font-bold text-slate-900">Related Articles</h2>
+              <h2 className="mb-4 text-xl font-bold text-slate-900 dark:text-white">Related Articles</h2>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {relatedBlogsRaw.map((relatedBlog) => {
                   // Handle category resolution for related blogs
@@ -536,9 +541,9 @@ export default async function BlogPostPage({ params }) {
                     <Link
                       key={relatedBlog._id}
                       href={`/blog/${relatedCatSlug}/${relatedBlog.slug}`}
-                      className="group block overflow-hidden rounded-xl border border-slate-200 bg-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
+                      className="group block overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
                     >
-                      <div className="relative h-40 bg-slate-100">
+                      <div className="relative h-40 bg-slate-100 dark:bg-slate-700">
                         <Image
                           src={fixUnsplashUrl(relatedBlog.featuredImage)}
                           alt={relatedBlog.title}
@@ -548,10 +553,10 @@ export default async function BlogPostPage({ params }) {
                         />
                       </div>
                       <div className="p-3">
-                        <h3 className="line-clamp-2 text-sm font-semibold text-slate-900 group-hover:text-orange-600">
+                        <h3 className="line-clamp-2 text-sm font-semibold text-slate-900 dark:text-white group-hover:text-orange-600">
                           {relatedBlog.title}
                         </h3>
-                        <p className="mt-1 text-xs text-slate-500">
+                        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                           {new Date(relatedBlog.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                         </p>
                       </div>
@@ -569,8 +574,8 @@ export default async function BlogPostPage({ params }) {
     return (
       <div className="min-h-screen bg-background">
         <div className="mx-auto max-w-4xl px-4 py-16 text-center">
-          <h1 className="text-2xl font-bold text-slate-900">Error loading article</h1>
-          <p className="mt-2 text-sm text-slate-600">Something went wrong. Please try again later.</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Error loading article</h1>
+          <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">Something went wrong. Please try again later.</p>
         </div>
       </div>
     );

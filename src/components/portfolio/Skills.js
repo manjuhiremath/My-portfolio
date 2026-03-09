@@ -1,5 +1,6 @@
 'use client';
 
+import { lazy, Suspense } from 'react';
 import { TECHNICAL_SKILLS } from '@/lib/constants';
 import { 
     SiJavascript, 

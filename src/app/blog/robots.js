@@ -19,7 +19,7 @@ export default function robots() {
         disallow: ['/admin/', '/api/'],
       },
     ],
-    sitemap: `${baseUrl}/blog/sitemap.xml`,
+    sitemap: `${baseUrl}/sitemap.xml`,
     host: baseUrl,
   };
 }

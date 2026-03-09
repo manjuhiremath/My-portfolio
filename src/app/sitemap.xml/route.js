@@ -60,19 +60,19 @@ export async function GET() {
     xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
 
     // 1. HOME & BLOG ROOT
-    xml = addUrl(xml, `${baseUrl}/`, currentDate, 'weekly', '1.0');
+    xml = addUrl(xml, `${baseUrl}/`, currentDate, 'daily', '1.0');
     xml = addUrl(xml, `${baseUrl}/blog`, currentDate, 'daily', '0.9');
 
     // 2. CATEGORY PAGES
     categories.forEach(cat => {
       const url = `${baseUrl}/blog/${cat.slug || slugify(cat.name)}`;
-      xml = addUrl(xml, url, (cat.updatedAt || currentDate).toISOString ? (cat.updatedAt || currentDate).toISOString() : currentDate, 'weekly', '0.8');
+      xml = addUrl(xml, url, currentDate, 'daily', '0.8');
     });
 
     // 3. TAG PAGES
     tags.forEach(tag => {
       const url = `${baseUrl}/blog/tag/${tag.slug || slugify(tag.name)}`;
-      xml = addUrl(xml, url, (tag.updatedAt || currentDate).toISOString ? (tag.updatedAt || currentDate).toISOString() : currentDate, 'weekly', '0.6');
+      xml = addUrl(xml, url, currentDate, 'daily', '0.6');
     });
 
     // 4. INDIVIDUAL BLOG POSTS
@@ -82,8 +82,7 @@ export async function GET() {
       const categorySlug = catDoc?.slug || slugify(catDoc?.name || rawCat || 'uncategorized');
       
       const url = `${baseUrl}/blog/${categorySlug}/${blog.slug}`;
-      const lastMod = (blog.updatedAt || blog.createdAt || new Date()).toISOString();
-      xml = addUrl(xml, url, lastMod, 'monthly', '0.8');
+      xml = addUrl(xml, url, currentDate, 'daily', '0.8');
     });
 
     xml += '</urlset>';

@@ -76,8 +76,6 @@ export async function GET(req){
       }
     }
     
-    console.log('Sample blog category:', blogs[0]?.category)
-   
    const total = await Blog.countDocuments(query)
    
    return Response.json({

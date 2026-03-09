@@ -20,7 +20,7 @@ function hasInRange(length, min, max) {
   return length >= min && length <= max;
 }
 
-function keywordCoverage(input = '', keywords = []) {
+export function keywordCoverage(input = '', keywords = []) {
   if (!keywords.length) return 0;
   const lowered = stripHtml(input).toLowerCase();
   let matches = 0;

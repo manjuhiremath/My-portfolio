@@ -16,6 +16,9 @@ export const metadata = {
     url: '/blog',
     siteName: 'Blog',
   },
+  alternates: {
+    canonical: '/blog',
+  },
   twitter: {
     card: 'summary_large_image',
     title: 'Blog | Tech, Design & Business Insights',

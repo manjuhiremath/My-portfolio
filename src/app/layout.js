@@ -1,22 +1,31 @@
-import { Poppins, JetBrains_Mono } from "next/font/google";
+import { Playfair_Display, DM_Sans, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import "./globals.css";
 import AdSenseScript from "@/components/ads/AdSenseScript";
 
-const poppins = Poppins({
-  variable: "--font-poppins",
+const playfair = Playfair_Display({
+  variable: "--font-display",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+  display: 'swap',
+});
+
+const dmSans = DM_Sans({
+  variable: "--font-body",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: 'swap',
 });
 
 const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains",
+  variable: "--font-mono",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600"],
+  display: 'swap',
 });
 
 export const metadata = {
-  metadataBase: new URL("https://manjuhiremath.in"),
+  metadataBase: new URL("https://www.manjuhiremath.in"),
   title: "Manjunath M | Full Stack Developer",
   description: "Full Stack MERN Developer specializing in React.js, Next.js, and Node.js. Experienced in building scalable web applications with modern technologies.",
   keywords: ["Full Stack Developer", "React.js", "Next.js", "Node.js", "MERN Stack", "Web Developer", "JavaScript"],
@@ -25,7 +34,7 @@ export const metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://manjuhiremath.in",
+    url: "https://www.manjuhiremath.in",
     title: "Manjunath M | Full Stack Developer",
     description: "Full Stack MERN Developer specializing in React.js, Next.js, and Node.js.",
     siteName: "Manjunath M Portfolio",
@@ -37,6 +46,9 @@ export const metadata = {
         alt: "Manjunath M - Full Stack Developer",
       },
     ],
+  },
+  alternates: {
+    canonical: "https://www.manjuhiremath.in",
   },
   twitter: {
     card: "summary_large_image",
@@ -52,14 +64,14 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning className="light">
+    <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="" />
+        <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://res.cloudinary.com" />
         <AdSenseScript />
       </head>
       <body
-        className={`${poppins.variable} ${jetbrainsMono.variable} antialiased`}
+        className={`${playfair.variable} ${dmSans.variable} ${jetbrainsMono.variable} antialiased bg-white dark:bg-slate-900`}
       >
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange={false}>
           {children}

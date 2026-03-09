@@ -14,9 +14,11 @@ const Hero = () => {
                         <Image 
                             src="/Profilemanju.jpeg" 
                             alt={PERSONAL_INFO.name}
-                            fill
+                            width={128}
+                            height={128}
                             className="object-cover"
                             priority
+                            sizes="128px"
                         />
                     </div>
                 </div>
@@ -25,11 +27,11 @@ const Hero = () => {
                     {PERSONAL_INFO.name}
                 </h1>
                 
-                <p className="text-xl md:text-2xl text-gray-600 mb-4 font-medium">
+                <p className="text-xl md:text-2xl text-gray-700 mb-4 font-medium">
                     {PERSONAL_INFO.title}
                 </p>
                 
-                <p className="text-gray-500 mb-8 max-w-2xl mx-auto">
+                <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
                     {currentRole.role} at {currentRole.company} · {currentRole.location}
                 </p>
                 

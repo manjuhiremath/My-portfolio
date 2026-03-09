@@ -27,10 +27,10 @@ export default function TopStories({ blogs, getCategoryColor }) {
   return (
     <section className="space-y-5">
       {/* Section Header */}
-      <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+      <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-3">
         <div className="flex items-center gap-2.5">
           <div className="h-3 w-1 rounded-full bg-orange-500" />
-          <h2 className="text-lg font-bold tracking-tight text-slate-900 uppercase sm:text-xl">
+          <h2 className="text-lg font-bold tracking-tight text-slate-900 dark:text-white uppercase sm:text-xl">
             Top Stories
           </h2>
         </div>
@@ -55,7 +55,7 @@ export default function TopStories({ blogs, getCategoryColor }) {
           return (
             <article key={blog._id} className="group">
               {/* Image */}
-              <Link href={href} className="relative block aspect-video overflow-hidden rounded-xl bg-slate-100">
+              <Link href={href} className="relative block aspect-video overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-800">
                 <Image
                   src={imageUrl}
                   alt={blog.title}
@@ -86,24 +86,24 @@ export default function TopStories({ blogs, getCategoryColor }) {
               {/* Content */}
               <div className="space-y-2.5 pt-4">
                 <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider">
-                  <span className="text-orange-600">
+                  <span className="text-orange-600 dark:text-orange-400">
                     {blog.tags?.[0]?.name || blog.tags?.[0] || categoryName}
                   </span>
-                  <span className="h-1 w-1 rounded-full bg-slate-300" />
-                  <span className="text-slate-400">{formatDate(blog.createdAt)}</span>
+                  <span className="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-600" />
+                  <span className="text-slate-400 dark:text-slate-500">{formatDate(blog.createdAt)}</span>
                 </div>
 
                 <Link href={href} className="block">
-                  <h3 className="text-base font-bold leading-snug tracking-tight text-slate-900 transition-colors group-hover:text-orange-600 sm:text-lg lg:text-xl">
+                  <h3 className="text-base font-bold leading-snug tracking-tight text-slate-900 dark:text-white transition-colors group-hover:text-orange-600 sm:text-lg lg:text-xl">
                     {blog.title}
                   </h3>
                 </Link>
 
-                <p className="line-clamp-2 text-sm leading-relaxed text-slate-500">
+                <p className="line-clamp-2 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
                   {blog.excerpt || 'Discover practical tips and expert guidance in this insightful article.'}
                 </p>
 
-                <div className="flex items-center gap-2 pt-1 text-xs text-slate-400">
+                <div className="flex items-center gap-2 pt-1 text-xs text-slate-400 dark:text-slate-500">
                   <FiEye className="h-3 w-3" />
                   <span>{(blog.views || 0).toLocaleString()} views</span>
                 </div>

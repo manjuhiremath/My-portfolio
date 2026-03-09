@@ -49,9 +49,9 @@ export default function BlogCard({ blog, categoryColor = '#6366f1', variant = 'd
     return (
       <Link
         href={href}
-        className="group flex gap-3 items-start py-3 border-b border-slate-100 last:border-0 hover:bg-slate-50 -mx-2 px-2 rounded-lg transition-colors"
+        className="group flex gap-3 items-start py-3 border-b border-slate-100 dark:border-slate-700 last:border-0 hover:bg-slate-50 dark:hover:bg-slate-800 -mx-2 px-2 rounded-lg transition-colors"
       >
-        <div className="relative w-16 h-14 flex-shrink-0 overflow-hidden rounded-lg bg-slate-100">
+        <div className="relative w-16 h-14 flex-shrink-0 overflow-hidden rounded-lg bg-slate-100 dark:bg-slate-700">
           <Image
             src={imageUrl}
             alt={blog.title || 'Blog post'}
@@ -62,12 +62,12 @@ export default function BlogCard({ blog, categoryColor = '#6366f1', variant = 'd
           />
         </div>
         <div className="flex-1 min-w-0">
-          <h3 className="line-clamp-2 text-sm font-semibold leading-tight text-slate-900 group-hover:text-orange-600 transition-colors">
+          <h3 className="line-clamp-2 text-sm font-semibold leading-tight text-slate-900 dark:text-white group-hover:text-orange-600 transition-colors">
             {blog.title}
           </h3>
           <div className="flex items-center gap-2 mt-1.5 text-xs text-slate-400">
             <span className="font-medium" style={{ color: categoryColor }}>{categoryValue || 'Uncategorized'}</span>
-            <span className="text-slate-300">·</span>
+            <span className="text-slate-500 dark:text-slate-500">·</span>
             <span>{formatDate(blog.createdAt)}</span>
           </div>
         </div>
@@ -79,10 +79,10 @@ export default function BlogCard({ blog, categoryColor = '#6366f1', variant = 'd
   return (
     <Link
       href={href}
-      className="group block overflow-hidden rounded-xl bg-white shadow-sm shadow-slate-100 border border-slate-100 transition-all duration-300 hover:shadow-lg hover:shadow-slate-200/50 hover:-translate-y-1"
+      className="group block overflow-hidden rounded-xl bg-white dark:bg-slate-800 shadow-sm shadow-slate-100 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700 transition-all duration-300 hover:shadow-lg hover:shadow-slate-200/50 dark:hover:shadow-slate-900/50 hover:-translate-y-1"
     >
       {/* Image Container */}
-      <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
+      <div className="relative aspect-[16/10] overflow-hidden bg-slate-100 dark:bg-slate-700">
         <Image
           src={imageUrl}
           alt={blog.title || 'Blog post'}
@@ -113,11 +113,11 @@ export default function BlogCard({ blog, categoryColor = '#6366f1', variant = 'd
 
       {/* Content */}
       <div className="p-4 sm:p-5">
-        <h3 className="line-clamp-2 text-base font-bold leading-snug tracking-tight text-slate-900 transition-colors group-hover:text-orange-600 sm:text-lg">
+        <h3 className="line-clamp-2 text-base font-bold leading-snug tracking-tight text-slate-900 dark:text-white transition-colors group-hover:text-orange-600 sm:text-lg">
           {blog.title}
         </h3>
 
-        <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-slate-500">
+        <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
           {cleanExcerpt(blog.excerpt)}
         </p>
 
@@ -127,20 +127,20 @@ export default function BlogCard({ blog, categoryColor = '#6366f1', variant = 'd
             {blog.tags.slice(0, 2).map((tag) => (
               <span
                 key={tag?._id || tag}
-                className="whitespace-nowrap rounded-md bg-slate-50 px-2 py-0.5 text-[10px] font-medium text-slate-500 border border-slate-100"
+                className="whitespace-nowrap rounded-md bg-slate-50 dark:bg-slate-700 px-2 py-0.5 text-[10px] font-medium text-slate-500 dark:text-slate-300 border border-slate-100 dark:border-slate-600"
               >
                 #{tag?.name || tag}
               </span>
             ))}
             {blog.tags.length > 2 && (
-              <span className="text-[10px] font-bold text-orange-500 whitespace-nowrap bg-orange-50 px-1.5 py-0.5 rounded-md border border-orange-100">
+              <span className="text-[10px] font-bold text-orange-500 whitespace-nowrap bg-orange-50 dark:bg-orange-900/30 px-1.5 py-0.5 rounded-md border border-orange-100 dark:border-orange-800">
                 +{blog.tags.length - 2}
               </span>
             )}
           </div>
         )}
 
-        <div className="mt-3 flex items-center justify-between border-t border-slate-100 pt-3 text-xs text-slate-400">
+        <div className="mt-3 flex items-center justify-between border-t border-slate-100 dark:border-slate-700 pt-3 text-xs text-slate-400">
           <span className="font-semibold uppercase tracking-wide" style={{ color: categoryColor }}>
             {categoryValue || 'Insights'}
           </span>

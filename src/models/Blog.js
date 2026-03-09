@@ -24,6 +24,7 @@ const BlogSchema = new mongoose.Schema({
     ref: "Tag"
   }],
   keywords:[String],
+  canonicalUrl: String,
 
  seoTitle:String,
  seoDescription:String,

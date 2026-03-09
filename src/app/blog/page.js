@@ -238,7 +238,7 @@ function BlogContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
         <div className="flex items-center justify-center min-h-[70vh]">
           <div className="flex flex-col items-center gap-6">
             <div className="relative">
@@ -256,7 +256,7 @@ function BlogContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-white">
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-white dark:from-slate-900 dark:via-slate-800 dark:to-slate-800">
       {/* Main Content */}
       <main className="mx-auto max-w-7xl px-4 py-6 sm:py-8 lg:py-12 lg:px-8">
         <BannerAd />
@@ -264,8 +264,8 @@ function BlogContent() {
           /* ─── ALL POSTS EDITORIAL VIEW ─── */
           <div className="space-y-10 lg:space-y-14">
             {/* Section 1: Featured Hero */}
-            <section aria-label="Featured article">
-              <Suspense fallback={<div className="h-96 rounded-2xl bg-slate-200 animate-pulse" />}>
+              <section aria-label="Featured article">
+              <Suspense fallback={<div className="h-96 rounded-2xl bg-slate-200 dark:bg-slate-700 animate-pulse" />}>
                 <FeaturedHero
                   blog={featuredBlog}
                   categoryColor={getCategoryColor(categories, featuredBlog?.category?.name || featuredBlog?.category)}
@@ -277,14 +277,14 @@ function BlogContent() {
             <div className="grid grid-cols-1 gap-8 lg:gap-12 lg:grid-cols-12">
               {/* Main Content: 8 Columns */}
               <div className="lg:col-span-8 space-y-10 lg:space-y-14">
-                <Suspense fallback={<div className="space-y-4"><div className="h-64 rounded-xl bg-slate-200 animate-pulse" /><div className="grid grid-cols-2 gap-4"><div className="h-48 rounded-xl bg-slate-200 animate-pulse" /><div className="h-48 rounded-xl bg-slate-200 animate-pulse" /></div></div>}>
+                <Suspense fallback={<div className="space-y-4"><div className="h-64 rounded-xl bg-slate-200 dark:bg-slate-700 animate-pulse" /><div className="grid grid-cols-2 gap-4"><div className="h-48 rounded-xl bg-slate-200 dark:bg-slate-700 animate-pulse" /><div className="h-48 rounded-xl bg-slate-200 dark:bg-slate-700 animate-pulse" /></div></div>}>
                   <TopStories
                     blogs={topStories}
                     getCategoryColor={(cat) => getCategoryColor(categories, cat)}
                   />
                 </Suspense>
 
-                <Suspense fallback={<div className="grid grid-cols-3 gap-4"><div className="h-48 rounded-xl bg-slate-200 animate-pulse" /><div className="h-48 rounded-xl bg-slate-200 animate-pulse" /><div className="h-48 rounded-xl bg-slate-200 animate-pulse" /></div>}>
+                <Suspense fallback={<div className="grid grid-cols-3 gap-4"><div className="h-48 rounded-xl bg-slate-200 dark:bg-slate-700 animate-pulse" /><div className="h-48 rounded-xl bg-slate-200 dark:bg-slate-700 animate-pulse" /><div className="h-48 rounded-xl bg-slate-200 dark:bg-slate-700 animate-pulse" /></div>}>
                   <LatestBlogsGrid
                     blogs={[...mappedBlogs]
                       .filter(b => b._id !== featuredBlog?._id && !topStories.some(t => t._id === b._id))
@@ -295,7 +295,7 @@ function BlogContent() {
                   />
                 </Suspense>
 
-                <Suspense fallback={<div className="grid grid-cols-3 gap-4"><div className="h-32 rounded-xl bg-slate-200 animate-pulse" /><div className="h-32 rounded-xl bg-slate-200 animate-pulse" /><div className="h-32 rounded-xl bg-slate-200 animate-pulse" /></div>}>
+                <Suspense fallback={<div className="grid grid-cols-3 gap-4"><div className="h-32 rounded-xl bg-slate-200 dark:bg-slate-700 animate-pulse" /><div className="h-32 rounded-xl bg-slate-200 dark:bg-slate-700 animate-pulse" /><div className="h-32 rounded-xl bg-slate-200 dark:bg-slate-700 animate-pulse" /></div>}>
                   <EditorPicks blogs={editorPicks} />
                 </Suspense>
               </div>
@@ -304,7 +304,7 @@ function BlogContent() {
               <aside className="lg:col-span-4">
                 <div className="lg:sticky lg:top-28 space-y-8">
                   <SidebarAd />
-                  <Suspense fallback={<div className="h-96 rounded-xl bg-slate-200 animate-pulse" />}>
+                  <Suspense fallback={<div className="h-96 rounded-xl bg-slate-200 dark:bg-slate-700 animate-pulse" />}>
                     <TrendingSidebar
                       trendingBlogs={trendingBlogs}
                       recentBlogs={recentBlogs}
@@ -316,13 +316,13 @@ function BlogContent() {
             </div>
 
             {/* Section 3: Category Sections */}
-            <section className="border-t border-slate-200 pt-10 lg:pt-14 space-y-10 lg:space-y-14">
+            <section className="border-t border-slate-200 dark:border-slate-700 pt-10 lg:pt-14 space-y-10 lg:space-y-14">
               <div className="text-center">
-                <h2 className="text-2xl font-black tracking-tight text-slate-900 uppercase">Browse by Category</h2>
-                <p className="mt-2 text-sm text-slate-500 font-medium">Explore articles organized by topic</p>
+                <h2 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white uppercase" style={{ fontFamily: 'var(--font-display), serif' }}>Browse by Category</h2>
+                <p className="mt-2 text-sm text-slate-500 dark:text-slate-400 font-medium">Explore articles organized by topic</p>
               </div>
               {topLevelCategories.map((category) => (
-                <Suspense key={category} fallback={<div className="h-48 rounded-xl bg-slate-200 animate-pulse" />}>
+                <Suspense key={category} fallback={<div className="h-48 rounded-xl bg-slate-200 dark:bg-slate-700 animate-pulse" />}>
                   <CategorySection
                     category={category}
                     blogs={mappedBlogs.filter(b => b.category === category)}
@@ -336,12 +336,12 @@ function BlogContent() {
           /* ─── CATEGORY EDITORIAL VIEW (Issues 7, 8, 9) ─── */
           <div className="space-y-10 lg:space-y-14">
             {/* Category Header */}
-            <header className="border-b border-slate-200 pb-6">
+            <header className="border-b border-slate-200 dark:border-slate-700 pb-6">
               <p className="text-xs font-bold text-orange-600 uppercase tracking-widest mb-1">Category</p>
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-slate-900">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-slate-900 dark:text-white">
                 {activeFilter}
               </h1>
-              <p className="mt-2 text-sm text-slate-500 font-medium">
+              <p className="mt-2 text-sm text-slate-500 dark:text-slate-400 font-medium">
                 {categoryBlogs.length} {categoryBlogs.length === 1 ? 'article' : 'articles'} in this category
               </p>
             </header>
@@ -393,8 +393,8 @@ function BlogContent() {
 
             {/* All remaining articles in grid */}
             {categoryBlogs.length > (1 + categoryTrending.length + categoryLatest.length) && (
-              <section className="border-t border-slate-200 pt-8">
-                <h2 className="text-lg font-bold tracking-tight text-slate-900 uppercase mb-5">All {activeFilter} Articles</h2>
+              <section className="border-t border-slate-200 dark:border-slate-700 pt-8">
+                <h2 className="text-lg font-bold tracking-tight text-slate-900 dark:text-white uppercase mb-5">All {activeFilter} Articles</h2>
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     {categoryBlogs
                     .filter(b =>
@@ -416,16 +416,16 @@ function BlogContent() {
         ) : (
           /* ─── SEARCH/FILTER VIEW ─── */
           <div className="space-y-8">
-            <header className="border-b border-slate-200 pb-6">
+            <header className="border-b border-slate-200 dark:border-slate-700 pb-6">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
                   <p className="text-xs font-bold text-orange-600 uppercase tracking-widest mb-1">
                     Search Results
                   </p>
-                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-slate-900">
+                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-slate-900 dark:text-white">
                     &quot;{query}&quot;
                   </h1>
-                  <p className="mt-2 text-sm text-slate-500 font-medium">
+                  <p className="mt-2 text-sm text-slate-500 dark:text-slate-400 font-medium">
                     {filteredBlogs.length} {filteredBlogs.length === 1 ? 'article' : 'articles'} found
                   </p>
                 </div>
@@ -434,14 +434,14 @@ function BlogContent() {
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold uppercase tracking-wide outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/10 transition-all"
+                    className="rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 px-4 py-2.5 text-xs font-semibold uppercase tracking-wide outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/10 transition-all dark:text-white"
                   >
                     <option value="newest">Newest</option>
                     <option value="popular">Popular</option>
                   </select>
                   <button
                     onClick={clearFilters}
-                    className="flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-xs font-semibold uppercase tracking-wide text-white transition-all hover:bg-orange-600"
+                    className="flex items-center gap-2 rounded-lg bg-slate-900 dark:bg-white px-4 py-2.5 text-xs font-semibold uppercase tracking-wide text-white dark:text-slate-900 transition-all hover:bg-orange-600"
                   >
                     <FiX className="h-4 w-4" /> Clear
                   </button>
@@ -450,12 +450,12 @@ function BlogContent() {
             </header>
 
             {filteredBlogs.length === 0 ? (
-              <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50/50 py-20 text-center">
-                <div className="rounded-full bg-orange-100 p-6">
+              <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-600 bg-slate-50/50 dark:bg-slate-800/50 py-20 text-center">
+                <div className="rounded-full bg-orange-100 dark:bg-orange-900/30 p-6">
                   <FiSearch className="h-10 w-10 text-orange-500" />
                 </div>
-                <h3 className="mt-6 text-xl font-bold text-slate-900">No articles found</h3>
-                <p className="mt-2 max-w-sm text-slate-500 font-medium text-sm">
+                <h3 className="mt-6 text-xl font-bold text-slate-900 dark:text-white">No articles found</h3>
+                <p className="mt-2 max-w-sm text-slate-500 dark:text-slate-400 font-medium text-sm">
                   We couldn&apos;t find any articles matching your search. Try different keywords or browse all articles.
                 </p>
                 <button
@@ -486,15 +486,15 @@ function BlogContent() {
 
 function BlogPageFallback() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
       <div className="flex min-h-[70vh] items-center justify-center">
         <div className="flex flex-col items-center gap-6">
           <div className="relative">
-            <div className="h-16 w-16 animate-spin rounded-full border-4 border-slate-100 border-t-orange-500" />
-            <div className="absolute inset-0 h-16 w-16 animate-pulse rounded-full bg-orange-100/30" />
+            <div className="h-16 w-16 animate-spin rounded-full border-4 border-slate-100 dark:border-slate-700 border-t-orange-500" />
+            <div className="absolute inset-0 h-16 w-16 animate-pulse rounded-full bg-orange-100/30 dark:bg-orange-900/20" />
           </div>
           <div className="text-center space-y-1">
-            <p className="text-sm font-black text-slate-700 uppercase tracking-[0.3em]">Loading</p>
+            <p className="text-sm font-black text-slate-700 dark:text-slate-300 uppercase tracking-[0.3em]">Loading</p>
             <p className="text-xs font-medium text-slate-400 uppercase tracking-wider">Please wait...</p>
           </div>
         </div>

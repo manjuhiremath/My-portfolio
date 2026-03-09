@@ -10,13 +10,14 @@ const FloatingParticles = () => {
 
   useEffect(() => {
     setIsClient(true);
-    const particleArray = Array.from({ length: 200 }, (_, i) => ({
+    const particleArray = Array.from({ length: 15 }, (_, i) => ({
       id: i,
       x: Math.random() * 100,
       y: Math.random() * 100,
-      animationDuration: Math.random() * 10 + 10,
-      xMovement: Math.random() * 100,
-      yMovement: Math.random() * 100,
+      animationDuration: Math.random() * 20 + 15,
+      xMovement: Math.random() * 20,
+      yMovement: Math.random() * 20,
+      size: Math.random() * 2 + 1,
     }));
     setParticles(particleArray);
   }, []);
@@ -24,11 +25,11 @@ const FloatingParticles = () => {
   if (!isClient) return null;
 
   return (
-    <div className="absolute min-h-screen inset-0 overflow-hidden">
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
       {particles.map((particle) => (
         <motion.div
           key={particle.id}
-          className="absolute w-1 h-1 bg-cyan-400 rounded-full opacity-20"
+          className="absolute rounded-full bg-cyan-400/20"
           animate={{
             x: [0, particle.xMovement, 0],
             y: [0, particle.yMovement, 0],
@@ -41,6 +42,8 @@ const FloatingParticles = () => {
           style={{
             left: `${particle.x}%`,
             top: `${particle.y}%`,
+            width: particle.size,
+            height: particle.size,
           }}
         />
       ))}

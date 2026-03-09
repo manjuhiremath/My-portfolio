@@ -29,8 +29,12 @@ export async function GET() {
 
     // Build blog URLs — flat structure: /blog/[category]/[slug]
     const blogUrls = blogs.map(blog => {
-      const categorySlug = blog.category?.toLowerCase().replace(/\s+/g, '-');
-      const url = `/blog/${categorySlug}/${blog.slug}`;
+      const categorySlug = typeof blog.category === 'string' 
+        ? blog.category.toLowerCase().replace(/\s+/g, '-')
+        : null;
+      const url = categorySlug 
+        ? `/blog/${categorySlug}/${blog.slug}`
+        : `/blog/${blog.slug}`;
 
       return {
         url: escapeXml(url),
