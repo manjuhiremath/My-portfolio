@@ -103,8 +103,8 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <Link href="/" className="flex items-center gap-2 group">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center text-white font-bold text-sm">
-                <FiBookmark className="h-4 w-4" />
+              <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg shadow-sm">
+                <img src="/logo.png" alt="Logo" className="h-full w-full object-contain bg-white" />
               </div>
               <span className="font-bold text-white group-hover:text-orange-400 transition-colors">
                 Dev<span className="text-orange-500">Blog</span>

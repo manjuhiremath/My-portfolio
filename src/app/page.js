@@ -29,8 +29,9 @@ export default function Home() {
         <main className="bg-white min-h-screen">
             <nav className="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-sm border-b border-gray-100 z-50">
                 <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-                    <a href="#" className="text-lg font-bold text-gray-900">
-                        Manjunath M
+                    <a href="#" className="flex items-center gap-2 text-lg font-bold text-gray-900">
+                        <img src="/logo.png" alt="Manjunath M Logo" className="w-10 h-10 object-contain rounded-md" />
+                        <span>Manjunath M</span>
                     </a>
                     <div className="flex gap-6">
                         <a href="#skills" className="text-gray-700 hover:text-gray-900 transition-colors duration-200 text-sm font-medium">

@@ -67,8 +67,8 @@ export default function BlogNavigation() {
         {/* Top bar with brand */}
         <div className="hidden md:flex items-center justify-between border-b border-slate-100 dark:border-slate-700 px-4 lg:px-8 py-2">
           <Link href="/blog" className="flex items-center gap-3 group">
-            <div className="flex h-8 w-8 items-center justify-center bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg shadow-sm">
-              <FiBookmark className="h-4 w-4 text-white" />
+            <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg shadow-sm">
+              <img src="/logo.png" alt="Logo" className="h-full w-full object-contain bg-white" />
             </div>
             <span className="text-lg font-black tracking-tight text-slate-900 dark:text-white">
               Dev<span className="text-orange-600">Blog</span>

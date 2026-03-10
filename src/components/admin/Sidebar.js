@@ -40,10 +40,8 @@ export default function Sidebar({ isOpen, setIsOpen, currentPath }) {
         {/* Logo */}
         <div className="h-16 flex items-center px-6 border-b border-slate-800">
           <Link href="/admin/blog/dashboard" className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-lg flex items-center justify-center">
-              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
+            <div className="w-10 h-10 overflow-hidden rounded-lg flex items-center justify-center shadow-sm">
+              <img src="/logo.png" alt="Logo" className="h-full w-full object-contain bg-white" />
             </div>
             <span className="font-archivo font-bold text-white">Admin</span>
           </Link>
