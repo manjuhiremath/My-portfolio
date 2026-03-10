@@ -130,7 +130,7 @@ export default async function TagPage({ params, searchParams }) {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-white dark:from-slate-900 dark:via-slate-800 dark:to-slate-800">
       <main className="mx-auto max-w-7xl space-y-6 px-4 py-8 sm:px-6 lg:px-8">
-        <BannerAd />
+        {data.blogs.length > 0 && <BannerAd />}
         {/* Breadcrumbs */}
         <nav className="flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
           <Link href="/" className="hover:text-slate-700 dark:hover:text-slate-200">Home</Link>
@@ -181,7 +181,7 @@ export default async function TagPage({ params, searchParams }) {
             )}
           </>
         )}
-        <MultiplexAd />
+        {data.blogs.length > 0 && <MultiplexAd />}
       </main>
     </div>
   );

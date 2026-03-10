@@ -12,6 +12,7 @@ import SidebarAd from '@/components/ads/SidebarAd';
 import MultiplexAd from '@/components/ads/MultiplexAd';
 import { FiClock, FiEye } from 'react-icons/fi';
 import { fixUnsplashUrl, slugify } from '@/lib/utils';
+import MobileBlogLayout from '@/components/blog/MobileBlogLayout';
 
 export const revalidate = 3600;
 
@@ -429,24 +430,49 @@ export default async function BlogPostPage({ params }) {
     const { html: renderableContent, headings } = addHeadingIds(rawContent);
     const readingTime = calculateReadingTime(renderableContent);
 
-    // Split content for ad injection
-    const paragraphs = renderableContent.split('</p>');
-    const hasEnoughParagraphs = paragraphs.length > 3;
+    // Split content for lazy loading and ad injection
+    const paragraphs = renderableContent.split('</p>').filter(p => p.trim() !== '').map(p => p + '</p>');
     
+    // Content parts for Mobile (more granular for lazy loading)
+    let mobileContentParts = [];
+    if (paragraphs.length > 0) {
+      // First section: Title, summary (if any), featured image, and first 2 paragraphs
+      mobileContentParts.push(paragraphs.slice(0, 2).join(''));
+      
+      // Subsequent parts: 3 paragraphs each
+      for (let i = 2; i < paragraphs.length; i += 3) {
+        mobileContentParts.push(paragraphs.slice(i, i + 3).join(''));
+      }
+    } else {
+      mobileContentParts = [renderableContent];
+    }
+
+    // Content parts for Desktop (keep existing 3-part logic for ads)
     let contentParts = [renderableContent];
-    if (hasEnoughParagraphs) {
-      const firstPart = paragraphs.slice(0, 1).join('</p>') + '</p>';
+    if (paragraphs.length > 3) {
+      const firstPart = paragraphs.slice(0, 1).join('');
       const middleIndex = Math.ceil(paragraphs.length / 2);
-      const secondPart = paragraphs.slice(1, middleIndex).join('</p>') + '</p>';
-      const thirdPart = paragraphs.slice(middleIndex).join('</p>');
+      const secondPart = paragraphs.slice(1, middleIndex).join('');
+      const thirdPart = paragraphs.slice(middleIndex).join('');
       contentParts = [firstPart, secondPart, thirdPart];
     }
 
     return (
       <div className="min-h-screen bg-background">
-        <ViewTracker slug={params.slug} />
+        <ViewTracker slug={slug} />
 
-        <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        {/* Mobile UI Only */}
+        <MobileBlogLayout 
+          blog={blog}
+          relatedBlogs={relatedBlogsRaw}
+          categoryName={categoryName}
+          tagNames={tagNames}
+          readingTime={readingTime}
+          contentParts={mobileContentParts}
+        />
+
+        {/* Desktop UI Only - unchanged structure */}
+        <main className="hidden md:block mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
           <nav className="mb-5 flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
             <Link href="/blog" className="hover:text-slate-700 dark:hover:text-slate-200">Blog</Link>
             <span>/</span>

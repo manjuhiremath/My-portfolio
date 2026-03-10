@@ -23,6 +23,7 @@ const nextConfig = {
       "upload.wikimedia.org",
       "openrouter.ai",
       "www.gravatar.com",
+      "picsum.photos",
     ],
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 60 * 60 * 24 * 30,
@@ -51,6 +52,16 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "www.gravatar.com",
+      },
+      {
+        protocol: "https",
+        hostname: "picsum.photos",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "fastly.picsum.photos",
+        pathname: "/**",
       },
     ],
   },

@@ -1,7 +1,7 @@
 import { Playfair_Display, DM_Sans, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
+import Script from "next/script";
 import "./globals.css";
-import AdSenseScript from "@/components/ads/AdSenseScript";
 
 const playfair = Playfair_Display({
   variable: "--font-display",
@@ -73,11 +73,21 @@ export default function RootLayout({ children }) {
       <head>
         <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://res.cloudinary.com" />
-        <AdSenseScript />
       </head>
       <body
         className={`${playfair.variable} ${dmSans.variable} ${jetbrainsMono.variable} antialiased bg-white dark:bg-slate-900`}
       >
+        {/* AdSense scripts using next/script component */}
+        <Script 
+          async 
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6030791027461493"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+        <Script id="adsense-init" strategy="afterInteractive">
+          {`(adsbygoogle = window.adsbygoogle || []).pauseAdRequests = 1;`}
+        </Script>
+
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange={false}>
           {children}
         </ThemeProvider>

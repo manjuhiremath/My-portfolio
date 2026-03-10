@@ -191,7 +191,7 @@ export default async function CategoryPage({ params, searchParams }) {
   return (
     <div className="min-h-screen bg-background">
       <main className="mx-auto max-w-7xl space-y-6 px-4 py-8 sm:px-6 lg:px-8">
-        <BannerAd />
+        {blogs.length > 0 && <BannerAd />}
         <nav className="flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
           <Link href="/" className="hover:text-slate-700 dark:hover:text-slate-200">
             Home
@@ -234,7 +234,7 @@ export default async function CategoryPage({ params, searchParams }) {
             ) : null}
           </>
         )}
-        <MultiplexAd />
+        {blogs.length > 0 && <MultiplexAd />}
       </main>
     </div>
   );

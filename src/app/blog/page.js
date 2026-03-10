@@ -113,7 +113,7 @@ function BlogContent() {
   }, [blogs, catMap, tagMap]);
 
   const topLevelCategories = useMemo(
-    () => categories.filter((item) => !item.parent).map((item) => item.name),
+    () => [...new Set(categories.filter((item) => !item.parent).map((item) => item.name))],
     [categories]
   );
 
@@ -259,7 +259,7 @@ function BlogContent() {
       <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-white dark:from-slate-900 dark:via-slate-800 dark:to-slate-800">
       {/* Main Content */}
       <main className="mx-auto max-w-7xl px-4 py-6 sm:py-8 lg:py-12 lg:px-8">
-        <BannerAd />
+        {(!loading && ((isEditorialView && mappedBlogs.length > 0) || (isCategoryEditorialView && categoryBlogs.length > 0) || (!isEditorialView && !isCategoryEditorialView && filteredBlogs.length > 0))) && <BannerAd />}
         {isEditorialView ? (
           /* ─── ALL POSTS EDITORIAL VIEW ─── */
           <div className="space-y-10 lg:space-y-14">
@@ -303,7 +303,7 @@ function BlogContent() {
               {/* Sidebar: 4 Columns */}
               <aside className="lg:col-span-4">
                 <div className="lg:sticky lg:top-28 space-y-8">
-                  <SidebarAd />
+                  {mappedBlogs.length > 0 && <SidebarAd />}
                   <Suspense fallback={<div className="h-96 rounded-xl bg-slate-200 dark:bg-slate-700 animate-pulse" />}>
                     <TrendingSidebar
                       trendingBlogs={trendingBlogs}
@@ -478,7 +478,7 @@ function BlogContent() {
             )}
           </div>
         )}
-        <MultiplexAd />
+        {(!loading && ((isEditorialView && mappedBlogs.length > 0) || (isCategoryEditorialView && categoryBlogs.length > 0) || (!isEditorialView && !isCategoryEditorialView && filteredBlogs.length > 0))) && <MultiplexAd />}
       </main>
     </div>
   );
