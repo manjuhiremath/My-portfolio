@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const navItems = [
   {
@@ -41,7 +42,7 @@ export default function Sidebar({ isOpen, setIsOpen, currentPath }) {
         <div className="h-16 flex items-center px-6 border-b border-slate-800">
           <Link href="/admin/blog/dashboard" className="flex items-center gap-3">
             <div className="w-10 h-10 overflow-hidden rounded-lg flex items-center justify-center shadow-sm">
-              <img src="/logo.png" alt="Logo" className="h-full w-full object-contain bg-white" />
+              <Image src="/logo.png" alt="Logo" width={40} height={40} className="h-full w-full object-contain bg-white" />
             </div>
             <span className="font-archivo font-bold text-white">Admin</span>
           </Link>

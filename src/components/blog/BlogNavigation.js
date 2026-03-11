@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { FiSearch, FiX, FiTrendingUp, FiClock, FiBookmark } from 'react-icons/fi';
 import { useRouter, useSearchParams } from 'next/navigation';
 import ThemeToggle from './ThemeToggle';
@@ -68,7 +69,7 @@ export default function BlogNavigation() {
         <div className="hidden md:flex items-center justify-between border-b border-slate-100 dark:border-slate-700 px-4 lg:px-8 py-2">
           <Link href="/blog" className="flex items-center gap-3 group">
             <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg shadow-sm">
-              <img src="/logo.png" alt="Logo" className="h-full w-full object-contain bg-white" />
+              <Image src="/logo.png" alt="Logo" width={40} height={40} className="h-full w-full object-contain bg-white" />
             </div>
             <span className="text-lg font-black tracking-tight text-slate-900 dark:text-white">
               Dev<span className="text-orange-600">Blog</span>

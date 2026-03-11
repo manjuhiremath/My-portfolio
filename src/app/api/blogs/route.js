@@ -55,25 +55,38 @@ export async function GET(req){
    
    const skip = (page - 1) * limit
    
+    // Use projection to exclude large 'content' field for list views
+    const projection = {
+      content: 0,
+      faq: 0,
+      sectionImages: 0
+    };
+
     // Use lean to avoid populate issues with legacy string categories
-    // Only populate tags if they contain valid ObjectIds
-    const blogs = await Blog.find(query)
+    const blogs = await Blog.find(query, projection)
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
       .populate('category')
-      .lean()
+      .lean();
     
-    // Manually populate tags only if they are valid ObjectIds
-    for (const blog of blogs) {
-      if (blog.tags && blog.tags.length > 0) {
-        const objectIdTags = blog.tags.filter(t => /^[0-9a-fA-F]{24}$/.test(String(t)))
-        if (objectIdTags.length > 0) {
-          const populatedTags = await Tag.find({ _id: { $in: objectIdTags } }).lean()
-          blog.tags = populatedTags
+    // Efficiently batch populate tags
+    const allTagIds = [...new Set(blogs.flatMap(blog => 
+      (blog.tags || []).filter(t => /^[0-9a-fA-F]{24}$/.test(String(t)))
+    ))];
+
+    if (allTagIds.length > 0) {
+      const tagsData = await Tag.find({ _id: { $in: allTagIds } }).lean();
+      const tagMap = tagsData.reduce((acc, tag) => {
+        acc[tag._id.toString()] = tag;
+        return acc;
+      }, {});
+
+      blogs.forEach(blog => {
+        if (blog.tags) {
+          blog.tags = blog.tags.map(t => tagMap[String(t)] || t);
         }
-        // Keep string tags as-is if no valid ObjectIds found
-      }
+      });
     }
     
    const total = await Blog.countDocuments(query)

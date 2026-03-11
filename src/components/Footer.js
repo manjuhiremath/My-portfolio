@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { FiBookmark, FiTrendingUp, FiTag, FiArrowRight } from 'react-icons/fi';
 
 export default function Footer() {
@@ -104,7 +105,7 @@ export default function Footer() {
           <div>
             <Link href="/" className="flex items-center gap-2 group">
               <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg shadow-sm">
-                <img src="/logo.png" alt="Logo" className="h-full w-full object-contain bg-white" />
+                <Image src="/logo.png" alt="Logo" width={40} height={40} className="h-full w-full object-contain bg-white" />
               </div>
               <span className="font-bold text-white group-hover:text-orange-400 transition-colors">
                 Dev<span className="text-orange-500">Blog</span>
