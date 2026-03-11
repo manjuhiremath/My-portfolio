@@ -181,9 +181,15 @@ export default function Footer() {
           <p className="text-sm text-slate-500">
             © {currentYear} Manjunath M. All rights reserved.
           </p>
-          <div className="flex items-center gap-4 text-xs text-slate-500">
+          <div className="flex flex-wrap items-center justify-center md:justify-end gap-x-4 gap-y-2 text-xs text-slate-500">
             <Link href="/blog" className="hover:text-orange-400 transition-colors">Blog</Link>
-            <span className="h-3 w-px bg-slate-700" />
+            <span className="h-3 w-px bg-slate-700 hidden sm:inline" />
+            <Link href="/about" className="hover:text-orange-400 transition-colors">About</Link>
+            <span className="h-3 w-px bg-slate-700 hidden sm:inline" />
+            <Link href="/privacy-policy" className="hover:text-orange-400 transition-colors">Privacy Policy</Link>
+            <span className="h-3 w-px bg-slate-700 hidden sm:inline" />
+            <Link href="/contact" className="hover:text-orange-400 transition-colors">Contact</Link>
+            <span className="h-3 w-px bg-slate-700 hidden sm:inline" />
             <Link href="/" className="hover:text-orange-400 transition-colors">Portfolio</Link>
           </div>
         </div>

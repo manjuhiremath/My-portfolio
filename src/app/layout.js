@@ -77,16 +77,13 @@ export default function RootLayout({ children }) {
       <body
         className={`${playfair.variable} ${dmSans.variable} ${jetbrainsMono.variable} antialiased bg-white dark:bg-slate-900`}
       >
-        {/* AdSense scripts using next/script component */}
+        {/* AdSense script using next/script component */}
         <Script 
           async 
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6030791027461493"
           crossOrigin="anonymous"
           strategy="afterInteractive"
         />
-        <Script id="adsense-init" strategy="afterInteractive">
-          {`(adsbygoogle = window.adsbygoogle || []).pauseAdRequests = 1;`}
-        </Script>
 
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange={false}>
           {children}

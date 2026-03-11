@@ -5,19 +5,13 @@ export default function robots() {
     rules: [
       {
         userAgent: '*',
-        allow: '/blog/',
+        allow: '/',
         disallow: [
           '/admin/',
           '/api/',
           '/_next/',
-          '/private/',
         ],
-      },
-      {
-        userAgent: 'Googlebot',
-        allow: '/blog/',
-        disallow: ['/admin/', '/api/'],
-      },
+      }
     ],
     sitemap: `${baseUrl}/sitemap.xml`,
     host: baseUrl,

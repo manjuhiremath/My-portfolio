@@ -59,9 +59,12 @@ export async function GET() {
     let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
     xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
 
-    // 1. HOME & BLOG ROOT
+    // 1. HOME & BLOG ROOT & CORE PAGES
     xml = addUrl(xml, `${baseUrl}/`, currentDate, 'daily', '1.0');
     xml = addUrl(xml, `${baseUrl}/blog`, currentDate, 'daily', '0.9');
+    xml = addUrl(xml, `${baseUrl}/about`, currentDate, 'monthly', '0.5');
+    xml = addUrl(xml, `${baseUrl}/privacy-policy`, currentDate, 'monthly', '0.3');
+    xml = addUrl(xml, `${baseUrl}/contact`, currentDate, 'monthly', '0.5');
 
     // 2. CATEGORY PAGES
     categories.forEach(cat => {
