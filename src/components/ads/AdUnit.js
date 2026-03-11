@@ -39,9 +39,9 @@ export default function AdUnit({
           const adElement = adRef.current;
           const container = containerRef.current;
           
-          // CRITICAL: Ensure container has width before pushing
+          // CRITICAL: Ensure container has actual rendered width before pushing
           // This fixes the "Invalid responsive width: 0" error
-          if (container && container.offsetWidth > 0) {
+          if (container && container.clientWidth > 0) {
             if (adElement && 
                 !adElement.hasAttribute('data-adsbygoogle-status') && 
                 adElement.getAttribute('data-ad-status') !== 'filled') {
@@ -93,12 +93,13 @@ export default function AdUnit({
     <div 
       key={adKey} 
       ref={containerRef}
-      className={`ad-container my-8 overflow-hidden flex justify-center w-full min-h-[100px] ${className}`}
+      className={`ad-container my-8 overflow-hidden flex justify-center w-full min-w-[250px] min-h-[280px] ${className}`}
+      style={{ width: '100%', display: 'block' }}
     >
       <ins
         ref={adRef}
         className="adsbygoogle"
-        style={style}
+        style={{ ...style, width: '100%', height: 'auto' }}
         data-ad-client="ca-pub-6030791027461493"
         data-ad-slot={slot}
         data-ad-format={format}

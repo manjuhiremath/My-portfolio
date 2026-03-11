@@ -30,5 +30,5 @@ export async function searchStockImage(query: string): Promise<string> {
   // In a real production system, this would call Unsplash API or Pexels.
   // We'll use a free image placeholder service that returns random images for the keyword.
   console.log(`[Cloudinary Tool] Searching stock image for: ${query}`);
-  return `https://source.unsplash.com/800x400/?${encodeURIComponent(query)}`;
+  return `https://images.unsplash.com/featured/?${encodeURIComponent(query)}`;
 }
