@@ -124,6 +124,12 @@ export default function BlogClient({ initialBlogs = [], initialCategories = [], 
       .slice(0, 10);
   }, [mappedBlogs]);
 
+  const topLevelCategories = useMemo(() => {
+    return initialCategories
+      .filter(c => !c.parent)
+      .map(c => c.name);
+  }, [initialCategories]);
+
   const categoryBlogs = useMemo(() => {
     if (activeFilter === 'all' || query.trim()) return [];
     return mappedBlogs.filter(b => b.category?.toLowerCase() === activeFilter.toLowerCase());
