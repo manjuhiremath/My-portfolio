@@ -50,3 +50,4 @@ AGENTS.md
 package-lock.json
 .kiro/
 .groq/
+optimized_blogs/
