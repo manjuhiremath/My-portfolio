@@ -459,8 +459,11 @@ export default function EditBlog() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center">
-        <div className="text-[#18181B] font-space-grotesk">Loading blog...</div>
+      <div className="min-h-screen bg-[#FAFAFA] dark:bg-slate-900 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-slate-200 dark:border-slate-800 border-t-indigo-500" />
+          <div className="text-[#18181B] dark:text-slate-400 font-space-grotesk text-sm font-bold uppercase tracking-widest">Loading blog...</div>
+        </div>
       </div>
     );
   }

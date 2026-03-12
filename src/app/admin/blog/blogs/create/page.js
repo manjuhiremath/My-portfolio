@@ -1242,7 +1242,21 @@ function CreateBlogInner() {
 
 export default function CreateBlog() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={
+      <div className="p-8 space-y-8 animate-pulse bg-white dark:bg-slate-900 min-h-screen">
+        <div className="h-8 w-64 bg-slate-200 dark:bg-slate-800 rounded" />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-6">
+            <div className="h-12 w-full bg-slate-100 dark:bg-slate-800 rounded" />
+            <div className="h-64 w-full bg-slate-100 dark:bg-slate-800 rounded" />
+          </div>
+          <div className="space-y-6">
+            <div className="h-48 w-full bg-slate-100 dark:bg-slate-800 rounded" />
+            <div className="h-48 w-full bg-slate-100 dark:bg-slate-800 rounded" />
+          </div>
+        </div>
+      </div>
+    }>
       <CreateBlogInner />
     </Suspense>
   );

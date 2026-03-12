@@ -52,8 +52,8 @@ function BlogPageFallback() {
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900 flex items-center justify-center">
       <div className="flex flex-col items-center gap-4">
-        <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-orange-500" />
-        <p className="text-sm font-bold text-slate-500 uppercase tracking-widest">Loading Magazine...</p>
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 dark:border-slate-800 border-t-orange-500" />
+        <p className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Loading Magazine...</p>
       </div>
     </div>
   );

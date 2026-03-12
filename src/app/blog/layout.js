@@ -33,7 +33,7 @@ export const metadata = {
 export default function BlogLayout({ children }) {
   return (
     <>
-      <Suspense fallback={<div className="h-16 bg-white border-b border-slate-200" />}>
+      <Suspense fallback={<div className="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800" />}>
         <BlogNavigation />
       </Suspense>
       {children}
