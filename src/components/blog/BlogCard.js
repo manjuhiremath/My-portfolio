@@ -79,7 +79,7 @@ export default function BlogCard({ blog, categoryColor = '#6366f1', variant = 'd
   return (
     <Link
       href={href}
-      className="group block overflow-hidden rounded-xl bg-white dark:bg-slate-800 shadow-sm shadow-slate-100 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700 transition-all duration-300 hover:shadow-lg hover:shadow-slate-200/50 dark:hover:shadow-slate-900/50 hover:-translate-y-1"
+      className="group block overflow-hidden rounded-2xl bg-white dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] backdrop-blur-sm transition-all duration-500 hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_20px_50px_rgba(0,0,0,0.3)] hover:-translate-y-2"
     >
       {/* Image Container */}
       <div className="relative aspect-[16/10] overflow-hidden bg-slate-100 dark:bg-slate-700">
@@ -89,67 +89,79 @@ export default function BlogCard({ blog, categoryColor = '#6366f1', variant = 'd
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1200px) 50vw, 33vw"
           loading="lazy"
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
         />
         {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
 
         {/* Category badge */}
-        <div className="absolute top-3 left-3">
+        <div className="absolute top-4 left-4">
           <span
-            className="rounded-lg px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-lg backdrop-blur-sm"
-            style={{ backgroundColor: categoryColor }}
+            className="rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white shadow-lg backdrop-blur-md border border-white/20"
+            style={{ backgroundColor: `${categoryColor}CC` }}
           >
             {categoryValue || 'General'}
           </span>
         </div>
 
         {/* Reading time badge */}
-        <div className="absolute bottom-3 right-3 flex items-center gap-1.5 rounded-lg bg-black/60 px-2.5 py-1 text-[10px] font-medium text-white backdrop-blur-sm">
+        <div className="absolute bottom-4 right-4 flex items-center gap-1.5 rounded-full bg-black/40 px-3 py-1 text-[10px] font-medium text-white backdrop-blur-md border border-white/10">
           <FiClock className="h-3 w-3" />
           <span>{blog.readingTime ? `${blog.readingTime} min` : calculateReadingTime(blog.content)}</span>
         </div>
       </div>
 
       {/* Content */}
-      <div className="p-4 sm:p-5">
-        <h3 className="line-clamp-2 text-base font-bold leading-snug tracking-tight text-slate-900 dark:text-white transition-colors group-hover:text-orange-600 sm:text-lg">
+      <div className="p-5 sm:p-6">
+        <div className="flex items-center gap-2 mb-3">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
+            {formatDate(blog.publishedAt || blog.createdAt)}
+          </span>
+          <span className="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-600" />
+          <span className="text-[10px] font-bold uppercase tracking-widest text-orange-500">
+            {categoryValue}
+          </span>
+        </div>
+
+        <h3 className="line-clamp-2 text-lg font-bold leading-tight tracking-tight text-slate-900 dark:text-white transition-colors duration-300 group-hover:text-orange-600 sm:text-xl">
           {blog.title}
         </h3>
 
-        <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
+        <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-slate-500 dark:text-slate-400 font-medium">
           {cleanExcerpt(blog.excerpt)}
         </p>
 
         {/* Tags */}
         {blog.tags?.length > 0 && (
-          <div className="mt-2.5 flex items-center flex-nowrap gap-1.5 overflow-hidden">
+          <div className="mt-4 flex items-center flex-nowrap gap-2 overflow-hidden">
             {blog.tags.slice(0, 2).map((tag) => (
               <span
                 key={tag?._id || tag}
-                className="whitespace-nowrap rounded-md bg-slate-50 dark:bg-slate-700 px-2 py-0.5 text-[10px] font-medium text-slate-500 dark:text-slate-300 border border-slate-100 dark:border-slate-600"
+                className="whitespace-nowrap rounded-lg bg-slate-50 dark:bg-slate-700/50 px-2.5 py-1 text-[10px] font-semibold text-slate-500 dark:text-slate-300 border border-slate-100 dark:border-slate-600/50"
               >
                 #{tag?.name || tag}
               </span>
             ))}
             {blog.tags.length > 2 && (
-              <span className="text-[10px] font-bold text-orange-500 whitespace-nowrap bg-orange-50 dark:bg-orange-900/30 px-1.5 py-0.5 rounded-md border border-orange-100 dark:border-orange-800">
+              <span className="text-[10px] font-bold text-orange-500 whitespace-nowrap bg-orange-50 dark:bg-orange-900/20 px-2 py-1 rounded-lg border border-orange-100/50 dark:border-orange-800/50">
                 +{blog.tags.length - 2}
               </span>
             )}
           </div>
         )}
 
-        <div className="mt-3 flex items-center justify-between border-t border-slate-100 dark:border-slate-700 pt-3 text-xs text-slate-400">
-          <span className="font-semibold uppercase tracking-wide" style={{ color: categoryColor }}>
-            {categoryValue || 'Insights'}
-          </span>
-          <div className="flex items-center gap-3">
-            <span className="flex items-center gap-1">
-              <FiEye className="h-3 w-3" />
+        <div className="mt-5 flex items-center justify-between border-t border-slate-100 dark:border-slate-700/50 pt-4">
+          <div className="flex items-center gap-2">
+            <div className="relative h-6 w-6 overflow-hidden rounded-full ring-2 ring-slate-100 dark:ring-slate-700">
+              <Image src="/Profilemanju.jpeg" alt="Author" fill className="object-cover" />
+            </div>
+            <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300">Manjunath M</span>
+          </div>
+          <div className="flex items-center gap-3 text-[11px] font-bold text-slate-400">
+            <span className="flex items-center gap-1.5">
+              <FiEye className="h-3.5 w-3.5" />
               {(blog.views || 0).toLocaleString()}
             </span>
-            <span>{formatDate(blog.publishedAt || blog.createdAt)}</span>
           </div>
         </div>
       </div>

@@ -7,51 +7,56 @@ export default function EditorPicks({ blogs }) {
   if (!blogs || blogs.length === 0) return null;
 
   return (
-    <section className="rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 p-5 sm:p-6 lg:p-8 border border-slate-100 dark:border-slate-700 shadow-sm shadow-slate-100 dark:shadow-slate-900/50">
+    <section className="relative overflow-hidden rounded-[2.5rem] bg-slate-50 dark:bg-slate-800/30 p-8 sm:p-10 lg:p-12 border border-slate-100 dark:border-slate-800/50 shadow-sm transition-all hover:shadow-md">
+      <div className="absolute top-0 right-0 p-8 opacity-10 dark:opacity-20">
+        <FiStar className="h-24 w-24 text-orange-500 rotate-12" />
+      </div>
+
       {/* Section Header */}
-      <div className="mb-6 flex items-center gap-2.5">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-500 text-white">
-          <FiStar className="h-4 w-4 fill-current" />
+      <div className="relative z-10 mb-12 flex items-center gap-4">
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-500 text-white shadow-xl shadow-orange-500/20">
+          <FiStar className="h-6 w-6 fill-current" />
         </div>
         <div>
-          <h2 className="text-lg font-bold tracking-tight text-slate-900 dark:text-white uppercase sm:text-xl">
-            Editor&apos;s Picks
+          <h2 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white uppercase">
+            Curated <span className="text-orange-500">Picks</span>
           </h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400">Handpicked articles by our team</p>
+          <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em]">Handpicked article collection</p>
         </div>
       </div>
 
       {/* Picks Grid */}
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+      <div className="relative z-10 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
         {blogs.slice(0, 3).map((blog) => {
-          const categorySlug = slugify(blog.category);
+          const categoryName = blog.category?.name || blog.category;
+          const categorySlug = slugify(categoryName);
           const href = `/blog/${categorySlug}/${blog.slug}`;
           const imageUrl = fixUnsplashUrl(blog.featuredImage);
 
           return (
             <Link key={blog._id} href={href} className="group">
-              <article className="space-y-3">
+              <article className="space-y-5">
                 {/* Image */}
-                <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-slate-200 dark:bg-slate-700 shadow-sm transition-all group-hover:shadow-md">
+                <div className="relative aspect-[4/3] overflow-hidden rounded-[2rem] bg-slate-200 dark:bg-slate-700 shadow-sm transition-all duration-500 group-hover:shadow-2xl group-hover:shadow-orange-500/10 group-hover:-translate-y-1">
                   <Image
                     src={imageUrl}
                     alt={blog.title}
                     fill
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
                 </div>
 
                 {/* Content */}
-                <div className="space-y-2">
-                  <p className="text-[10px] font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider">
-                    {blog.category}
+                <div className="space-y-3 px-2">
+                  <p className="text-[9px] font-black text-orange-500 uppercase tracking-[0.3em]">
+                    {categoryName}
                   </p>
-                  <h3 className="line-clamp-2 text-base font-bold leading-snug text-slate-900 dark:text-white transition-colors group-hover:text-orange-600 sm:text-lg">
+                  <h3 className="line-clamp-2 text-base font-black leading-snug text-slate-900 dark:text-white transition-colors group-hover:text-orange-600">
                     {blog.title}
                   </h3>
-                  <p className="line-clamp-2 text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                  <p className="line-clamp-2 text-xs text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
                     {blog.excerpt || 'Discover expert insights in this handpicked article.'}
                   </p>
                 </div>

@@ -25,26 +25,9 @@ export default function TopStories({ blogs, getCategoryColor }) {
   if (!blogs || blogs.length === 0) return null;
 
   return (
-    <section className="space-y-5">
-      {/* Section Header */}
-      <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-3">
-        <div className="flex items-center gap-2.5">
-          <div className="h-3 w-1 rounded-full bg-orange-500" />
-          <h2 className="text-lg font-bold tracking-tight text-slate-900 dark:text-white uppercase sm:text-xl">
-            Top Stories
-          </h2>
-        </div>
-        <Link
-          href="/blog?sort=popular"
-          className="group flex items-center gap-1 text-xs font-semibold text-orange-600 hover:text-orange-700 transition-colors"
-        >
-          <span>View All</span>
-          <FiArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-        </Link>
-      </div>
-
+    <section className="space-y-10">
       {/* Stories Grid */}
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:gap-8">
+      <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:gap-12">
         {blogs.map((blog) => {
           const categoryName = blog.category?.name || blog.category;
           const categorySlug = slugify(categoryName);
@@ -53,59 +36,61 @@ export default function TopStories({ blogs, getCategoryColor }) {
           const categoryColor = getCategoryColor(blog.category?.name || blog.category?._id || blog.category);
 
           return (
-            <article key={blog._id} className="group">
-              {/* Image */}
-              <Link href={href} className="relative block aspect-video overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-800">
+            <article key={blog._id} className="group relative">
+              {/* Image Container */}
+              <Link href={href} className="relative block aspect-[16/10] overflow-hidden rounded-[2rem] bg-slate-100 dark:bg-slate-800 shadow-sm transition-all duration-500 group-hover:shadow-2xl group-hover:shadow-orange-500/10">
                 <Image
                   src={imageUrl}
                   alt={blog.title}
                   fill
                   sizes="(max-width: 640px) 100vw, 50vw"
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                 />
                 {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
 
-                {/* Category badge */}
-                <div className="absolute top-3 left-3">
+                {/* Badges */}
+                <div className="absolute top-4 left-4">
                   <span
-                    className="rounded-lg px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-lg backdrop-blur-sm"
-                    style={{ backgroundColor: categoryColor }}
+                    className="rounded-full px-3 py-1 text-[9px] font-black uppercase tracking-[0.2em] text-white shadow-lg backdrop-blur-md border border-white/20"
+                    style={{ backgroundColor: `${categoryColor}CC` }}
                   >
                     {categoryName}
                   </span>
                 </div>
 
-                {/* Reading time */}
-                <div className="absolute bottom-3 right-3 flex items-center gap-1.5 rounded-lg bg-black/60 px-2.5 py-1 text-[10px] font-medium text-white backdrop-blur-sm">
+                <div className="absolute bottom-4 right-4 flex items-center gap-1.5 rounded-full bg-black/40 px-3 py-1 text-[9px] font-bold text-white backdrop-blur-md border border-white/10">
                   <FiClock className="h-3 w-3" />
                   <span>{blog.readingTime ? `${blog.readingTime} min` : calculateReadingTime(blog.content)}</span>
                 </div>
               </Link>
 
               {/* Content */}
-              <div className="space-y-2.5 pt-4">
-                <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider">
-                  <span className="text-orange-600 dark:text-orange-400">
-                    {blog.tags?.[0]?.name || blog.tags?.[0] || categoryName}
+              <div className="pt-6 px-2">
+                <div className="flex items-center gap-3 mb-3">
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-orange-500">
+                    {formatDate(blog.createdAt)}
                   </span>
-                  <span className="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-600" />
-                  <span className="text-slate-400 dark:text-slate-500">{formatDate(blog.createdAt)}</span>
+                  <span className="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-700" />
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                    {(blog.views || 0).toLocaleString()} Views
+                  </span>
                 </div>
 
                 <Link href={href} className="block">
-                  <h3 className="text-base font-bold leading-snug tracking-tight text-slate-900 dark:text-white transition-colors group-hover:text-orange-600 sm:text-lg lg:text-xl">
+                  <h3 className="text-xl font-black leading-tight tracking-tight text-slate-900 dark:text-white transition-colors duration-300 group-hover:text-orange-600 lg:text-2xl">
                     {blog.title}
                   </h3>
                 </Link>
 
-                <p className="line-clamp-2 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
+                <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-slate-500 dark:text-slate-400 font-medium">
                   {blog.excerpt || 'Discover practical tips and expert guidance in this insightful article.'}
                 </p>
-
-                <div className="flex items-center gap-2 pt-1 text-xs text-slate-400 dark:text-slate-500">
-                  <FiEye className="h-3 w-3" />
-                  <span>{(blog.views || 0).toLocaleString()} views</span>
+                
+                <div className="mt-6 flex items-center gap-2">
+                  <Link href={href} className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 dark:text-white border-b-2 border-orange-500 pb-0.5 transition-all hover:gap-4 flex items-center group/more">
+                    Read Story <FiArrowRight className="ml-2 transition-transform group-hover/more:translate-x-1" />
+                  </Link>
                 </div>
               </div>
             </article>

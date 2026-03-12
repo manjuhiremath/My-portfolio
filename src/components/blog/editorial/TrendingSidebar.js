@@ -4,33 +4,35 @@ import { FiTrendingUp, FiClock, FiTag, FiArrowRight } from 'react-icons/fi';
 
 export default function TrendingSidebar({ trendingBlogs, recentBlogs, popularTags }) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-10">
       {/* Trending / Most Read Section */}
-      <section className="rounded-xl bg-white dark:bg-slate-800 p-5 shadow-sm shadow-slate-100 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700">
-        <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-700">
-          <FiTrendingUp className="h-4 w-4 text-orange-500" />
-          <h2 className="text-sm font-bold tracking-tight text-slate-900 dark:text-white uppercase">
-            Trending Now
+      <section className="rounded-[2rem] bg-white dark:bg-slate-800/50 p-8 border border-slate-100 dark:border-slate-800/50 shadow-sm transition-all hover:shadow-md">
+        <div className="flex items-center gap-3 mb-8">
+          <FiTrendingUp className="h-5 w-5 text-orange-500" />
+          <h2 className="text-xs font-black uppercase tracking-[0.3em] text-slate-900 dark:text-white">
+            Most Popular
           </h2>
         </div>
-        <div className="divide-y divide-slate-100 dark:divide-slate-700 pt-3">
+        <div className="space-y-8">
           {(trendingBlogs || []).slice(0, 5).map((blog, index) => {
             const categoryName = blog.category?.name || blog.category;
             const categorySlug = slugify(categoryName);
             const href = `/blog/${categorySlug}/${blog.slug}`;
 
             return (
-              <Link key={blog._id} href={href} className="group flex items-start gap-3 py-3 first:pt-0 last:pb-0">
-                <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-orange-500 to-orange-600 text-[10px] font-bold text-white shadow-sm">
-                  {index + 1}
+              <Link key={blog._id} href={href} className="group flex items-start gap-4">
+                <span className="flex-shrink-0 text-2xl font-black text-slate-100 dark:text-slate-800 group-hover:text-orange-500/20 transition-colors">
+                  0{index + 1}
                 </span>
-                <div className="flex-1 min-w-0">
-                  <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-slate-900 dark:text-slate-100 group-hover:text-orange-600 transition-colors">
+                <div className="min-w-0">
+                  <h3 className="line-clamp-2 text-sm font-black leading-tight text-slate-900 dark:text-slate-100 group-hover:text-orange-600 transition-colors">
                     {blog.title}
                   </h3>
-                  <p className="mt-1 text-[11px] font-medium text-slate-400 dark:text-slate-500">
-                    {categoryName} · {(blog.views || 0).toLocaleString()} views
-                  </p>
+                  <div className="mt-2 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                    <span className="text-orange-500">{categoryName}</span>
+                    <span>·</span>
+                    <span>{(blog.views || 0).toLocaleString()} views</span>
+                  </div>
                 </div>
               </Link>
             );
@@ -38,57 +40,51 @@ export default function TrendingSidebar({ trendingBlogs, recentBlogs, popularTag
         </div>
       </section>
 
-      {/* Recent Posts Section */}
-      <section className="rounded-xl bg-white dark:bg-slate-800 p-5 shadow-sm shadow-slate-100 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700">
-        <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-700">
-          <FiClock className="h-4 w-4 text-orange-500" />
-          <h2 className="text-sm font-bold tracking-tight text-slate-900 dark:text-white uppercase">
-            Fresh Posts
+      {/* Fresh Feed */}
+      <section className="rounded-[2rem] bg-slate-900 p-8 border border-slate-800 shadow-2xl transition-all hover:shadow-orange-500/5">
+        <div className="flex items-center gap-3 mb-8">
+          <FiClock className="h-5 w-5 text-orange-500" />
+          <h2 className="text-xs font-black uppercase tracking-[0.3em] text-white">
+            Fresh Feed
           </h2>
         </div>
-        <div className="divide-y divide-slate-100 dark:divide-slate-700 pt-3">
+        <div className="space-y-8">
           {(recentBlogs || []).map((blog) => {
             const categoryName = blog.category?.name || blog.category;
             const categorySlug = slugify(categoryName);
             const href = `/blog/${categorySlug}/${blog.slug}`;
 
             return (
-              <Link key={blog._id} href={href} className="group block py-2.5 first:pt-0 last:pb-0">
-                <p className="text-[10px] font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider">
+              <Link key={blog._id} href={href} className="group block">
+                <p className="text-[9px] font-black text-orange-500 uppercase tracking-[0.3em] mb-2">
                   {categoryName}
                 </p>
-                <h3 className="mt-1 line-clamp-2 text-sm font-semibold leading-snug text-slate-900 dark:text-slate-100 group-hover:text-orange-600 transition-colors">
+                <h3 className="line-clamp-2 text-sm font-black leading-tight text-white group-hover:text-orange-400 transition-colors">
                   {blog.title}
                 </h3>
-                <p className="mt-1 text-[11px] text-slate-400 dark:text-slate-500 font-medium">
-                  {new Date(blog.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                <p className="mt-2 text-[10px] text-slate-500 font-bold uppercase tracking-widest">
+                  {new Date(blog.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                 </p>
               </Link>
             );
           })}
         </div>
-        <Link
-          href="/blog"
-          className="group mt-3 inline-flex items-center gap-1 text-xs font-semibold text-orange-600 hover:text-orange-700 transition-colors"
-        >
-          <span>View All Recent</span> <FiArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
-        </Link>
       </section>
 
-      {/* Popular Tags Section — Issue 2: Link to /blog/tag/[tag] */}
-      <section className="rounded-xl bg-white dark:bg-slate-800 p-5 shadow-sm shadow-slate-100 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700">
-        <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-700">
-          <FiTag className="h-4 w-4 text-orange-500" />
-          <h2 className="text-sm font-bold tracking-tight text-slate-900 dark:text-white uppercase">
-            Popular Tags
+      {/* Tags */}
+      <section className="rounded-[2rem] bg-white dark:bg-slate-800/50 p-8 border border-slate-100 dark:border-slate-800/50 shadow-sm">
+        <div className="flex items-center gap-3 mb-8">
+          <FiTag className="h-5 w-5 text-orange-500" />
+          <h2 className="text-xs font-black uppercase tracking-[0.3em] text-slate-900 dark:text-white">
+            Explore Tags
           </h2>
         </div>
-        <div className="flex flex-wrap gap-2 pt-3">
+        <div className="flex flex-wrap gap-2">
           {(popularTags || []).map((tag) => (
             <Link
               key={tag}
               href={`/blog/tag/${encodeURIComponent(tag)}`}
-              className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/50 px-3 py-1.5 text-xs font-semibold text-slate-600 dark:text-slate-300 transition-all hover:border-orange-300 dark:hover:border-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-600 dark:hover:text-orange-400"
+              className="rounded-xl border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 px-4 py-2 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest transition-all hover:border-orange-500 hover:text-orange-600"
             >
               #{tag}
             </Link>
@@ -96,26 +92,23 @@ export default function TrendingSidebar({ trendingBlogs, recentBlogs, popularTag
         </div>
       </section>
 
-      {/* Newsletter Card */}
-      <div className="rounded-xl bg-gradient-to-br from-gray-500 via-gray-700 to-gray-800 p-6 text-center shadow-lg">
-        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-orange-500/20">
-          <svg className="h-5 w-5 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-          </svg>
+      {/* Modern Newsletter Card */}
+      <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-orange-500 to-rose-600 p-10 text-white shadow-2xl shadow-orange-500/20">
+        <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-3xl" />
+        <div className="relative z-10">
+          <h4 className="text-2xl font-black tracking-tight leading-tight">Join the <span className="underline decoration-white/30">Manifesto.</span></h4>
+          <p className="mt-4 text-sm font-medium text-orange-50 mb-8 leading-relaxed opacity-90">Deep tech insights, architecture patterns, and design engineering delivered weekly.</p>
+          <form className="space-y-3" onSubmit={(e) => e.preventDefault()}>
+            <input
+              type="email"
+              placeholder="Your email address"
+              className="w-full rounded-2xl bg-white/10 border border-white/20 px-5 py-4 text-sm text-white placeholder:text-orange-100 outline-none transition-all focus:bg-white/20 focus:ring-2 focus:ring-white/50"
+            />
+            <button className="w-full rounded-2xl bg-white py-4 text-xs font-black text-orange-600 uppercase tracking-[0.2em] shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98]">
+              Subscribe
+            </button>
+          </form>
         </div>
-        <p className="text-[10px] font-bold text-orange-400 uppercase tracking-[0.2em]">Newsletter</p>
-        <h4 className="mt-2 text-lg font-bold text-white">Stay Updated</h4>
-        <p className="mt-2 text-sm text-white font-semibold">Get the latest articles delivered weekly.</p>
-        <form className="mt-5 flex flex-col gap-3" onSubmit={(e) => e.preventDefault()}>
-          <input
-            type="email"
-            placeholder="Enter your email"
-            className="w-full rounded-lg bg-slate-800/50 px-4 py-3 text-sm text-white placeholder-white outline-none transition-all focus:ring-2 focus:ring-orange-500/50 border border-gray-200/50"
-          />
-          <button className="w-full rounded-lg bg-orange-500 py-3 text-sm font-bold text-white uppercase tracking-wide transition-all hover:bg-orange-600 hover:shadow-lg active:scale-[0.98]">
-            Subscribe
-          </button>
-        </form>
       </div>
     </div>
   );

@@ -7,10 +7,11 @@ import Category from '@/models/Category';
 import Tag from '@/models/Tag';
 import ViewTracker from '@/components/blog/ViewTracker';
 import TableOfContents from '@/components/blog/TableOfContents';
+import ReadingProgressBar from '@/components/blog/ReadingProgressBar';
 import ArticleAd from '@/components/ads/ArticleAd';
 import SidebarAd from '@/components/ads/SidebarAd';
 import MultiplexAd from '@/components/ads/MultiplexAd';
-import { FiClock, FiEye } from 'react-icons/fi';
+import { FiClock, FiEye, FiTwitter, FiLinkedin, FiLink } from 'react-icons/fi';
 import { fixUnsplashUrl, slugify } from '@/lib/utils';
 import MobileBlogLayout from '@/components/blog/MobileBlogLayout';
 
@@ -458,8 +459,9 @@ export default async function BlogPostPage({ params }) {
     }
 
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-slate-50/50 dark:bg-slate-900/50">
         <ViewTracker slug={slug} />
+        <ReadingProgressBar />
 
         {/* Mobile UI Only */}
         <MobileBlogLayout 
@@ -471,147 +473,188 @@ export default async function BlogPostPage({ params }) {
           contentParts={mobileContentParts}
         />
 
-        {/* Desktop UI Only - unchanged structure */}
-        <main className="hidden md:block mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <nav className="mb-5 flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-            <Link href="/blog" className="hover:text-slate-700 dark:hover:text-slate-200">Blog</Link>
-            <span>/</span>
-            <Link href={`/blog/${categorySlug}`} className="capitalize hover:text-slate-700 dark:hover:text-slate-200">
+        {/* Desktop UI Only */}
+        <main className="hidden md:block mx-auto max-w-[1440px] px-6 py-12 lg:px-12">
+          <nav className="mb-8 flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
+            <Link href="/blog" className="hover:text-orange-500 transition-colors">Magazine</Link>
+            <span className="text-slate-300 dark:text-slate-700">/</span>
+            <Link href={`/blog/${categorySlug}`} className="hover:text-orange-500 transition-colors">
               {categoryName}
             </Link>
-            <span>/</span>
-            <span className="max-w-[320px] truncate text-slate-700 dark:text-slate-300">{blog.title}</span>
+            <span className="text-slate-300 dark:text-slate-700">/</span>
+            <span className="max-w-[200px] truncate text-slate-500 dark:text-slate-400">{blog.title}</span>
           </nav>
 
-          <header className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5 shadow-sm">
-            <div className="mb-3 flex flex-wrap gap-2">
-              <Link
-                href={`/blog?category=${encodeURIComponent(categoryName)}`}
-                className="rounded-full bg-orange-100 dark:bg-orange-900/30 px-3 py-1 text-xs font-bold uppercase tracking-wider text-orange-700 dark:text-orange-400 hover:bg-orange-200 transition-colors"
-              >
-                {categoryName}
-              </Link>
-              {tagNames.slice(0, 3).map((tag) => (
-                <Link
-                  key={tag}
-                  href={`/blog/tag/${encodeURIComponent(tag)}`}
-                  className="rounded-full bg-slate-100 dark:bg-slate-700 px-3 py-1 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
-                >
-                  #{tag}
-                </Link>
-              ))}
-            </div>
-            <h1 className="text-3xl font-black leading-tight tracking-tight text-slate-900 dark:text-white sm:text-4xl lg:text-5xl">
-              {blog.title}
-            </h1>
-            <div className="mt-4 flex flex-wrap items-center gap-4 text-xs font-medium text-slate-500 dark:text-slate-400">
-              <div className="flex items-center gap-2">
-                <div className="relative h-6 w-6 overflow-hidden rounded-full ring-2 ring-white dark:ring-slate-700">
-                  <Image src="/Profilemanju.jpeg" alt="Author" fill className="object-cover" />
-                </div>
-                <span className="text-slate-700 dark:text-slate-200">Manjunath M</span>
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-[80px_1fr_320px]">
+            {/* Left Sticky Share Bar */}
+            <aside className="hidden lg:block">
+              <div className="sticky top-32 flex flex-col items-center gap-4">
+                <span className="text-[10px] font-black uppercase tracking-tighter text-slate-400 rotate-90 mb-8 whitespace-nowrap">Share Article</span>
+                <button className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition-all hover:-translate-y-1 hover:border-blue-400 hover:text-[#1da1f2] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400">
+                  <FiTwitter className="h-4 w-4" />
+                </button>
+                <button className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition-all hover:-translate-y-1 hover:border-blue-600 hover:text-[#0077b5] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400">
+                  <FiLinkedin className="h-4 w-4" />
+                </button>
+                <button className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition-all hover:-translate-y-1 hover:border-orange-400 hover:text-orange-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400">
+                  <FiLink className="h-4 w-4" />
+                </button>
               </div>
-              <span className="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-600" />
-              <span>{new Date(blog.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
-              <span className="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-600" />
-              <span className="flex items-center gap-1.5">
-                <FiClock className="h-3.5 w-3.5" />
-                {readingTime} min read
-              </span>
-              <span className="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-600" />
-              <span className="flex items-center gap-1.5">
-                <FiEye className="h-3.5 w-3.5" />
-                {(blog.views || 0).toLocaleString()} views
-              </span>
-            </div>
-          </header>
+            </aside>
 
-          {blog.featuredImage ? (
-            <div className="relative mt-6 h-[240px] overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 shadow-xl sm:h-[340px] lg:h-[480px]">
-              <Image
-                src={fixUnsplashUrl(blog.featuredImage)}
-                alt={blog.title}
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1280px) 90vw, 1200px"
-                className="object-cover"
-                priority
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-            </div>
-          ) : null}
-
-          <section className="mt-8 grid grid-cols-1 gap-8 xl:grid-cols-[1fr_320px]">
-            <article className="min-w-0">
-              <div className="blog-content leading-relaxed text-slate-700 dark:text-slate-300">
-                {contentParts.length > 1 ? (
-                  <>
-                    <div dangerouslySetInnerHTML={{ __html: contentParts[0] }} />
-                    <ArticleAd />
-                    <div dangerouslySetInnerHTML={{ __html: contentParts[1] }} />
-                    <ArticleAd />
-                    <div dangerouslySetInnerHTML={{ __html: contentParts[2] }} />
-                  </>
-                ) : (
-                  <div dangerouslySetInnerHTML={{ __html: contentParts[0] }} />
-                )}
-              </div>
-
-              {tagNames.length ? (
-                <div className="mt-10 flex flex-wrap gap-2 border-t border-slate-200 dark:border-slate-700 pt-8">
-                  {tagNames.map((tag, index) => (
+            {/* Main Content Area */}
+            <div className="min-w-0">
+              <article>
+                <header className="mb-10 text-center lg:text-left">
+                  <div className="mb-6 flex flex-wrap justify-center lg:justify-start gap-3">
                     <Link
-                      key={`${tag}-${index}`}
-                      href={`/blog/tag/${encodeURIComponent(tag)}`}
-                      className="rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-1.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:border-orange-300 dark:hover:border-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-600 dark:hover:text-orange-400 transition-all"
+                      href={`/blog?category=${encodeURIComponent(categoryName)}`}
+                      className="rounded-full bg-orange-500 px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-white shadow-lg shadow-orange-500/20"
                     >
-                      #{tag}
+                      {categoryName}
                     </Link>
-                  ))}
-                </div>
-              ) : null}
-
-              {/* FAQ Schema */}
-              {blog.faq?.length ? (
-                <div className="mt-10 border-t border-slate-200 dark:border-slate-700 pt-8">
-                  <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">Frequently Asked Questions</h2>
-                  <div className="space-y-4">
-                    {blog.faq.map((item, i) => (
-                      <details key={i} className="group rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 transition-all">
-                        <summary className="cursor-pointer px-5 py-4 text-base font-bold text-slate-900 dark:text-white hover:text-orange-600 dark:hover:text-orange-400 list-none flex items-center justify-between">
-                          {item.question}
-                          <span className="transition-transform group-open:rotate-180">
-                            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-                          </span>
-                        </summary>
-                        <div className="px-5 pb-4 text-slate-600 dark:text-slate-400 leading-relaxed border-t border-slate-100 dark:border-slate-700 mt-2 pt-4">
-                          {item.answer}
-                        </div>
-                      </details>
+                    {tagNames.slice(0, 3).map((tag) => (
+                      <Link
+                        key={tag}
+                        href={`/blog/tag/${encodeURIComponent(tag)}`}
+                        className="rounded-full bg-slate-100 dark:bg-slate-800 px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                      >
+                        #{tag}
+                      </Link>
                     ))}
                   </div>
+
+                  <h1 className="text-4xl font-black leading-[1.1] tracking-tight text-slate-900 dark:text-white sm:text-5xl lg:text-6xl xl:text-7xl">
+                    {blog.title}
+                  </h1>
+
+                  <div className="mt-10 flex flex-wrap items-center justify-center lg:justify-start gap-6 border-y border-slate-100 dark:border-slate-800/50 py-6 text-xs font-bold uppercase tracking-widest text-slate-400">
+                    <div className="flex items-center gap-3">
+                      <div className="relative h-10 w-10 overflow-hidden rounded-full ring-4 ring-slate-50 dark:ring-slate-800">
+                        <Image src="/Profilemanju.jpeg" alt="Author" fill className="object-cover" />
+                      </div>
+                      <div className="text-left">
+                        <p className="text-slate-900 dark:text-white">Manjunath M</p>
+                        <p className="text-[10px] text-slate-400">Lead Architect</p>
+                      </div>
+                    </div>
+                    <div className="hidden sm:block h-8 w-px bg-slate-100 dark:bg-slate-800" />
+                    <div className="flex flex-col gap-1">
+                      <span className="text-[10px] text-slate-400 font-medium">Published</span>
+                      <span className="text-slate-600 dark:text-slate-300">
+                        {new Date(blog.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                      </span>
+                    </div>
+                    <div className="hidden sm:block h-8 w-px bg-slate-100 dark:bg-slate-800" />
+                    <div className="flex flex-col gap-1">
+                      <span className="text-[10px] text-slate-400 font-medium">Reading Time</span>
+                      <span className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
+                        <FiClock className="h-3.5 w-3.5 text-orange-500" />
+                        {readingTime} min read
+                      </span>
+                    </div>
+                    <div className="hidden sm:block h-8 w-px bg-slate-100 dark:bg-slate-800" />
+                    <div className="flex flex-col gap-1">
+                      <span className="text-[10px] text-slate-400 font-medium">Engagement</span>
+                      <span className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
+                        <FiEye className="h-3.5 w-3.5 text-blue-500" />
+                        {(blog.views || 0).toLocaleString()} views
+                      </span>
+                    </div>
+                  </div>
+                </header>
+
+                {blog.featuredImage ? (
+                  <div className="relative mb-12 h-[400px] lg:h-[600px] overflow-hidden rounded-[2.5rem] bg-slate-100 dark:bg-slate-800 shadow-2xl shadow-slate-200/50 dark:shadow-none">
+                    <Image
+                      src={fixUnsplashUrl(blog.featuredImage)}
+                      alt={blog.title}
+                      fill
+                      sizes="(max-width: 1280px) 100vw, 1200px"
+                      className="object-cover"
+                      priority
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                  </div>
+                ) : null}
+
+                <div className="blog-content prose-lg prose-slate dark:prose-invert max-w-none leading-relaxed text-slate-700 dark:text-slate-300 prose-headings:font-black prose-headings:tracking-tight prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6 prose-p:mb-6 prose-p:leading-[1.8] prose-a:text-orange-600 prose-blockquote:border-l-4 prose-blockquote:border-orange-500 prose-blockquote:bg-orange-50 dark:prose-blockquote:bg-orange-900/10 prose-blockquote:py-2 prose-blockquote:px-6 prose-blockquote:rounded-r-xl prose-img:rounded-3xl prose-img:shadow-xl">
+                  {contentParts.length > 1 ? (
+                    <>
+                      <div dangerouslySetInnerHTML={{ __html: contentParts[0] }} />
+                      <div className="my-12 py-8 border-y border-slate-100 dark:border-slate-800/50">
+                        <ArticleAd />
+                      </div>
+                      <div dangerouslySetInnerHTML={{ __html: contentParts[1] }} />
+                      <div className="my-12 py-8 border-y border-slate-100 dark:border-slate-800/50">
+                        <ArticleAd />
+                      </div>
+                      <div dangerouslySetInnerHTML={{ __html: contentParts[2] }} />
+                    </>
+                  ) : (
+                    <div dangerouslySetInnerHTML={{ __html: contentParts[0] }} />
+                  )}
                 </div>
-              ) : null}
-              
-              <div className="mt-10">
-                <MultiplexAd />
+
+                {/* FAQ Section */}
+                {blog.faq?.length ? (
+                  <div className="mt-20 rounded-[2.5rem] bg-white dark:bg-slate-800/50 p-8 lg:p-12 border border-slate-100 dark:border-slate-800 shadow-sm">
+                    <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-8 tracking-tight">Common Questions</h2>
+                    <div className="space-y-4">
+                      {blog.faq.map((item, i) => (
+                        <details key={i} className="group rounded-2xl border border-slate-100 dark:border-slate-700/50 bg-slate-50/50 dark:bg-slate-900/30 transition-all overflow-hidden">
+                          <summary className="cursor-pointer px-6 py-5 text-lg font-bold text-slate-900 dark:text-white hover:text-orange-600 dark:hover:text-orange-400 list-none flex items-center justify-between transition-colors">
+                            {item.question}
+                            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white dark:bg-slate-800 shadow-sm transition-transform group-open:rotate-180">
+                              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" /></svg>
+                            </span>
+                          </summary>
+                          <div className="px-6 pb-6 text-slate-600 dark:text-slate-400 leading-relaxed pt-2">
+                            {item.answer}
+                          </div>
+                        </details>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+                
+                <div className="mt-16">
+                  <MultiplexAd />
+                </div>
+              </article>
+            </div>
+
+            {/* Right Sidebar */}
+            <aside className="hidden xl:block">
+              <div className="sticky top-32 space-y-8">
+                <TableOfContents headings={headings} />
+                <div className="rounded-3xl bg-gradient-to-br from-orange-500 to-rose-600 p-8 text-white shadow-xl shadow-orange-500/20">
+                  <h3 className="text-xl font-black tracking-tight mb-4 uppercase">Newsletter</h3>
+                  <p className="text-sm font-medium text-orange-100 mb-6 leading-relaxed">Get the latest insights on tech, design, and architecture delivered to your inbox.</p>
+                  <div className="space-y-3">
+                    <input type="email" placeholder="email@example.com" className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-sm placeholder:text-orange-200 focus:outline-none focus:ring-2 focus:ring-white/50" />
+                    <button className="w-full rounded-xl bg-white py-3 text-sm font-black uppercase tracking-widest text-orange-600 shadow-lg transition-transform hover:scale-[1.02] active:scale-[0.98]">Subscribe</button>
+                  </div>
+                </div>
+                <SidebarAd />
               </div>
-            </article>
-
-            <aside className="space-y-6 xl:sticky xl:top-24 xl:self-start">
-              <TableOfContents headings={headings} />
-              <SidebarAd />
             </aside>
-          </section>
+          </div>
 
+          {/* Related Articles Section */}
           {relatedBlogsRaw?.length ? (
-            <section className="mt-16 border-t border-slate-200 dark:border-slate-700 pt-12">
-              <h2 className="mb-8 text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
-                <span className="h-8 w-1.5 rounded-full bg-orange-500" />
-                Related Articles
-              </h2>
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <section className="mt-24 border-t border-slate-200 dark:border-slate-800 pt-16">
+              <div className="mb-12 flex items-end justify-between">
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-orange-500 mb-2">More from Magazine</p>
+                  <h2 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">You might also like</h2>
+                </div>
+                <Link href="/blog" className="hidden sm:flex items-center gap-2 text-xs font-black uppercase tracking-widest text-slate-400 hover:text-orange-500 transition-colors">
+                  View all <span className="text-xl">→</span>
+                </Link>
+              </div>
+              <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                 {relatedBlogsRaw.map((relatedBlog) => {
-                  // Handle category resolution for related blogs
                   const rawRelatedCat = relatedBlog.category?.toString?.() || relatedBlog.category;
                   const relatedCatName = relatedBlog.category?.name || catMap[rawRelatedCat] || rawRelatedCat || 'uncategorized';
                   const relatedCatSlug = slugify(relatedCatName);
@@ -620,27 +663,29 @@ export default async function BlogPostPage({ params }) {
                     <Link
                       key={relatedBlog._id}
                       href={`/blog/${relatedCatSlug}/${relatedBlog.slug}`}
-                      className="group block overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl shadow-sm"
+                      className="group block overflow-hidden rounded-[2rem] bg-white dark:bg-slate-800 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_20px_50px_rgba(0,0,0,0.3)] shadow-sm border border-slate-100 dark:border-slate-700/50"
                     >
-                      <div className="relative h-48 bg-slate-100 dark:bg-slate-700">
+                      <div className="relative h-56 overflow-hidden bg-slate-100 dark:bg-slate-700">
                         <Image
                           src={fixUnsplashUrl(relatedBlog.featuredImage)}
                           alt={relatedBlog.title}
                           fill
                           sizes="(max-width: 768px) 100vw, 33vw"
-                          className="object-cover transition-transform duration-500 group-hover:scale-105"
+                          className="object-cover transition-transform duration-700 group-hover:scale-110"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-40 group-hover:opacity-60 transition-opacity" />
                       </div>
-                      <div className="p-5">
-                        <p className="text-[10px] font-bold text-orange-600 dark:text-orange-400 uppercase tracking-widest mb-2">
-                          {relatedCatName}
-                        </p>
-                        <h3 className="line-clamp-2 text-base font-bold text-slate-900 dark:text-white group-hover:text-orange-600 transition-colors">
+                      <div className="p-6">
+                        <div className="mb-3 flex items-center gap-2">
+                          <span className="text-[9px] font-black uppercase tracking-[0.2em] text-orange-600 dark:text-orange-400">
+                            {relatedCatName}
+                          </span>
+                        </div>
+                        <h3 className="line-clamp-2 text-lg font-black leading-snug text-slate-900 dark:text-white group-hover:text-orange-600 transition-colors">
                           {relatedBlog.title}
                         </h3>
-                        <div className="mt-4 flex items-center justify-between text-xs text-slate-400 dark:text-slate-500">
-                          <span>{new Date(relatedBlog.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                        <div className="mt-6 flex items-center justify-between border-t border-slate-50 dark:border-slate-700/50 pt-4 text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                          <span>{new Date(relatedBlog.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
                           <span className="flex items-center gap-1">
                             <FiEye className="h-3 w-3" />
                             {(relatedBlog.views || 0).toLocaleString()}

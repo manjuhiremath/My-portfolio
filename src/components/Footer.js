@@ -98,38 +98,42 @@ export default function Footer() {
   }
 
   return (
-    <footer className="bg-slate-900 border-t border-slate-800 mt-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+    <footer className="bg-slate-950 border-t border-slate-900 mt-32">
+      <div className="max-w-[1440px] mx-auto px-6 lg:px-12 py-24">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-16 lg:gap-12">
           {/* Brand */}
-          <div>
-            <Link href="/" className="flex items-center gap-2 group">
-              <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg shadow-sm">
-                <Image src="/logo.png" alt="Logo" width={40} height={40} className="h-full w-full object-contain bg-white" />
+          <div className="lg:col-span-4 space-y-8">
+            <Link href="/" className="flex items-center gap-3 group">
+              <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-[1rem] shadow-xl ring-1 ring-white/10">
+                <Image src="/logo.png" alt="Logo" width={48} height={48} className="h-full w-full object-contain bg-white p-1" />
               </div>
-              <span className="font-bold text-white group-hover:text-orange-400 transition-colors">
-                Dev<span className="text-orange-500">Blog</span>
+              <span className="text-2xl font-black text-white group-hover:text-orange-500 transition-colors tracking-tighter">
+                THE <span className="text-orange-500 italic">MANIFESTO.</span>
               </span>
             </Link>
-            <p className="mt-3 text-sm text-slate-400 max-w-xs leading-relaxed">
-              Full-stack developer and tech enthusiast sharing insights on technology, design, and business.
+            <p className="text-base text-slate-400 max-w-sm leading-relaxed font-medium">
+              Architecting the future through code and design. A weekly journal exploring high-performance engineering and modern aesthetics.
             </p>
+            <div className="flex items-center gap-4">
+              <div className="h-10 w-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-orange-500 hover:border-orange-500 transition-all cursor-pointer">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-1.017-2.178-1.652-3.594-1.652-2.719 0-4.923 2.204-4.923 4.923 0 .385.043.76.127 1.121-4.092-.205-7.719-2.165-10.148-5.144-.424.722-.666 1.561-.666 2.457 0 1.708 1.07 3.215 2.696 4.301-.994-.031-1.93-.304-2.747-.758v.062c0 2.385 1.697 4.374 3.946 4.827-.413.111-.849.171-1.296.171-.317 0-.626-.03-.927-.086.627 1.956 2.444 3.379 4.6 3.419-1.684 1.32-3.812 2.105-6.102 2.105-.39 0-.779-.023-1.17-.067 2.189 1.394 4.768 2.209 7.557 2.209 9.054 0 13.999-7.496 13.999-13.986 0-.209 0-.42-.015-.63.961-.689 1.8-1.56 2.46-2.548l-.047-.02z"/></svg>
+              </div>
+              <div className="h-10 w-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-orange-500 hover:border-orange-500 transition-all cursor-pointer">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+              </div>
+            </div>
           </div>
 
           {/* Categories */}
-          <div>
-            <div className="flex items-center gap-2 mb-4">
-              <FiTrendingUp className="h-4 w-4 text-orange-500" />
-              <h4 className="font-bold text-white text-sm uppercase tracking-wider">Categories</h4>
-            </div>
-            <ul className="space-y-2.5">
+          <div className="lg:col-span-2">
+            <h4 className="text-[10px] font-black text-orange-500 uppercase tracking-[0.4em] mb-8 px-1">Archive</h4>
+            <ul className="space-y-4">
               {categories.map((cat) => (
                 <li key={cat._id || cat.name}>
                   <Link
                     href={`/blog/${slugify(cat.name)}`}
-                    className="text-sm text-slate-400 hover:text-orange-400 transition-colors flex items-center gap-1 group"
+                    className="text-sm font-bold text-slate-400 hover:text-white transition-all hover:translate-x-1 inline-flex items-center gap-2"
                   >
-                    <FiArrowRight className="h-3 w-3 opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all" />
                     {cat.name}
                   </Link>
                 </li>
@@ -138,17 +142,14 @@ export default function Footer() {
           </div>
 
           {/* Tags */}
-          <div>
-            <div className="flex items-center gap-2 mb-4">
-              <FiTag className="h-4 w-4 text-orange-500" />
-              <h4 className="font-bold text-white text-sm uppercase tracking-wider">Tags</h4>
-            </div>
+          <div className="lg:col-span-3">
+            <h4 className="text-[10px] font-black text-orange-500 uppercase tracking-[0.4em] mb-8 px-1">Topics</h4>
             <div className="flex flex-wrap gap-2">
               {popularTags.map((tag) => (
                 <Link
                   key={tag}
                   href={`/blog/tag/${encodeURIComponent(tag)}`}
-                  className="rounded-md bg-slate-800 px-2.5 py-1 text-xs font-medium text-slate-400 hover:bg-orange-500/20 hover:text-orange-400 transition-all border border-slate-700"
+                  className="rounded-xl bg-slate-900 border border-slate-800 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:text-orange-500 hover:border-orange-500/50 transition-all"
                 >
                   #{tag}
                 </Link>
@@ -157,19 +158,21 @@ export default function Footer() {
           </div>
 
           {/* Popular Blogs */}
-          <div>
-            <div className="flex items-center gap-2 mb-4">
-              <FiBookmark className="h-4 w-4 text-orange-500" />
-              <h4 className="font-bold text-white text-sm uppercase tracking-wider">Popular</h4>
-            </div>
-            <ul className="space-y-3">
-              {popularBlogs.map((blog) => (
+          <div className="lg:col-span-3">
+            <h4 className="text-[10px] font-black text-orange-500 uppercase tracking-[0.4em] mb-8 px-1">Curated</h4>
+            <ul className="space-y-6">
+              {popularBlogs.slice(0, 3).map((blog) => (
                 <li key={blog._id}>
                   <Link
                     href={`/blog/${slugify(blog.categoryName || blog.category)}/${blog.slug}`}
-                    className="text-sm text-slate-400 hover:text-orange-400 transition-colors line-clamp-2 leading-snug"
+                    className="group block"
                   >
-                    {blog.title}
+                    <h5 className="text-sm font-black text-slate-300 group-hover:text-orange-500 transition-colors line-clamp-2 leading-tight">
+                      {blog.title}
+                    </h5>
+                    <p className="mt-2 text-[10px] font-bold text-slate-600 uppercase tracking-widest">
+                      {(blog.views || 0).toLocaleString()} Views
+                    </p>
                   </Link>
                 </li>
               ))}
@@ -178,21 +181,19 @@ export default function Footer() {
         </div>
 
         {/* Bottom */}
-        <div className="border-t border-slate-800 mt-10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-slate-500">
-            © {currentYear} Manjunath M. All rights reserved.
-          </p>
-          <div className="flex flex-wrap items-center justify-center md:justify-end gap-x-4 gap-y-2 text-xs text-slate-500">
-            <Link href="/blog" className="hover:text-orange-400 transition-colors">Blog</Link>
-            <span className="h-3 w-px bg-slate-700 hidden sm:inline" />
-            <Link href="/about" className="hover:text-orange-400 transition-colors">About</Link>
-            <span className="h-3 w-px bg-slate-700 hidden sm:inline" />
-            <Link href="/privacy-policy" className="hover:text-orange-400 transition-colors">Privacy Policy</Link>
-            <span className="h-3 w-px bg-slate-700 hidden sm:inline" />
-            <Link href="/contact" className="hover:text-orange-400 transition-colors">Contact</Link>
-            <span className="h-3 w-px bg-slate-700 hidden sm:inline" />
-            <Link href="/" className="hover:text-orange-400 transition-colors">Portfolio</Link>
+        <div className="border-t border-slate-900 mt-24 pt-12 flex flex-col lg:flex-row justify-between items-center gap-8">
+          <div className="flex flex-col items-center lg:items-start gap-2">
+            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-600">
+              © {currentYear} Manjunath M. Engineering Excellence.
+            </p>
           </div>
+          <nav className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
+            <Link href="/blog" className="hover:text-white transition-colors">Magazine</Link>
+            <Link href="/about" className="hover:text-white transition-colors">Origins</Link>
+            <Link href="/privacy-policy" className="hover:text-white transition-colors">Legal</Link>
+            <Link href="/contact" className="hover:text-white transition-colors">Signal</Link>
+            <Link href="/" className="text-orange-500 hover:text-white transition-colors">Portfolio</Link>
+          </nav>
         </div>
       </div>
     </footer>

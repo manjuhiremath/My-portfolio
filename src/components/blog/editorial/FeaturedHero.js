@@ -21,7 +21,7 @@ function calculateReadingTime(content) {
   return `${minutes} min read`;
 }
 
-export default function FeaturedHero({ blog, categoryColor = '#6366f1' }) {
+export default function FeaturedHero({ blog, categoryColor = '#f97316' }) {
   if (!blog) return null;
 
   const categoryName = blog.category?.name || blog.category;
@@ -30,100 +30,71 @@ export default function FeaturedHero({ blog, categoryColor = '#6366f1' }) {
   const imageUrl = fixUnsplashUrl(blog.featuredImage);
 
   return (
-    <article className="relative overflow-hidden rounded-2xl bg-white dark:bg-slate-800 shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50 lg:rounded-3xl border border-slate-100 dark:border-slate-700">
-      <div className="grid grid-cols-1 lg:grid-cols-12">
+    <article className="group relative overflow-hidden rounded-[2.5rem] bg-slate-900 border border-slate-800 shadow-2xl transition-all duration-500 hover:shadow-orange-500/5">
+      <div className="grid grid-cols-1 lg:grid-cols-12 min-h-[500px] lg:min-h-[600px]">
+        {/* Content Side - 5 columns */}
+        <div className="relative z-20 flex flex-col justify-center p-8 sm:p-10 lg:col-span-5 lg:p-12 xl:p-16 order-2 lg:order-1">
+          <div className="space-y-6 lg:space-y-8">
+            <div className="flex items-center gap-3">
+              <span className="flex h-2 w-2 rounded-full animate-pulse" style={{ backgroundColor: categoryColor }} />
+              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">Featured Insight</span>
+            </div>
+
+            <Link href={href} className="block">
+              <h1 className="text-3xl font-black leading-[1.1] tracking-tight text-white transition-colors group-hover:text-orange-500 sm:text-4xl lg:text-4xl xl:text-5xl">
+                {blog.title}
+              </h1>
+            </Link>
+
+            <p className="line-clamp-3 text-base leading-relaxed text-slate-400 font-medium max-w-lg">
+              {blog.excerpt || 'Explore this featured article to stay ahead in the industry with expert insights and practical guidance.'}
+            </p>
+
+            <div className="flex flex-wrap items-center gap-6 pt-2">
+              <div className="flex items-center gap-3">
+                <div className="relative h-10 w-10 overflow-hidden rounded-full ring-2 ring-slate-800 shadow-lg">
+                  <Image src="/Profilemanju.jpeg" alt="Author" fill className="object-cover" />
+                </div>
+                <div>
+                  <p className="text-xs font-black text-white uppercase tracking-widest">Manjunath M</p>
+                  <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">{formatDate(blog.createdAt)}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 text-slate-400">
+                <FiClock className="h-4 w-4 text-orange-500" />
+                <span className="text-[10px] font-black uppercase tracking-widest">{blog.readingTime ? `${blog.readingTime} min` : calculateReadingTime(blog.content)}</span>
+              </div>
+            </div>
+
+            <div className="pt-4">
+              <Link
+                href={href}
+                className="group/btn inline-flex items-center gap-3 rounded-2xl bg-white px-8 py-4 text-xs font-black uppercase tracking-[0.2em] text-slate-900 transition-all hover:bg-orange-500 hover:text-white hover:-translate-y-1 active:scale-95 shadow-xl shadow-white/5 hover:shadow-orange-500/20"
+              >
+                Deep Dive
+                <FiArrowRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+              </Link>
+            </div>
+          </div>
+        </div>
+
         {/* Image Side - 7 columns */}
-        <div className="relative aspect-[16/10] lg:col-span-7 lg:aspect-auto lg:min-h-[480px] xl:min-h-[520px]">
+        <div className="relative lg:col-span-7 order-1 lg:order-2 overflow-hidden">
           <Image
             src={imageUrl}
             alt={blog.title}
             fill
             priority
-            className="object-cover"
+            className="object-cover transition-transform duration-1000 group-hover:scale-110"
             sizes="(max-width: 1024px) 100vw, 60vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-black/20 lg:to-black/60" />
-
-          {/* Category badge on image - Mobile */}
-          <div className="absolute top-4 left-4 lg:hidden">
-            <Link
-              href={`/blog?category=${encodeURIComponent(categoryName)}`}
-              className="inline-flex items-center rounded-lg px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-white backdrop-blur-sm"
-              style={{ backgroundColor: categoryColor }}
-            >
-              {categoryName}
-            </Link>
-          </div>
-        </div>
-
-        {/* Content Side - 5 columns */}
-        <div className="flex flex-col justify-center p-5 sm:p-6 lg:col-span-5 lg:p-8 xl:p-10">
-          <div className="space-y-4 lg:space-y-5">
-            {/* Label */}
-            <div className="flex items-center gap-2">
-              <span className="h-1.5 w-8 rounded-full" style={{ backgroundColor: categoryColor }} />
-              <span className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Featured Article</span>
-            </div>
-
-            {/* Category badge - Desktop */}
-            <div className="hidden lg:block">
-              <Link
-                href={`/blog?category=${encodeURIComponent(categoryName)}`}
-                className="inline-flex items-center rounded-lg px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-white transition-opacity hover:opacity-90"
-                style={{ backgroundColor: categoryColor }}
-              >
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent lg:bg-gradient-to-r lg:from-slate-900 lg:via-transparent lg:to-transparent" />
+          
+          <div className="absolute top-8 right-8">
+            <div className="px-4 py-2 rounded-2xl bg-black/40 backdrop-blur-xl border border-white/10 shadow-2xl">
+              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white">
                 {categoryName}
-              </Link>
-            </div>
-
-            {/* Headline */}
-            <Link href={href} className="group block">
-              <h1 className="text-xl font-bold leading-tight tracking-tight text-slate-900 dark:text-white transition-colors group-hover:text-orange-600 sm:text-2xl lg:text-2xl xl:text-3xl">
-                {blog.title}
-              </h1>
-            </Link>
-
-            {/* Excerpt */}
-            <p className="line-clamp-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400 sm:text-base lg:line-clamp-3">
-              {blog.excerpt || 'Explore this featured article to stay ahead in the industry with expert insights and practical guidance.'}
-            </p>
-
-            {/* Meta info */}
-            <div className="flex flex-wrap items-center gap-3 pt-1 text-sm text-slate-500">
-              <div className="flex items-center gap-2">
-                <div className="relative h-8 w-8 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700 ring-2 ring-white dark:ring-slate-700">
-                  <Image
-                    src="/Profilemanju.jpeg"
-                    alt="Manjunath M"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <span className="font-semibold text-slate-700 dark:text-slate-200 text-sm">Manjunath M</span>
-              </div>
-
-              <span className="hidden sm:inline text-slate-300 dark:text-slate-600">•</span>
-
-              <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
-                <FiClock className="h-4 w-4" />
-                <span className="text-sm">{blog.readingTime ? `${blog.readingTime} min read` : calculateReadingTime(blog.content)}</span>
-              </div>
-            </div>
-
-            {/* Date */}
-            <p className="text-xs font-medium text-slate-400 dark:text-slate-500 uppercase tracking-wider">
-              {formatDate(blog.createdAt)}
-            </p>
-
-            {/* CTA */}
-            <div className="pt-2">
-              <Link
-                href={href}
-                className="group inline-flex items-center gap-2 rounded-lg bg-slate-900 dark:bg-white px-5 py-3 text-sm font-bold uppercase tracking-wide text-white dark:text-slate-900 transition-all hover:bg-orange-600 hover:text-white hover:shadow-lg active:scale-[0.98] sm:px-6"
-              >
-                Read Article
-                <FiArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Link>
+              </span>
             </div>
           </div>
         </div>

@@ -6,44 +6,42 @@ export default function LatestBlogsGrid({ blogs, title = 'Latest Articles' }) {
   if (!blogs || blogs.length === 0) return null;
 
   return (
-    <section className="space-y-5">
+    <section className="space-y-10">
       {/* Section Header */}
-      <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-3">
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-orange-500 text-white">
-            <FiClock className="h-3.5 w-3.5" />
-          </div>
-          <h2 className="text-lg font-bold tracking-tight text-slate-900 dark:text-white uppercase sm:text-xl">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <h2 className="text-2xl font-black uppercase tracking-[0.2em] text-slate-900 dark:text-white flex items-center gap-4">
+            <span className="h-8 w-1.5 bg-orange-500 rounded-full" />
             {title}
           </h2>
         </div>
         <Link
           href="/blog"
-          className="group hidden items-center gap-1 text-xs font-semibold text-orange-600 hover:text-orange-700 transition-colors sm:flex"
+          className="group hidden items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-orange-500 transition-colors sm:flex"
         >
-          <span>View All</span>
-          <FiArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+          <span>See Library</span>
+          <FiArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
         </Link>
       </div>
 
       {/* Articles Grid */}
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 lg:gap-10">
         {blogs.slice(0, 6).map((blog) => (
           <BlogCard
             key={blog._id}
             blog={blog}
-            categoryColor={blog.categoryColor || '#6366f1'}
+            categoryColor={blog.categoryColor || '#f97316'}
           />
         ))}
       </div>
 
       {/* Mobile view all link */}
-      <div className="flex justify-center pt-2 sm:hidden">
+      <div className="flex justify-center pt-4 sm:hidden">
         <Link
           href="/blog"
-          className="inline-flex items-center gap-2 rounded-lg bg-slate-900 dark:bg-white px-5 py-2.5 text-xs font-semibold uppercase tracking-wide text-white dark:text-slate-900 transition-all hover:bg-orange-600 hover:text-white"
+          className="inline-flex items-center gap-3 rounded-2xl bg-slate-900 dark:bg-white px-8 py-4 text-[10px] font-black uppercase tracking-widest text-white dark:text-slate-900 transition-all hover:bg-orange-500 hover:text-white shadow-xl active:scale-95"
         >
-          View All Articles <FiArrowRight className="h-4 w-4" />
+          View Full Archive <FiArrowRight className="h-4 w-4" />
         </Link>
       </div>
     </section>

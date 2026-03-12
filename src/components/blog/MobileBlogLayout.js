@@ -69,52 +69,52 @@ export default function MobileBlogLayout({
   };
 
   return (
-    <div className="mobile-blog-layout md:hidden min-h-screen bg-white dark:bg-[#0f172a] text-[#111827] dark:text-[#e2e8f0]">
+    <div className="mobile-blog-layout md:hidden min-h-screen bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
       {/* Sticky Top Header */}
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-4 h-14 flex items-center justify-between border-b ${
-        scrolled ? 'bg-white/95 dark:bg-[#0f172a]/95 backdrop-blur-md border-[#e5e7eb] dark:border-[#1e293b] shadow-sm' : 'bg-transparent border-transparent'
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 px-6 h-16 flex items-center justify-between border-b ${
+        scrolled ? 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-slate-100 dark:border-slate-800 shadow-xl shadow-black/5' : 'bg-transparent border-transparent'
       }`}>
-        <Link href="/blog" className="p-2 -ml-2 text-[#111827] dark:text-[#e2e8f0]">
+        <Link href="/blog" className="p-2 -ml-2 text-slate-900 dark:text-white">
           <FiArrowLeft className="w-6 h-6" />
         </Link>
-        <div className={`flex-1 mx-4 transition-opacity duration-300 ${scrolled ? 'opacity-100' : 'opacity-0'}`}>
-          <h2 className="text-sm font-bold truncate line-clamp-1">{blog.title}</h2>
+        <div className={`flex-1 mx-4 transition-all duration-500 transform ${scrolled ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}>
+          <h2 className="text-[10px] font-black uppercase tracking-[0.2em] truncate line-clamp-1 text-slate-400">{blog.title}</h2>
         </div>
-        <button onClick={copyToClipboard} className="p-2 -mr-2 text-[#111827] dark:text-[#e2e8f0]">
+        <button onClick={copyToClipboard} className="p-2 -mr-2 text-slate-900 dark:text-white">
           <FiShare2 className="w-5 h-5" />
         </button>
       </header>
 
       {/* Main Content */}
-      <main className="pt-20 pb-24 px-4">
+      <main className="pt-24 pb-32 px-6">
         <div className="max-w-screen-sm mx-auto">
           {/* Meta Info */}
-          <div className="flex items-center gap-2 mb-4">
-            <Link href={`/blog?category=${encodeURIComponent(categoryName)}`} className="text-[12px] font-bold uppercase tracking-wider text-[#2563eb] dark:text-[#3b82f6]">
+          <div className="flex items-center gap-3 mb-6">
+            <Link href={`/blog?category=${encodeURIComponent(categoryName)}`} className="text-[10px] font-black uppercase tracking-[0.3em] text-orange-500">
               {categoryName}
             </Link>
-            <span className="w-1 h-1 rounded-full bg-[#6b7280] dark:bg-[#94a3b8]" />
-            <span className="text-[12px] text-[#6b7280] dark:text-[#94a3b8] font-medium">{readingTime} min read</span>
+            <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700" />
+            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{readingTime} min read</span>
           </div>
 
-          <h1 className="mobile-title text-[26px] font-bold leading-[1.3] mb-6 text-[#111827] dark:text-[#e2e8f0]">
+          <h1 className="mobile-title text-[32px] font-black leading-[1.1] tracking-tight mb-8 text-slate-900 dark:text-white animate-in fade-in slide-in-from-bottom-4 duration-700">
             {blog.title}
           </h1>
 
-          <div className="flex items-center gap-3 mb-8">
-            <div className="relative w-10 h-10 overflow-hidden rounded-full border border-[#e5e7eb] dark:border-[#1e293b]">
+          <div className="flex items-center gap-4 mb-10 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
+            <div className="relative w-12 h-12 overflow-hidden rounded-full ring-4 ring-white dark:ring-slate-900 shadow-sm">
               <Image src="/Profilemanju.jpeg" alt="Author" fill className="object-cover" />
             </div>
             <div>
-              <p className="text-sm font-bold text-[#111827] dark:text-[#e2e8f0]">Manjunath M</p>
-              <p className="text-[12px] text-[#6b7280] dark:text-[#94a3b8]">
-                {new Date(blog.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+              <p className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest">Manjunath M</p>
+              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                {new Date(blog.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
               </p>
             </div>
           </div>
 
           {blog.featuredImage && (
-            <div className="relative aspect-[16/10] mb-8 overflow-hidden rounded-2xl shadow-soft border border-[#e5e7eb] dark:border-[#1e293b]">
+            <div className="relative aspect-[4/3] mb-10 overflow-hidden rounded-[2.5rem] shadow-2xl border border-slate-100 dark:border-slate-800 animate-in fade-in zoom-in-95 duration-1000">
               <Image
                 src={fixUnsplashUrl(blog.featuredImage)}
                 alt={blog.title}
@@ -123,15 +123,16 @@ export default function MobileBlogLayout({
                 priority
                 loading="eager"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
             </div>
           )}
 
           {/* Render Sections */}
-          <div className="mobile-content space-y-6">
+          <div className="mobile-content space-y-8">
             {contentParts.slice(0, loadedSections).map((part, index) => (
               <div 
                 key={index} 
-                className="animate-in fade-in slide-in-from-bottom-4 duration-700"
+                className="animate-in fade-in slide-in-from-bottom-8 duration-1000 ease-out"
                 dangerouslySetInnerHTML={{ __html: part }} 
               />
             ))}
@@ -139,19 +140,19 @@ export default function MobileBlogLayout({
 
           {/* Intersection Target for Lazy Loading */}
           {loadedSections < contentParts.length && (
-            <div ref={observerTarget} className="h-20 flex items-center justify-center">
-              <div className="w-6 h-6 border-2 border-[#2563eb] border-t-transparent rounded-full animate-spin" />
+            <div ref={observerTarget} className="h-32 flex items-center justify-center">
+              <div className="w-8 h-8 border-4 border-orange-500/20 border-t-orange-500 rounded-full animate-spin" />
             </div>
           )}
 
           {/* Tags */}
           {tagNames.length > 0 && (
-            <div className="mt-12 flex flex-wrap gap-2 pt-8 border-t border-[#e5e7eb] dark:border-[#1e293b]">
+            <div className="mt-16 flex flex-wrap gap-2 pt-10 border-t border-slate-100 dark:border-slate-800">
               {tagNames.map((tag) => (
                 <Link
                   key={tag}
                   href={`/blog/tag/${encodeURIComponent(tag)}`}
-                  className="px-3 py-1.5 rounded-full bg-slate-50 dark:bg-slate-800/50 border border-[#e5e7eb] dark:border-[#1e293b] text-xs font-semibold text-[#6b7280] dark:text-[#94a3b8]"
+                  className="px-4 py-2 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400"
                 >
                   #{tag}
                 </Link>
@@ -161,12 +162,15 @@ export default function MobileBlogLayout({
 
           {/* Related Articles Section */}
           {loadedSections === contentParts.length && (
-            <div className="mt-12 pt-8 border-t border-[#e5e7eb] dark:border-[#1e293b]">
-              <div className="mb-10">
+            <div className="mt-16 pt-10 border-t border-slate-100 dark:border-slate-800">
+              <div className="mb-12">
                 <MultiplexAd />
               </div>
-              <h2 className="text-[20px] font-bold mb-6 text-[#111827] dark:text-[#e2e8f0]">Related Articles</h2>
-              <Suspense fallback={<div className="h-40 animate-pulse bg-slate-100 dark:bg-slate-800 rounded-2xl" />}>
+              <div className="flex items-center gap-3 mb-8">
+                <span className="h-1.5 w-8 rounded-full bg-orange-500" />
+                <h2 className="text-xl font-black uppercase tracking-tight text-slate-900 dark:text-white">Recommendations</h2>
+              </div>
+              <Suspense fallback={<div className="h-40 animate-pulse bg-slate-100 dark:bg-slate-800 rounded-3xl" />}>
                 <RelatedArticles blogs={relatedBlogs} />
               </Suspense>
             </div>
@@ -175,25 +179,25 @@ export default function MobileBlogLayout({
       </main>
 
       {/* Sticky Bottom Share Bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 p-4 pb-6 bg-white/95 dark:bg-[#0f172a]/95 backdrop-blur-md border-t border-[#e5e7eb] dark:border-[#1e293b] animate-in slide-in-from-bottom duration-500">
-        <div className="max-w-screen-sm mx-auto flex items-center justify-between gap-4">
-          <p className="text-[12px] font-bold text-[#6b7280] dark:text-[#94a3b8] uppercase tracking-widest">Share this</p>
-          <div className="flex items-center gap-2">
+      <div className="fixed bottom-0 left-0 right-0 z-50 p-6 pb-10 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-t border-slate-100 dark:border-slate-800 animate-in slide-in-from-bottom-full duration-700 delay-500 fill-mode-both">
+        <div className="max-w-screen-sm mx-auto flex items-center justify-between gap-6">
+          <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em]">Pass it on</p>
+          <div className="flex items-center gap-3">
             <button 
               onClick={shareTwitter}
-              className="w-10 h-10 flex items-center justify-center rounded-full bg-[#1da1f2] text-white shadow-soft"
+              className="w-12 h-12 flex items-center justify-center rounded-2xl bg-black text-white shadow-xl shadow-black/10 active:scale-90 transition-transform"
             >
               <FiTwitter className="w-5 h-5" />
             </button>
             <button 
               onClick={shareLinkedin}
-              className="w-10 h-10 flex items-center justify-center rounded-full bg-[#0077b5] text-white shadow-soft"
+              className="w-12 h-12 flex items-center justify-center rounded-2xl bg-[#0077b5] text-white shadow-xl shadow-blue-500/10 active:scale-90 transition-transform"
             >
               <FiLinkedin className="w-5 h-5" />
             </button>
             <button 
               onClick={copyToClipboard}
-              className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-[#111827] dark:text-[#e2e8f0] border border-[#e5e7eb] dark:border-[#1e293b] shadow-soft"
+              className="w-12 h-12 flex items-center justify-center rounded-2xl bg-white dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-100 dark:border-slate-700 shadow-xl shadow-black/5 active:scale-90 transition-transform"
             >
               {copied ? <FiCheck className="w-5 h-5 text-green-500" /> : <FiCopy className="w-5 h-5" />}
             </button>
@@ -204,43 +208,46 @@ export default function MobileBlogLayout({
       <style jsx global>{`
         @media (max-width: 768px) {
           .mobile-content {
-            font-size: 16px !important;
+            font-size: 18px !important;
             line-height: 1.8 !important;
-            color: #111827 !important;
+            font-weight: 500 !important;
+            color: #334155 !important;
           }
           .dark .mobile-content {
-            color: #e2e8f0 !important;
+            color: #cbd5e1 !important;
           }
           .mobile-content h2 {
-            font-size: 20px !important;
-            font-weight: 700 !important;
-            margin-top: 2rem !important;
-            margin-bottom: 1rem !important;
+            font-size: 24px !important;
+            font-weight: 900 !important;
+            letter-spacing: -0.025em !important;
+            margin-top: 3rem !important;
+            margin-bottom: 1.5rem !important;
+            color: #0f172a !important;
           }
-          .mobile-content h3 {
-            font-size: 18px !important;
-            font-weight: 700 !important;
-            margin-top: 1.5rem !important;
-            margin-bottom: 0.75rem !important;
+          .dark .mobile-content h2 {
+            color: #f8fafc !important;
           }
           .mobile-content p {
-            margin-bottom: 1.25rem !important;
+            margin-bottom: 1.5rem !important;
           }
           .mobile-content img {
-            border-radius: 16px !important;
-            margin: 1.5rem 0 !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+            border-radius: 2rem !important;
+            margin: 2.5rem 0 !important;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1) !important;
           }
           .mobile-content blockquote {
-            border-left: 4px solid #2563eb !important;
-            padding-left: 1.25rem !important;
-            margin: 1.5rem 0 !important;
+            border-left: 0 !important;
+            padding: 2rem !important;
+            background: #fff7ed !important;
+            border-radius: 2rem !important;
+            margin: 2.5rem 0 !important;
             font-style: italic !important;
-            color: #6b7280 !important;
+            font-weight: 600 !important;
+            color: #c2410c !important;
           }
           .dark .mobile-content blockquote {
-            border-left-color: #3b82f6 !important;
-            color: #94a3b8 !important;
+            background: rgba(251, 146, 60, 0.1) !important;
+            color: #fb923c !important;
           }
         }
       `}</style>

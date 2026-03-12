@@ -40,20 +40,23 @@ export default function TableOfContents({ headings }) {
   if (!headings?.length) return null;
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-4">
-      <h2 className="text-sm font-semibold text-slate-900">On this page</h2>
-      <ul className="mt-3 space-y-2">
+    <div className="rounded-3xl border border-slate-100 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 p-6 backdrop-blur-md">
+      <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mb-6">Outline</h2>
+      <ul className="space-y-4">
         {headings
           .filter((item) => item.level <= 3)
           .map((item) => (
-            <li key={item.id} className="text-xs">
+            <li key={item.id} className="relative">
+              {activeId === item.id && (
+                <div className="absolute -left-6 top-1/2 -translate-y-1/2 w-1 h-4 bg-orange-500 rounded-full animate-in fade-in slide-in-from-left-2 duration-300" />
+              )}
               <a
                 href={`#${item.id}`}
-                className={`block truncate transition-colors duration-200 ${
+                className={`block text-xs font-bold transition-all duration-300 ${
                   activeId === item.id
-                    ? 'font-medium text-orange-600'
-                    : 'text-slate-600 hover:text-orange-600'
-                } ${item.level === 3 ? 'pl-3' : ''}`}
+                    ? 'text-slate-900 dark:text-white translate-x-1'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-orange-500 hover:translate-x-1'
+                } ${item.level === 3 ? 'pl-4 opacity-80 font-medium' : ''}`}
               >
                 {item.text}
               </a>

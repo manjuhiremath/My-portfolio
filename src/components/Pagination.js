@@ -33,46 +33,48 @@ export default function Pagination({ currentPage, totalPages, baseUrl }) {
   const pageNumbers = getPageNumbers(currentPage, totalPages);
 
   return (
-    <nav className="mt-8 flex flex-wrap items-center justify-center gap-1.5" aria-label="Pagination">
+    <nav className="mt-16 flex flex-wrap items-center justify-center gap-2" aria-label="Pagination">
       <Link
         href={currentPage > 1 ? `${baseUrl}?page=${currentPage - 1}` : '#'}
         aria-disabled={currentPage <= 1}
-        className={`inline-flex h-8 items-center rounded-md border px-3 text-xs font-medium transition-colors ${
+        className={`inline-flex h-12 items-center rounded-2xl border px-6 text-[10px] font-black uppercase tracking-widest transition-all ${
           currentPage <= 1
-            ? 'pointer-events-none border-slate-200 text-slate-400'
-            : 'border-slate-300 text-slate-700 hover:bg-slate-50'
+            ? 'pointer-events-none border-slate-100 text-slate-300 dark:border-slate-800 dark:text-slate-700'
+            : 'border-slate-200 text-slate-600 hover:border-orange-500 hover:text-orange-500 dark:border-slate-700 dark:text-slate-400'
         }`}
       >
-        Previous
+        Prev
       </Link>
 
-      {pageNumbers.map((page, index) =>
-        page === '...' ? (
-          <span key={`ellipsis-${index}`} className="px-1 text-xs text-slate-500">
-            ...
-          </span>
-        ) : (
-          <Link
-            key={page}
-            href={`${baseUrl}?page=${page}`}
-            className={`inline-flex h-8 min-w-8 items-center justify-center rounded-md border px-2 text-xs font-medium transition-colors ${
-              page === currentPage
-                ? 'border-orange-500 bg-orange-500 text-white'
-                : 'border-slate-300 text-slate-700 hover:bg-slate-50'
-            }`}
-          >
-            {page}
-          </Link>
-        )
-      )}
+      <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-800/50 p-1.5 rounded-[1.5rem] border border-slate-100 dark:border-slate-800">
+        {pageNumbers.map((page, index) =>
+          page === '...' ? (
+            <span key={`ellipsis-${index}`} className="px-2 text-xs font-bold text-slate-400">
+              ···
+            </span>
+          ) : (
+            <Link
+              key={page}
+              href={`${baseUrl}?page=${page}`}
+              className={`inline-flex h-9 min-w-9 items-center justify-center rounded-xl text-[10px] font-black transition-all ${
+                page === currentPage
+                  ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/20'
+                  : 'text-slate-500 hover:bg-white dark:hover:bg-slate-700 hover:text-orange-500'
+              }`}
+            >
+              {page}
+            </Link>
+          )
+        )}
+      </div>
 
       <Link
         href={currentPage < totalPages ? `${baseUrl}?page=${currentPage + 1}` : '#'}
         aria-disabled={currentPage >= totalPages}
-        className={`inline-flex h-8 items-center rounded-md border px-3 text-xs font-medium transition-colors ${
+        className={`inline-flex h-12 items-center rounded-2xl border px-6 text-[10px] font-black uppercase tracking-widest transition-all ${
           currentPage >= totalPages
-            ? 'pointer-events-none border-slate-200 text-slate-400'
-            : 'border-slate-300 text-slate-700 hover:bg-slate-50'
+            ? 'pointer-events-none border-slate-100 text-slate-300 dark:border-slate-800 dark:text-slate-700'
+            : 'border-slate-200 text-slate-600 hover:border-orange-500 hover:text-orange-500 dark:border-slate-700 dark:text-slate-400'
         }`}
       >
         Next
