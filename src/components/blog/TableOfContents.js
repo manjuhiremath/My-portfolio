@@ -52,10 +52,10 @@ export default function TableOfContents({ headings }) {
               )}
               <a
                 href={`#${item.id}`}
-                className={`block text-xs font-bold transition-all duration-300 ${
+                className={`block text-xs font-bold transition-all ${
                   activeId === item.id
                     ? 'text-slate-900 dark:text-white translate-x-1'
-                    : 'text-slate-500 dark:text-slate-400 hover:text-orange-500 hover:translate-x-1'
+                    : 'text-slate-500 dark:text-slate-400'
                 } ${item.level === 3 ? 'pl-4 opacity-80 font-medium' : ''}`}
               >
                 {item.text}

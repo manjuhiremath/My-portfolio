@@ -125,9 +125,10 @@ export default function BlogClient({ initialBlogs = [], initialCategories = [], 
   }, [mappedBlogs]);
 
   const topLevelCategories = useMemo(() => {
-    return initialCategories
+    const names = initialCategories
       .filter(c => !c.parent)
       .map(c => c.name);
+    return [...new Set(names)];
   }, [initialCategories]);
 
   const categoryBlogs = useMemo(() => {
@@ -305,7 +306,7 @@ export default function BlogClient({ initialBlogs = [], initialCategories = [], 
               <div className="flex gap-2">
                 <button 
                   onClick={() => setActiveFilter('all')}
-                  className="px-6 py-3 rounded-2xl bg-slate-100 dark:bg-slate-800 text-sm font-bold flex items-center gap-2 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
+                  className="px-6 py-3 rounded-2xl bg-slate-100 dark:bg-slate-800 text-sm font-bold flex items-center gap-2"
                 >
                   <FiX className="w-4 h-4" /> Clear Filter
                 </button>

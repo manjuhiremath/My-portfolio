@@ -494,13 +494,13 @@ export default async function BlogPostPage({ params }) {
             <aside className="hidden lg:block">
               <div className="sticky top-32 flex flex-col items-center gap-4">
                 <span className="text-[10px] font-black uppercase tracking-tighter text-slate-400 rotate-90 mb-8 whitespace-nowrap">Share Article</span>
-                <button className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition-all hover:-translate-y-1 hover:border-blue-400 hover:text-[#1da1f2] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400">
+                <button className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition-all dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400">
                   <FiTwitter className="h-4 w-4" />
                 </button>
-                <button className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition-all hover:-translate-y-1 hover:border-blue-600 hover:text-[#0077b5] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400">
+                <button className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition-all dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400">
                   <FiLinkedin className="h-4 w-4" />
                 </button>
-                <button className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition-all hover:-translate-y-1 hover:border-orange-400 hover:text-orange-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400">
+                <button className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition-all dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400">
                   <FiLink className="h-4 w-4" />
                 </button>
               </div>
@@ -657,7 +657,7 @@ export default async function BlogPostPage({ params }) {
                     <Link
                       key={relatedBlog._id}
                       href={`/blog/${relatedCatSlug}/${relatedBlog.slug}`}
-                      className="group block overflow-hidden rounded-[2rem] bg-white dark:bg-slate-800 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_20px_50px_rgba(0,0,0,0.3)] shadow-sm border border-slate-100 dark:border-slate-700/50"
+                      className="group block overflow-hidden rounded-[2rem] bg-white dark:bg-slate-800 transition-all shadow-sm border border-slate-100 dark:border-slate-700/50"
                     >
                       <div className="relative h-56 overflow-hidden bg-slate-100 dark:bg-slate-700">
                         <Image
@@ -665,9 +665,9 @@ export default async function BlogPostPage({ params }) {
                           alt={relatedBlog.title}
                           fill
                           sizes="(max-width: 768px) 100vw, 33vw"
-                          className="object-cover transition-transform duration-700 group-hover:scale-110"
+                          className="object-cover transition-transform duration-700"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-40 group-hover:opacity-60 transition-opacity" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-40 transition-opacity" />
                       </div>
                       <div className="p-6">
                         <div className="mb-3 flex items-center gap-2">
@@ -675,7 +675,7 @@ export default async function BlogPostPage({ params }) {
                             {relatedCatName}
                           </span>
                         </div>
-                        <h3 className="line-clamp-2 text-lg font-black leading-snug text-slate-900 dark:text-white group-hover:text-orange-600 transition-colors">
+                        <h3 className="line-clamp-2 text-lg font-black leading-snug text-slate-900 dark:text-white transition-colors">
                           {relatedBlog.title}
                         </h3>
                         <div className="mt-6 flex items-center justify-between border-t border-slate-50 dark:border-slate-700/50 pt-4 text-[10px] font-bold uppercase tracking-widest text-slate-400">

@@ -37,15 +37,15 @@ export default function EditorPicks({ blogs }) {
             <Link key={blog._id} href={href} className="group">
               <article className="space-y-5">
                 {/* Image */}
-                <div className="relative aspect-[4/3] overflow-hidden rounded-[2rem] bg-slate-200 dark:bg-slate-700 shadow-sm transition-all duration-500 group-hover:shadow-2xl group-hover:shadow-orange-500/10 group-hover:-translate-y-1">
+                <div className="relative aspect-[4/3] overflow-hidden rounded-[2rem] bg-slate-200 dark:bg-slate-700 shadow-sm transition-all duration-500">
                   <Image
                     src={imageUrl}
                     alt={blog.title}
                     fill
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                    className="object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-500" />
                 </div>
 
                 {/* Content */}
@@ -53,7 +53,7 @@ export default function EditorPicks({ blogs }) {
                   <p className="text-[9px] font-black text-orange-500 uppercase tracking-[0.3em]">
                     {categoryName}
                   </p>
-                  <h3 className="line-clamp-2 text-base font-black leading-snug text-slate-900 dark:text-white transition-colors group-hover:text-orange-600">
+                  <h3 className="line-clamp-2 text-base font-black leading-snug text-slate-900 dark:text-white transition-colors">
                     {blog.title}
                   </h3>
                   <p className="line-clamp-2 text-xs text-slate-500 dark:text-slate-400 font-medium leading-relaxed">

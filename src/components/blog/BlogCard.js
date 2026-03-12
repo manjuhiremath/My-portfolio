@@ -49,7 +49,7 @@ export default function BlogCard({ blog, categoryColor = '#6366f1', variant = 'd
     return (
       <Link
         href={href}
-        className="group flex gap-3 items-start py-3 border-b border-slate-100 dark:border-slate-700 last:border-0 hover:bg-slate-50 dark:hover:bg-slate-800 -mx-2 px-2 rounded-lg transition-colors"
+        className="group flex gap-3 items-start py-3 border-b border-slate-100 dark:border-slate-700 last:border-0 hover:bg-slate-50 dark:hover:bg-slate-800 -mx-2 px-2 rounded-lg"
       >
         <div className="relative w-16 h-14 flex-shrink-0 overflow-hidden rounded-lg bg-slate-100 dark:bg-slate-700">
           <Image
@@ -58,11 +58,11 @@ export default function BlogCard({ blog, categoryColor = '#6366f1', variant = 'd
             fill
             sizes="64px"
             loading="lazy"
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            className="object-cover"
           />
         </div>
         <div className="flex-1 min-w-0">
-          <h3 className="line-clamp-2 text-sm font-bold leading-tight text-slate-900 dark:text-slate-100 group-hover:text-orange-600 transition-colors">
+          <h3 className="line-clamp-2 text-sm font-bold leading-tight text-slate-900 dark:text-slate-100 group-hover:text-orange-600">
             {blog.title}
           </h3>
           <div className="flex items-center gap-2 mt-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
@@ -79,7 +79,7 @@ export default function BlogCard({ blog, categoryColor = '#6366f1', variant = 'd
   return (
     <Link
       href={href}
-      className="group block overflow-hidden rounded-2xl bg-white dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] backdrop-blur-sm transition-all duration-500 hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_20px_50px_rgba(0,0,0,0.3)] hover:-translate-y-2"
+      className="group block overflow-hidden rounded-2xl bg-white dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] backdrop-blur-sm"
     >
       {/* Image Container */}
       <div className="relative aspect-[16/10] overflow-hidden bg-slate-100 dark:bg-slate-700">
@@ -89,10 +89,10 @@ export default function BlogCard({ blog, categoryColor = '#6366f1', variant = 'd
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1200px) 50vw, 33vw"
           loading="lazy"
-          className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+          className="object-cover"
         />
         {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-60" />
 
         {/* Category badge */}
         <div className="absolute top-4 left-4">
@@ -123,7 +123,7 @@ export default function BlogCard({ blog, categoryColor = '#6366f1', variant = 'd
           </span>
         </div>
 
-        <h3 className="line-clamp-2 text-xs sm:text-lg font-bold leading-tight tracking-tight text-slate-900 dark:text-white transition-colors duration-300 group-hover:text-orange-600 sm:text-xl">
+        <h3 className="line-clamp-2 text-xs sm:text-lg font-bold leading-tight tracking-tight text-slate-900 dark:text-white sm:text-xl">
           {blog.title}
         </h3>
 

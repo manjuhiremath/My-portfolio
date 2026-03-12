@@ -182,19 +182,19 @@ export default function MobileBlogLayout({
           <div className="flex items-center gap-3">
             <button 
               onClick={shareTwitter}
-              className="w-12 h-12 flex items-center justify-center rounded-2xl bg-black text-white shadow-xl shadow-black/10 active:scale-90 transition-transform"
+              className="w-12 h-12 flex items-center justify-center rounded-2xl bg-black text-white shadow-xl shadow-black/10 transition-transform"
             >
               <FiTwitter className="w-5 h-5" />
             </button>
             <button 
               onClick={shareLinkedin}
-              className="w-12 h-12 flex items-center justify-center rounded-2xl bg-[#0077b5] text-white shadow-xl shadow-blue-500/10 active:scale-90 transition-transform"
+              className="w-12 h-12 flex items-center justify-center rounded-2xl bg-[#0077b5] text-white shadow-xl shadow-blue-500/10 transition-transform"
             >
               <FiLinkedin className="w-5 h-5" />
             </button>
             <button 
               onClick={copyToClipboard}
-              className="w-12 h-12 flex items-center justify-center rounded-2xl bg-white dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-100 dark:border-slate-700 shadow-xl shadow-black/5 active:scale-90 transition-transform"
+              className="w-12 h-12 flex items-center justify-center rounded-2xl bg-white dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-100 dark:border-slate-700 shadow-xl shadow-black/5 transition-transform"
             >
               {copied ? <FiCheck className="w-5 h-5 text-green-500" /> : <FiCopy className="w-5 h-5" />}
             </button>

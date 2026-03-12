@@ -38,16 +38,16 @@ export default function TopStories({ blogs, getCategoryColor }) {
           return (
             <article key={blog._id} className="group relative">
               {/* Image Container */}
-              <Link href={href} className="relative block aspect-[16/10] overflow-hidden rounded-[2rem] bg-slate-100 dark:bg-slate-800 shadow-sm transition-all duration-500 group-hover:shadow-2xl group-hover:shadow-orange-500/10">
+              <Link href={href} className="relative block aspect-[16/10] overflow-hidden rounded-[2rem] bg-slate-100 dark:bg-slate-800 shadow-sm transition-all duration-500">
                 <Image
                   src={imageUrl}
                   alt={blog.title}
                   fill
                   sizes="(max-width: 640px) 100vw, 50vw"
-                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                  className="object-cover"
                 />
                 {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 transition-opacity duration-500" />
 
                 {/* Badges */}
                 <div className="absolute top-4 left-4">
@@ -78,7 +78,7 @@ export default function TopStories({ blogs, getCategoryColor }) {
                 </div>
 
                 <Link href={href} className="block">
-                  <h3 className="text-xl font-black leading-tight tracking-tight text-slate-900 dark:text-white transition-colors duration-300 group-hover:text-orange-600 lg:text-2xl">
+                  <h3 className="text-xl font-black leading-tight tracking-tight text-slate-900 dark:text-white transition-colors duration-300 lg:text-2xl">
                     {blog.title}
                   </h3>
                 </Link>
@@ -88,8 +88,8 @@ export default function TopStories({ blogs, getCategoryColor }) {
                 </p>
                 
                 <div className="mt-6 flex items-center gap-2">
-                  <Link href={href} className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 dark:text-white border-b-2 border-orange-500 pb-0.5 transition-all hover:gap-4 flex items-center group/more">
-                    Read Story <FiArrowRight className="ml-2 transition-transform group-hover/more:translate-x-1" />
+                  <Link href={href} className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 dark:text-white border-b-2 border-orange-500 pb-0.5 transition-all flex items-center group/more">
+                    Read Story <FiArrowRight className="ml-2" />
                   </Link>
                 </div>
               </div>

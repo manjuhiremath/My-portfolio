@@ -20,15 +20,15 @@ export default function CategorySection({ category, blogs, categoryColor = '#f97
         </div>
         <Link
           href={`/blog?category=${encodeURIComponent(category)}`}
-          className="group flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-orange-500 transition-colors mb-1"
+          className="group flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1"
         >
           <span>Explore All</span>
-          <FiArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          <FiArrowRight className="h-4 w-4" />
         </Link>
-      </div>
+        </div>
 
-      {/* Articles Grid */}
-      <div className="grid grid-cols-2 gap-3 sm:gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+        {/* Articles Grid */}
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
         {blogs.slice(0, 4).map((blog) => (
           <BlogCard
             key={blog._id}
@@ -36,7 +36,7 @@ export default function CategorySection({ category, blogs, categoryColor = '#f97
             categoryColor={categoryColor}
           />
         ))}
-      </div>
+        </div>
     </section>
   );
 }

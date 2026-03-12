@@ -30,7 +30,7 @@ export default function FeaturedHero({ blog, categoryColor = '#f97316' }) {
   const imageUrl = fixUnsplashUrl(blog.featuredImage);
 
   return (
-    <article className="group relative overflow-hidden rounded-[2.5rem] bg-slate-900 border border-slate-800 shadow-2xl transition-all duration-500 hover:shadow-orange-500/5">
+    <article className="group relative overflow-hidden rounded-[2.5rem] bg-slate-900 border border-slate-800 shadow-2xl">
       <div className="grid grid-cols-1 lg:grid-cols-12 min-h-[500px] lg:min-h-[600px]">
         {/* Content Side - 5 columns */}
         <div className="relative z-20 flex flex-col justify-center p-8 sm:p-10 lg:col-span-5 lg:p-12 xl:p-16 order-2 lg:order-1">
@@ -41,7 +41,7 @@ export default function FeaturedHero({ blog, categoryColor = '#f97316' }) {
             </div>
 
             <Link href={href} className="block">
-              <h1 className="text-3xl font-black leading-[1.1] tracking-tight text-white transition-colors group-hover:text-orange-500 sm:text-4xl lg:text-4xl xl:text-5xl">
+              <h1 className="text-3xl font-black leading-[1.1] tracking-tight text-white transition-colors sm:text-4xl lg:text-4xl xl:text-5xl">
                 {blog.title}
               </h1>
             </Link>
@@ -62,10 +62,10 @@ export default function FeaturedHero({ blog, categoryColor = '#f97316' }) {
             <div className="pt-4">
               <Link
                 href={href}
-                className="group/btn inline-flex items-center gap-3 rounded-2xl bg-white px-8 py-4 text-xs font-black uppercase tracking-[0.2em] text-slate-900 transition-all hover:bg-orange-500 hover:text-white hover:-translate-y-1 active:scale-95 shadow-xl shadow-white/5 hover:shadow-orange-500/20"
+                className="group/btn inline-flex items-center gap-3 rounded-2xl bg-white px-8 py-4 text-xs font-black uppercase tracking-[0.2em] text-slate-900 shadow-xl shadow-white/5"
               >
                 Deep Dive
-                <FiArrowRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+                <FiArrowRight className="h-4 w-4" />
               </Link>
             </div>
           </div>
@@ -78,7 +78,7 @@ export default function FeaturedHero({ blog, categoryColor = '#f97316' }) {
             alt={blog.title}
             fill
             priority
-            className="object-cover transition-transform duration-1000 group-hover:scale-110"
+            className="object-cover"
             sizes="(max-width: 1024px) 100vw, 60vw"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent lg:bg-gradient-to-r lg:from-slate-900 lg:via-transparent lg:to-transparent" />

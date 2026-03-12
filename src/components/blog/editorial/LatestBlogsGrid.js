@@ -17,10 +17,10 @@ export default function LatestBlogsGrid({ blogs, title = 'Latest Articles' }) {
         </div>
         <Link
           href="/blog"
-          className="group hidden items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-orange-500 transition-colors sm:flex"
+          className="group hidden items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 sm:flex"
         >
           <span>See Library</span>
-          <FiArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          <FiArrowRight className="h-4 w-4" />
         </Link>
       </div>
 
@@ -39,7 +39,7 @@ export default function LatestBlogsGrid({ blogs, title = 'Latest Articles' }) {
       <div className="flex justify-center pt-4 sm:hidden">
         <Link
           href="/blog"
-          className="inline-flex items-center gap-3 rounded-2xl bg-slate-900 dark:bg-white px-8 py-4 text-[10px] font-black uppercase tracking-widest text-white dark:text-slate-900 transition-all hover:bg-orange-500 hover:text-white shadow-xl active:scale-95"
+          className="inline-flex items-center gap-3 rounded-2xl bg-slate-900 dark:bg-white px-8 py-4 text-[10px] font-black uppercase tracking-widest text-white dark:text-slate-900 shadow-xl active:scale-95"
         >
           View Full Archive <FiArrowRight className="h-4 w-4" />
         </Link>

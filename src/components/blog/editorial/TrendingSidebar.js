@@ -21,11 +21,11 @@ export default function TrendingSidebar({ trendingBlogs, recentBlogs, popularTag
 
             return (
               <Link key={blog._id} href={href} className="group flex items-start gap-4">
-                <span className="flex-shrink-0 text-2xl font-black text-slate-100 dark:text-slate-800 group-hover:text-orange-500/20 transition-colors">
+                <span className="flex-shrink-0 text-2xl font-black text-slate-100 dark:text-slate-800 transition-colors">
                   0{index + 1}
                 </span>
                 <div className="min-w-0">
-                  <h3 className="line-clamp-2 text-sm font-black leading-tight text-slate-900 dark:text-slate-100 group-hover:text-orange-600 transition-colors">
+                  <h3 className="line-clamp-2 text-sm font-black leading-tight text-slate-900 dark:text-slate-100 transition-colors">
                     {blog.title}
                   </h3>
                   <div className="mt-2 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-400">
@@ -41,7 +41,7 @@ export default function TrendingSidebar({ trendingBlogs, recentBlogs, popularTag
       </section>
 
       {/* Fresh Feed */}
-      <section className="rounded-[2rem] bg-slate-900 p-8 border border-slate-800 shadow-2xl transition-all hover:shadow-orange-500/5">
+      <section className="rounded-[2rem] bg-slate-900 p-8 border border-slate-800 shadow-2xl transition-all">
         <div className="flex items-center gap-3 mb-8">
           <FiClock className="h-5 w-5 text-orange-500" />
           <h2 className="text-xs font-black uppercase tracking-[0.3em] text-white">
@@ -59,7 +59,7 @@ export default function TrendingSidebar({ trendingBlogs, recentBlogs, popularTag
                 <p className="text-[9px] font-black text-orange-500 uppercase tracking-[0.3em] mb-2">
                   {categoryName}
                 </p>
-                <h3 className="line-clamp-2 text-sm font-black leading-tight text-white group-hover:text-orange-400 transition-colors">
+                <h3 className="line-clamp-2 text-sm font-black leading-tight text-white transition-colors">
                   {blog.title}
                 </h3>
                 <p className="mt-2 text-[10px] text-slate-500 font-bold uppercase tracking-widest">
@@ -84,7 +84,7 @@ export default function TrendingSidebar({ trendingBlogs, recentBlogs, popularTag
             <Link
               key={tag}
               href={`/blog/tag/${encodeURIComponent(tag)}`}
-              className="rounded-xl border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 px-4 py-2 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest transition-all hover:border-orange-500 hover:text-orange-600"
+              className="rounded-xl border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 px-4 py-2 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest transition-all"
             >
               #{tag}
             </Link>
@@ -104,7 +104,7 @@ export default function TrendingSidebar({ trendingBlogs, recentBlogs, popularTag
               placeholder="Your email address"
               className="w-full rounded-2xl bg-white/10 border border-white/20 px-5 py-4 text-sm text-white placeholder:text-orange-100 outline-none transition-all focus:bg-white/20 focus:ring-2 focus:ring-white/50"
             />
-            <button className="w-full rounded-2xl bg-white py-4 text-xs font-black text-orange-600 uppercase tracking-[0.2em] shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98]">
+            <button className="w-full rounded-2xl bg-white py-4 text-xs font-black text-orange-600 uppercase tracking-[0.2em] shadow-xl transition-all active:scale-95">
               Subscribe
             </button>
           </form>
