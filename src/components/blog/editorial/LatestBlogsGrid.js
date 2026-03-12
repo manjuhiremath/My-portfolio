@@ -25,7 +25,7 @@ export default function LatestBlogsGrid({ blogs, title = 'Latest Articles' }) {
       </div>
 
       {/* Articles Grid */}
-      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 lg:gap-10">
+      <div className="grid grid-cols-2 gap-3 sm:gap-8 sm:grid-cols-2 lg:grid-cols-3 lg:gap-10">
         {blogs.slice(0, 6).map((blog) => (
           <BlogCard
             key={blog._id}

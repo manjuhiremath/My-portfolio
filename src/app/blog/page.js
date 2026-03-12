@@ -22,13 +22,16 @@ async function getInitialData() {
     Tag.find().lean()
   ]);
 
-  // Transform for client use (serialize ObjectIds)
-  const blogs = JSON.parse(JSON.stringify(blogsData));
+  // Transform for client use (serialize ObjectIds and other non-plain objects)
+  // Deep serialization via JSON.parse/stringify is the most robust way to ensure
+  // that no MongoDB internal types (like Decimal128, Binary, or objects with toJSON) 
+  // reach the Client Component.
+  const serializedBlogs = JSON.parse(JSON.stringify(blogsData));
   const serializedCategories = JSON.parse(JSON.stringify(categories));
   const serializedTags = JSON.parse(JSON.stringify(tags));
 
   return {
-    blogs,
+    blogs: serializedBlogs,
     categories: serializedCategories,
     tags: serializedTags
   };

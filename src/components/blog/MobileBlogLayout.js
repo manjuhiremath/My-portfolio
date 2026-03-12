@@ -103,7 +103,13 @@ export default function MobileBlogLayout({
 
           <div className="flex items-center gap-4 mb-10 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
             <div className="relative w-12 h-12 overflow-hidden rounded-full ring-4 ring-white dark:ring-slate-900 shadow-sm">
-              <Image src="/Profilemanju.jpeg" alt="Author" fill className="object-cover" />
+              <Image 
+                src="/Profilemanju.jpeg" 
+                alt="Author" 
+                fill 
+                className="object-cover" 
+                sizes="48px"
+              />
             </div>
             <div>
               <p className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest">Manjunath M</p>
@@ -122,6 +128,7 @@ export default function MobileBlogLayout({
                 className="object-cover"
                 priority
                 loading="eager"
+                sizes="(max-width: 768px) 100vw, 640px"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
             </div>

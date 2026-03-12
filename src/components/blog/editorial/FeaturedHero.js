@@ -53,7 +53,13 @@ export default function FeaturedHero({ blog, categoryColor = '#f97316' }) {
             <div className="flex flex-wrap items-center gap-6 pt-2">
               <div className="flex items-center gap-3">
                 <div className="relative h-10 w-10 overflow-hidden rounded-full ring-2 ring-slate-800 shadow-lg">
-                  <Image src="/Profilemanju.jpeg" alt="Author" fill className="object-cover" />
+                  <Image 
+                    src="/Profilemanju.jpeg" 
+                    alt="Author" 
+                    fill 
+                    className="object-cover" 
+                    sizes="40px"
+                  />
                 </div>
                 <div>
                   <p className="text-xs font-black text-white uppercase tracking-widest">Manjunath M</p>

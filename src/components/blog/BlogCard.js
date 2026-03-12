@@ -112,28 +112,28 @@ export default function BlogCard({ blog, categoryColor = '#6366f1', variant = 'd
       </div>
 
       {/* Content */}
-      <div className="p-5 sm:p-6">
-        <div className="flex items-center gap-2 mb-3">
-          <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
+      <div className="p-3 sm:p-6">
+        <div className="flex items-center gap-2 mb-2 sm:mb-3">
+          <span className="text-[8px] sm:text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
             {formatDate(blog.publishedAt || blog.createdAt)}
           </span>
-          <span className="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-600" />
-          <span className="text-[10px] font-bold uppercase tracking-widest text-orange-500">
+          <span className="h-0.5 w-0.5 sm:h-1 sm:w-1 rounded-full bg-slate-300 dark:bg-slate-600" />
+          <span className="text-[8px] sm:text-[10px] font-bold uppercase tracking-widest text-orange-500 truncate">
             {categoryValue}
           </span>
         </div>
 
-        <h3 className="line-clamp-2 text-lg font-bold leading-tight tracking-tight text-slate-900 dark:text-white transition-colors duration-300 group-hover:text-orange-600 sm:text-xl">
+        <h3 className="line-clamp-2 text-xs sm:text-lg font-bold leading-tight tracking-tight text-slate-900 dark:text-white transition-colors duration-300 group-hover:text-orange-600 sm:text-xl">
           {blog.title}
         </h3>
 
-        <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-slate-500 dark:text-slate-400 font-medium">
+        <p className="mt-3 hidden sm:line-clamp-2 text-sm leading-relaxed text-slate-500 dark:text-slate-400 font-medium">
           {cleanExcerpt(blog.excerpt)}
         </p>
 
-        {/* Tags */}
+        {/* Tags - Hidden on small mobile */}
         {blog.tags?.length > 0 && (
-          <div className="mt-4 flex items-center flex-nowrap gap-2 overflow-hidden">
+          <div className="mt-3 hidden sm:flex items-center flex-nowrap gap-2 overflow-hidden">
             {blog.tags.slice(0, 2).map((tag) => (
               <span
                 key={tag?._id || tag}
@@ -142,24 +142,25 @@ export default function BlogCard({ blog, categoryColor = '#6366f1', variant = 'd
                 #{tag?.name || tag}
               </span>
             ))}
-            {blog.tags.length > 2 && (
-              <span className="text-[10px] font-bold text-orange-500 whitespace-nowrap bg-orange-50 dark:bg-orange-900/20 px-2 py-1 rounded-lg border border-orange-100/50 dark:border-orange-800/50">
-                +{blog.tags.length - 2}
-              </span>
-            )}
           </div>
         )}
 
-        <div className="mt-5 flex items-center justify-between border-t border-slate-100 dark:border-slate-700/50 pt-4">
+        <div className="mt-3 sm:mt-5 flex items-center justify-between border-t border-slate-100 dark:border-slate-700/50 pt-3 sm:pt-4">
           <div className="flex items-center gap-2">
             <div className="relative h-6 w-6 overflow-hidden rounded-full ring-2 ring-slate-100 dark:ring-slate-700">
-              <Image src="/Profilemanju.jpeg" alt="Author" fill className="object-cover" />
+              <Image 
+                src="/Profilemanju.jpeg" 
+                alt="Author" 
+                fill 
+                className="object-cover" 
+                sizes="24px"
+              />
             </div>
-            <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300">Manjunath M</span>
+            <span className="text-[10px] sm:text-[11px] font-bold text-slate-600 dark:text-slate-300">Manjunath M</span>
           </div>
-          <div className="flex items-center gap-3 text-[11px] font-bold text-slate-400">
+          <div className="flex items-center gap-3 text-[9px] sm:text-[11px] font-bold text-slate-400">
             <span className="flex items-center gap-1.5">
-              <FiEye className="h-3.5 w-3.5" />
+              <FiEye className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
               {(blog.views || 0).toLocaleString()}
             </span>
           </div>

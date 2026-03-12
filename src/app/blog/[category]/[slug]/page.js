@@ -416,6 +416,10 @@ export default async function BlogPostPage({ params }) {
       .sort({ createdAt: -1 })
       .lean();
 
+    // Deep serialize all data passed to Client Components to avoid "Only plain objects" error
+    const serializedBlog = JSON.parse(JSON.stringify(blog));
+    const serializedRelatedBlogs = JSON.parse(JSON.stringify(relatedBlogsRaw));
+
     // Get all categories for related blogs mapping
     const allCategories = await Category.find({}).lean();
     const catMap = {};
@@ -423,11 +427,11 @@ export default async function BlogPostPage({ params }) {
       catMap[c._id.toString()] = c.name;
     });
 
-    let rawContent = getRenderableContent(blog.content || '');
+    let rawContent = getRenderableContent(serializedBlog.content || '');
     // Strip duplicate FAQ if array exists (Issue 12)
-    rawContent = stripDuplicateFaq(rawContent, blog.faq?.length > 0);
+    rawContent = stripDuplicateFaq(rawContent, serializedBlog.faq?.length > 0);
     // Inject section images after H2 headings (Issue 1)
-    rawContent = injectSectionImages(rawContent, blog.sectionImages || []);
+    rawContent = injectSectionImages(rawContent, serializedBlog.sectionImages || []);
     const { html: renderableContent, headings } = addHeadingIds(rawContent);
     const readingTime = calculateReadingTime(renderableContent);
 
@@ -465,8 +469,8 @@ export default async function BlogPostPage({ params }) {
 
         {/* Mobile UI Only */}
         <MobileBlogLayout 
-          blog={blog}
-          relatedBlogs={relatedBlogsRaw}
+          blog={serializedBlog}
+          relatedBlogs={serializedRelatedBlogs}
           categoryName={categoryName}
           tagNames={tagNames}
           readingTime={readingTime}
@@ -482,7 +486,7 @@ export default async function BlogPostPage({ params }) {
               {categoryName}
             </Link>
             <span className="text-slate-300 dark:text-slate-700">/</span>
-            <span className="max-w-[200px] truncate text-slate-500 dark:text-slate-400">{blog.title}</span>
+            <span className="max-w-[200px] truncate text-slate-500 dark:text-slate-400">{serializedBlog.title}</span>
           </nav>
 
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-[80px_1fr_320px]">
@@ -525,13 +529,19 @@ export default async function BlogPostPage({ params }) {
                   </div>
 
                   <h1 className="text-4xl font-black leading-[1.1] tracking-tight text-slate-900 dark:text-white sm:text-5xl lg:text-6xl xl:text-7xl">
-                    {blog.title}
+                    {serializedBlog.title}
                   </h1>
 
                   <div className="mt-10 flex flex-wrap items-center justify-center lg:justify-start gap-6 border-y border-slate-100 dark:border-slate-800/50 py-6 text-xs font-bold uppercase tracking-widest text-slate-400">
                     <div className="flex items-center gap-3">
                       <div className="relative h-10 w-10 overflow-hidden rounded-full ring-4 ring-slate-50 dark:ring-slate-800">
-                        <Image src="/Profilemanju.jpeg" alt="Author" fill className="object-cover" />
+                        <Image 
+                          src="/Profilemanju.jpeg" 
+                          alt="Author" 
+                          fill 
+                          className="object-cover" 
+                          sizes="40px"
+                        />
                       </div>
                       <div className="text-left">
                         <p className="text-slate-900 dark:text-white">Manjunath M</p>
@@ -542,7 +552,7 @@ export default async function BlogPostPage({ params }) {
                     <div className="flex flex-col gap-1">
                       <span className="text-[10px] text-slate-400 font-medium">Published</span>
                       <span className="text-slate-600 dark:text-slate-300">
-                        {new Date(blog.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                        {new Date(serializedBlog.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
                       </span>
                     </div>
                     <div className="hidden sm:block h-8 w-px bg-slate-100 dark:bg-slate-800" />
@@ -558,17 +568,17 @@ export default async function BlogPostPage({ params }) {
                       <span className="text-[10px] text-slate-400 font-medium">Engagement</span>
                       <span className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
                         <FiEye className="h-3.5 w-3.5 text-blue-500" />
-                        {(blog.views || 0).toLocaleString()} views
+                        {(serializedBlog.views || 0).toLocaleString()} views
                       </span>
                     </div>
                   </div>
                 </header>
 
-                {blog.featuredImage ? (
+                {serializedBlog.featuredImage ? (
                   <div className="relative mb-12 h-[400px] lg:h-[600px] overflow-hidden rounded-[2.5rem] bg-slate-100 dark:bg-slate-800 shadow-2xl shadow-slate-200/50 dark:shadow-none">
                     <Image
-                      src={fixUnsplashUrl(blog.featuredImage)}
-                      alt={blog.title}
+                      src={fixUnsplashUrl(serializedBlog.featuredImage)}
+                      alt={serializedBlog.title}
                       fill
                       sizes="(max-width: 1280px) 100vw, 1200px"
                       className="object-cover"
@@ -597,11 +607,11 @@ export default async function BlogPostPage({ params }) {
                 </div>
 
                 {/* FAQ Section */}
-                {blog.faq?.length ? (
+                {serializedBlog.faq?.length ? (
                   <div className="mt-20 rounded-[2.5rem] bg-white dark:bg-slate-800/50 p-8 lg:p-12 border border-slate-100 dark:border-slate-800 shadow-sm">
                     <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-8 tracking-tight">Common Questions</h2>
                     <div className="space-y-4">
-                      {blog.faq.map((item, i) => (
+                      {serializedBlog.faq.map((item, i) => (
                         <details key={i} className="group rounded-2xl border border-slate-100 dark:border-slate-700/50 bg-slate-50/50 dark:bg-slate-900/30 transition-all overflow-hidden">
                           <summary className="cursor-pointer px-6 py-5 text-lg font-bold text-slate-900 dark:text-white hover:text-orange-600 dark:hover:text-orange-400 list-none flex items-center justify-between transition-colors">
                             {item.question}
