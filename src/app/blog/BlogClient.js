@@ -73,10 +73,7 @@ export default function BlogClient({ initialBlogs = [], initialCategories = [], 
     });
   }, [initialBlogs, catMap, tagMap]);
 
-  const topLevelCategories = useMemo(
-    () => [...new Set(initialCategories.filter((item) => !item.parent).map((item) => item.name))],
-    [initialCategories]
-  );
+
 
   // Editorial Data
   const featuredBlog = useMemo(
@@ -177,74 +174,9 @@ export default function BlogClient({ initialBlogs = [], initialCategories = [], 
   const isEditorialView = activeFilter === 'all' && !query.trim();
   const isCategoryEditorialView = activeFilter !== 'all' && !query.trim();
 
-  function handleFilter(category) {
-    setActiveFilter(category);
-    const url = category === 'all' ? '/blog' : `/blog?category=${encodeURIComponent(category)}`;
-    window.history.pushState({}, '', url);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  function clearFilters() {
-    setActiveFilter('all');
-    setQuery('');
-    window.history.pushState({}, '', '/blog');
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-white dark:from-slate-900 dark:via-slate-800 dark:to-slate-800">
-      {/* Sticky Filter Bar */}
-      <div className="sticky top-[72px] z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-800">
-        <div className="mx-auto max-w-7xl px-4 py-4 lg:px-8">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            {/* Categories */}
-            <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
-              <button
-                onClick={() => handleFilter('all')}
-                className={`whitespace-nowrap rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-widest transition-all ${
-                  activeFilter === 'all'
-                    ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-md'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700'
-                }`}
-              >
-                All
-              </button>
-              {topLevelCategories.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => handleFilter(category)}
-                  className={`whitespace-nowrap rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-widest transition-all ${
-                    activeFilter === category
-                      ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-md'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700'
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
-
-            {/* Search */}
-            <div className="relative w-full md:w-72">
-              <input
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search articles..."
-                className="w-full rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 py-2 pl-10 pr-4 text-sm outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all dark:text-white"
-              />
-              <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-              {query && (
-                <button
-                  onClick={() => setQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700"
-                >
-                  <FiX className="h-3 w-3" />
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
 
       <main className="mx-auto max-w-7xl px-4 py-6 sm:py-8 lg:py-12 lg:px-8">
         {mappedBlogs.length > 0 && <BannerAd />}
