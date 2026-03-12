@@ -145,19 +145,7 @@ export default function BlogCard({ blog, categoryColor = '#6366f1', variant = 'd
           </div>
         )}
 
-        <div className="mt-3 sm:mt-5 flex items-center justify-between border-t border-slate-100 dark:border-slate-700/50 pt-3 sm:pt-4">
-          <div className="flex items-center gap-2">
-            <div className="relative h-6 w-6 overflow-hidden rounded-full ring-2 ring-slate-100 dark:ring-slate-700">
-              <Image 
-                src="/Profilemanju.jpeg" 
-                alt="Author" 
-                fill 
-                className="object-cover" 
-                sizes="24px"
-              />
-            </div>
-            <span className="text-[10px] sm:text-[11px] font-bold text-slate-600 dark:text-slate-300">Manjunath M</span>
-          </div>
+        <div className="mt-3 sm:mt-5 flex items-center justify-end border-t border-slate-100 dark:border-slate-700/50 pt-3 sm:pt-4">
           <div className="flex items-center gap-3 text-[9px] sm:text-[11px] font-bold text-slate-400">
             <span className="flex items-center gap-1.5">
               <FiEye className="h-3 w-3 sm:h-3.5 sm:w-3.5" />

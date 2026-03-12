@@ -184,7 +184,7 @@ export default function Footer() {
         <div className="border-t border-slate-900 mt-24 pt-12 flex flex-col lg:flex-row justify-between items-center gap-8">
           <div className="flex flex-col items-center lg:items-start gap-2">
             <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-600">
-              © {currentYear} Manjunath M. Engineering Excellence.
+              © {currentYear} THE MANIFESTO. Engineering Excellence.
             </p>
           </div>
           <nav className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">

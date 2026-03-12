@@ -533,22 +533,6 @@ export default async function BlogPostPage({ params }) {
                   </h1>
 
                   <div className="mt-10 flex flex-wrap items-center justify-center lg:justify-start gap-6 border-y border-slate-100 dark:border-slate-800/50 py-6 text-xs font-bold uppercase tracking-widest text-slate-400">
-                    <div className="flex items-center gap-3">
-                      <div className="relative h-10 w-10 overflow-hidden rounded-full ring-4 ring-slate-50 dark:ring-slate-800">
-                        <Image 
-                          src="/Profilemanju.jpeg" 
-                          alt="Author" 
-                          fill 
-                          className="object-cover" 
-                          sizes="40px"
-                        />
-                      </div>
-                      <div className="text-left">
-                        <p className="text-slate-900 dark:text-white">Manjunath M</p>
-                        <p className="text-[10px] text-slate-400">Lead Architect</p>
-                      </div>
-                    </div>
-                    <div className="hidden sm:block h-8 w-px bg-slate-100 dark:bg-slate-800" />
                     <div className="flex flex-col gap-1">
                       <span className="text-[10px] text-slate-400 font-medium">Published</span>
                       <span className="text-slate-600 dark:text-slate-300">

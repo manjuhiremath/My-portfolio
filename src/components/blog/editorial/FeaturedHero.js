@@ -50,23 +50,10 @@ export default function FeaturedHero({ blog, categoryColor = '#f97316' }) {
               {blog.excerpt || 'Explore this featured article to stay ahead in the industry with expert insights and practical guidance.'}
             </p>
 
-            <div className="flex flex-wrap items-center gap-6 pt-2">
-              <div className="flex items-center gap-3">
-                <div className="relative h-10 w-10 overflow-hidden rounded-full ring-2 ring-slate-800 shadow-lg">
-                  <Image 
-                    src="/Profilemanju.jpeg" 
-                    alt="Author" 
-                    fill 
-                    className="object-cover" 
-                    sizes="40px"
-                  />
-                </div>
-                <div>
-                  <p className="text-xs font-black text-white uppercase tracking-widest">Manjunath M</p>
-                  <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">{formatDate(blog.createdAt)}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 text-slate-400">
+            <div className="flex flex-wrap items-center gap-6 pt-2 text-slate-400">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">{formatDate(blog.createdAt)}</span>
+                <span className="h-1 w-1 rounded-full bg-slate-700" />
                 <FiClock className="h-4 w-4 text-orange-500" />
                 <span className="text-[10px] font-black uppercase tracking-widest">{blog.readingTime ? `${blog.readingTime} min` : calculateReadingTime(blog.content)}</span>
               </div>

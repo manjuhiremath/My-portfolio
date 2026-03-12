@@ -102,19 +102,9 @@ export default function MobileBlogLayout({
           </h1>
 
           <div className="flex items-center gap-4 mb-10 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
-            <div className="relative w-12 h-12 overflow-hidden rounded-full ring-4 ring-white dark:ring-slate-900 shadow-sm">
-              <Image 
-                src="/Profilemanju.jpeg" 
-                alt="Author" 
-                fill 
-                className="object-cover" 
-                sizes="48px"
-              />
-            </div>
             <div>
-              <p className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest">Manjunath M</p>
               <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
-                {new Date(blog.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                Published on {new Date(blog.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
               </p>
             </div>
           </div>
