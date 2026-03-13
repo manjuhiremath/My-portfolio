@@ -1,6 +1,7 @@
 import { Playfair_Display, DM_Sans, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import Script from "next/script";
+import { AuthProvider } from "@/context/AuthContext";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -86,7 +87,9 @@ export default function RootLayout({ children }) {
         />
 
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange={false}>
-          {children}
+          <AuthProvider>
+            {children}
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

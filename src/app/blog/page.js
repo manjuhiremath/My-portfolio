@@ -7,14 +7,42 @@ import BlogClient from './BlogClient';
 
 export const revalidate = 3600; // Revalidate every hour
 
-async function getInitialData() {
+async function getInitialData(categoryParam = null) {
   await connectDB();
   
+  const blogQuery = { published: true };
+  
+  if (categoryParam && categoryParam !== 'all') {
+    // Check if it's a valid ObjectId
+    const isObjectId = /^[0-9a-fA-F]{24}$/.test(categoryParam);
+    if (isObjectId) {
+      blogQuery.category = categoryParam;
+    } else {
+      // Find category by slug or name
+      const cat = await Category.findOne({
+        $or: [
+          { slug: categoryParam.toLowerCase() },
+          { name: { $regex: new RegExp(`^${categoryParam}$`, 'i') } }
+        ]
+      });
+      if (cat) {
+        blogQuery.category = cat._id;
+      } else {
+        // If category not found by slug/name, it might be a legacy string category
+        blogQuery.category = categoryParam;
+      }
+    }
+  }
+
   // Parallel fetch for speed
+  // If a category is selected, we fetch all blogs for that category (up to 500)
+  // If no category is selected, we fetch the latest 100 for the editorial view
+  const limit = (categoryParam && categoryParam !== 'all') ? 500 : 100;
+
   const [blogsData, categories, tags] = await Promise.all([
-    Blog.find({ published: true })
+    Blog.find(blogQuery)
       .sort({ createdAt: -1 })
-      .limit(100) // Fetch top 100 for initial pool
+      .limit(limit)
       .select('title slug category excerpt featuredImage readingTime views tags createdAt publishedAt')
       .populate('category')
       .lean(),
@@ -23,9 +51,6 @@ async function getInitialData() {
   ]);
 
   // Transform for client use (serialize ObjectIds and other non-plain objects)
-  // Deep serialization via JSON.parse/stringify is the most robust way to ensure
-  // that no MongoDB internal types (like Decimal128, Binary, or objects with toJSON) 
-  // reach the Client Component.
   const serializedBlogs = JSON.parse(JSON.stringify(blogsData));
   const serializedCategories = JSON.parse(JSON.stringify(categories));
   const serializedTags = JSON.parse(JSON.stringify(tags));
@@ -37,8 +62,9 @@ async function getInitialData() {
   };
 }
 
-export default async function BlogPage() {
-  const { blogs, categories, tags } = await getInitialData();
+export default async function BlogPage({ searchParams }) {
+  const { category } = await searchParams;
+  const { blogs, categories, tags } = await getInitialData(category);
 
   return (
     <Suspense fallback={<BlogPageFallback />}>

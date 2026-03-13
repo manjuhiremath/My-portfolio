@@ -275,24 +275,6 @@ export default function BlogClient({ initialBlogs = [], initialCategories = [], 
                 </div>
               </aside>
             </div>
-
-            <section className="border-t border-slate-100 dark:border-slate-800 pt-12 space-y-12">
-              <div className="text-center space-y-2">
-                <p className="text-[9px] font-black uppercase tracking-[0.4em] text-orange-500">Collections</p>
-                <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white uppercase">Browse Categories</h2>
-              </div>
-              
-              <div className="space-y-16">
-                {topLevelCategories.map((category) => (
-                  <CategorySection
-                    key={category}
-                    category={category}
-                    blogs={mappedBlogs.filter(b => b.category === category)}
-                    categoryColor={getCategoryColor(initialCategories, category)}
-                  />
-                ))}
-              </div>
-            </section>
           </div>
         ) : isCategoryEditorialView ? (
           <div className="space-y-12">
@@ -313,35 +295,51 @@ export default function BlogClient({ initialBlogs = [], initialCategories = [], 
               </div>
             </header>
 
-            {categoryFeatured && (
-              <FeaturedHero
-                blog={categoryFeatured}
-                categoryColor={getCategoryColor(initialCategories, activeFilter)}
-              />
-            )}
+            {categoryFeatured ? (
+              <>
+                <FeaturedHero
+                  blog={categoryFeatured}
+                  categoryColor={getCategoryColor(initialCategories, activeFilter)}
+                />
 
-            <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
-              <div className="lg:col-span-8 space-y-12">
-                {categoryTrending.length > 0 && (
-                  <TopStories
-                    blogs={categoryTrending.slice(0, 4)}
-                    getCategoryColor={(cat) => getCategoryColor(initialCategories, cat)}
-                  />
-                )}
-                {categoryLatest.length > 0 && (
-                  <LatestBlogsGrid blogs={categoryLatest} title="Recent Additions" />
-                )}
-              </div>
-              <aside className="lg:col-span-4">
-                <div className="lg:sticky lg:top-24 space-y-8">
-                  <TrendingSidebar
-                    trendingBlogs={categoryTrending}
-                    recentBlogs={categoryBlogs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 5)}
-                    popularTags={[...new Set(categoryBlogs.flatMap(b => b.tags))].slice(0, 10)}
-                  />
+                <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
+                  <div className="lg:col-span-8 space-y-12">
+                    {categoryTrending.length > 0 && (
+                      <TopStories
+                        blogs={categoryTrending.slice(0, 4)}
+                        getCategoryColor={(cat) => getCategoryColor(initialCategories, cat)}
+                      />
+                    )}
+                    {categoryLatest.length > 0 && (
+                      <LatestBlogsGrid blogs={categoryLatest} title="Recent Additions" />
+                    )}
+                  </div>
+                  <aside className="lg:col-span-4">
+                    <div className="lg:sticky lg:top-24 space-y-8">
+                      <TrendingSidebar
+                        trendingBlogs={categoryTrending}
+                        recentBlogs={categoryBlogs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 5)}
+                        popularTags={[...new Set(categoryBlogs.flatMap(b => b.tags))].slice(0, 10)}
+                      />
+                    </div>
+                  </aside>
                 </div>
-              </aside>
-            </div>
+              </>
+            ) : (
+              <div className="text-center py-24 bg-slate-50 dark:bg-slate-800/50 rounded-[3rem] border border-dashed border-slate-200 dark:border-slate-700">
+                <div className="mb-6 inline-flex h-20 w-20 items-center justify-center rounded-full bg-white dark:bg-slate-900 shadow-sm">
+                  <FiSearch className="h-10 w-10 text-slate-300" />
+                </div>
+                <h3 className="text-2xl font-black text-slate-900 dark:text-white">No articles found</h3>
+                <p className="mt-2 text-slate-500 dark:text-slate-400 max-w-xs mx-auto font-medium">We haven&apos;t published any articles in the {activeFilter} category yet.</p>
+                <button 
+                  onClick={() => setActiveFilter('all')}
+                  className="mt-8 px-8 py-3 rounded-2xl bg-orange-500 text-white font-black uppercase tracking-widest shadow-lg shadow-orange-500/20 hover:scale-[1.02] active:scale-[0.98] transition-transform"
+                >
+                  Browse All Categories
+                </button>
+              </div>
+            )}
           </div>
         ) : (
           <div className="space-y-8 pt-8">
@@ -394,6 +392,27 @@ export default function BlogClient({ initialBlogs = [], initialCategories = [], 
               </div>
             )}
           </div>
+        )}
+
+        {/* Browse Categories - Always show at bottom for easy navigation */}
+        {!query.trim() && (
+          <section className="border-t border-slate-100 dark:border-slate-800 pt-12 mt-24 space-y-12">
+            <div className="text-center space-y-2">
+              <p className="text-[9px] font-black uppercase tracking-[0.4em] text-orange-500">Collections</p>
+              <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white uppercase">Browse Categories</h2>
+            </div>
+            
+            <div className="space-y-16">
+              {topLevelCategories.map((category) => (
+                <CategorySection
+                  key={category}
+                  category={category}
+                  blogs={mappedBlogs.filter(b => b.category === category)}
+                  categoryColor={getCategoryColor(initialCategories, category)}
+                />
+              ))}
+            </div>
+          </section>
         )}
         <div className="mt-32"><MultiplexAd /></div>
       </main>
