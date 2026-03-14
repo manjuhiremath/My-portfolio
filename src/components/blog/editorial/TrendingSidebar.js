@@ -103,26 +103,6 @@ export default function TrendingSidebar({ trendingBlogs, recentBlogs, popularTag
         </div>
       </section>
 
-      {/* Newsletter Card */}
-      <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-100 to-white dark:from-gray-950 dark:to-gray-900 p-6 text-gray-900 dark:text-white shadow-lg dark:shadow-2xl border border-gray-200 dark:border-gray-800">
-        <div className="absolute top-0 right-0 -mr-8 -mt-8 h-32 w-32 rounded-full bg-primary/10 blur-3xl" />
-        <div className="relative z-10 text-center space-y-4">
-          <div className="space-y-2">
-            <h4 className="text-sm font-black tracking-tight leading-tight uppercase font-display">Join the <span className="text-primary italic">Manifesto.</span></h4>
-            <p className="text-[11px] font-medium text-gray-600 dark:text-gray-400 leading-relaxed max-w-[22ch] mx-auto">Weekly deep-dives into software architecture and strategy.</p>
-          </div>
-          <form className="space-y-3" onSubmit={(e) => e.preventDefault()}>
-            <input
-              type="email"
-              placeholder="Your email address"
-              className="w-full rounded-lg bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 px-4 py-2.5 text-[11px] text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-600 outline-none transition-all focus:bg-white dark:focus:bg-white/10 focus:border-primary/50 shadow-inner"
-            />
-            <button className="btn btn-primary w-full py-2.5 text-[10px] font-black uppercase tracking-[0.2em] shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
-              Subscribe Now
-            </button>
-          </form>
-        </div>
-      </div>
     </div>
   );
 }

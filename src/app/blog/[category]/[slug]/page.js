@@ -435,20 +435,6 @@ export default async function BlogPostPage({ params }) {
               <div className="sticky  space-y-10">
                 <TableOfContents headings={headings} />
                 
-                <div className="relative overflow-hidden rounded-[2.5rem] bg-gray-900 p-8 text-white shadow-2xl border border-gray-800">
-                  <div className="absolute -top-12 -right-12 h-32 w-32 rounded-full bg-primary/20 blur-3xl" />
-                  <div className="relative z-10 space-y-6">
-                    <div>
-                      <h3 className="text-lg font-black tracking-tight uppercase font-display leading-tight">Join the <span className="text-primary italic">Manifesto.</span></h3>
-                      <p className="mt-3 text-xs font-medium text-gray-400 leading-relaxed">Deep tech insights and architectural patterns delivered weekly.</p>
-                    </div>
-                    <div className="space-y-3">
-                      <input type="email" placeholder="Your email..." className="w-full rounded-2xl bg-white/5 border border-white/10 px-4 py-3 text-xs text-white placeholder:text-gray-600 outline-none focus:bg-white/10 focus:border-primary/50 transition-all" />
-                      <button className="btn btn-primary w-full py-3.5 text-[10px] font-black uppercase tracking-[0.3em] shadow-xl shadow-primary/20">Subscribe Now</button>
-                    </div>
-                  </div>
-                </div>
-                
                 <SidebarAd />
               </div>
             </aside>
