@@ -14,36 +14,16 @@ function escapeXml(str) {
 
 function slugify(text = '') {
   if (!text) return '';
-  return text
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/[\s_-]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+  return text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '');
 }
 
-function addUrl(xml, loc, lastmod, changefreq = 'daily', priority = '0.7') {
-  xml += '  <url>\n';
-  xml += `    <loc>${escapeXml(loc)}</loc>\n`;
-  xml += `    <lastmod>${lastmod}</lastmod>\n`;
-  xml += `    <changefreq>${changefreq}</changefreq>\n`;
-  xml += `    <priority>${priority}</priority>\n`;
-  xml += '  </url>\n';
-  return xml;
-}
-
-function addImage(xml, url, title, caption, license) {
-  xml += '    <image:image>\n';
-  xml += `      <image:loc>${escapeXml(url)}</image:loc>\n`;
-  xml += `      <image:title>${escapeXml(title)}</image:title>\n`;
-  if (caption) {
-    xml += `      <image:caption>${escapeXml(caption)}</image:caption>\n`;
-  }
-  if (license) {
-    xml += `      <image:license>${escapeXml(license)}</image:license>\n`;
-  }
-  xml += '    </image:image>\n';
-  return xml;
+function addImage(xml, url, title, caption) {
+  let imgXml = '    <image:image>\n';
+  imgXml += `      <image:loc>${escapeXml(url)}</image:loc>\n`;
+  if (title) imgXml += `      <image:title>${escapeXml(title)}</image:title>\n`;
+  if (caption) imgXml += `      <image:caption>${escapeXml(caption)}</image:caption>\n`;
+  imgXml += '    </image:image>\n';
+  return xml + imgXml;
 }
 
 export async function GET(request) {
@@ -61,11 +41,11 @@ export async function GET(request) {
       let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
       xml += '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
       
-      // Category sitemaps: sitemap.xml?id=technology
+      // Category sitemaps: /blog/sitemap.xml?id=technology
       categories.forEach(cat => {
         const slug = cat.slug || slugify(cat.name);
         xml += '  <sitemap>\n';
-        xml += `    <loc>${baseUrl}/sitemap.xml?id=${slug}</loc>\n`;
+        xml += `    <loc>${baseUrl}/blog/sitemap.xml?id=${slug}</loc>\n`;
         xml += `    <lastmod>${cat.updatedAt ? new Date(cat.updatedAt).toISOString() : new Date().toISOString()}</lastmod>\n`;
         xml += '  </sitemap>\n';
       });
