@@ -49,6 +49,6 @@ AGENTS.md
 .claude/
 package-lock.json
 .kiro/
-.groq/
+.grok/
 optimized_blogs/
 scripts/
