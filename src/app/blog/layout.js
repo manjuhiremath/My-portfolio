@@ -3,26 +3,26 @@ import Footer from '@/components/Footer';
 import { Suspense } from 'react';
 
 export const metadata = {
-  title: 'Blog | Tech, Design & Business Insights',
-  description: 'Explore insightful articles on technology, web development, AI, UI/UX design, and business. Get the latest tips, tutorials, and trends from industry experts.',
-  keywords: ['blog', 'technology', 'web development', 'AI', 'design', 'business', 'tutorials', 'insights', 'programming'],
+  title: 'The Digital Manifesto | Strategic Architectural Insights',
+  description: 'A weekly journal exploring high-performance engineering, modern architectural patterns, and the aesthetics of the digital era. Strategic analysis for the modern builder.',
+  keywords: ['architectural patterns', 'software engineering', 'digital manifesto', 'engineering excellence', 'technical analysis', 'high-performance systems'],
   verification: {
     google: '2JGk2Vu-1qinl19o3imuPSwhZHcSP7i0zt4ovjzcIpc',
   },
   openGraph: {
-    title: 'Blog | Tech, Design & Business Insights',
-    description: 'Explore insightful articles on technology, web development, AI, UI/UX design, and business.',
+    title: 'The Digital Manifesto | Strategic Architectural Insights',
+    description: 'A weekly journal exploring high-performance engineering and modern architectural patterns.',
     type: 'website',
     url: '/blog',
-    siteName: 'Blog',
+    siteName: 'The Digital Manifesto',
   },
   alternates: {
     canonical: '/blog',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Blog | Tech, Design & Business Insights',
-    description: 'Explore insightful articles on technology, web development, AI, UI/UX design, and business.',
+    title: 'The Digital Manifesto | Strategic Architectural Insights',
+    description: 'A weekly journal exploring high-performance engineering and modern architectural patterns.',
   },
   robots: {
     index: true,

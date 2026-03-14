@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 
 /**
  * AdUnit component handles the initialization of Google AdSense ads.
- * It uses a highly resilient strategy to avoid width errors and duplicate pushes.
+ * It prevents ads from showing on admin, login, and other restricted pages.
  */
 export default function AdUnit({ 
   slot, 
@@ -20,9 +20,33 @@ export default function AdUnit({
   const adRef = useRef(null);
   const containerRef = useRef(null);
   const hasPushed = useRef(false);
+  const [shouldShowAd, setShouldShowAd] = useState(true);
   
   // Unique key based on URL and slot to force a clean remount on navigation
   const adKey = `${pathname}-${searchParams?.toString() || ''}-${slot}`;
+
+  useEffect(() => {
+    // Check if we should show ads on this page
+    const restrictedPaths = [
+      '/admin',
+      '/login',
+      '/register',
+      '/search',
+      '/404',
+      '/not-found',
+    ];
+    
+    const isRestricted = restrictedPaths.some(path => pathname.startsWith(path));
+    
+    // Also check for pages with no content (empty category/tag pages handled in parent)
+    if (isRestricted) {
+      setShouldShowAd(false);
+      return;
+    }
+    
+    setShouldShowAd(true);
+    hasPushed.current = false;
+  }, [pathname]);
 
   useEffect(() => {
     // Reset the push tracker when the component mounts or adKey changes
@@ -88,6 +112,11 @@ export default function AdUnit({
       }
     };
   }, [adKey]); 
+
+  // Don't render ad on restricted pages
+  if (!shouldShowAd) {
+    return null;
+  }
 
   return (
     <div 

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 
 const AuthContext = createContext(null);
 
-const ADMIN_EMAIL = 'admin@manjuhiremth.in';
+const ADMIN_EMAIL = 'admin@manjuhiremath.in';
 const ADMIN_PASSWORD = 'Manju@1352';
 
 export function AuthProvider({ children }) {

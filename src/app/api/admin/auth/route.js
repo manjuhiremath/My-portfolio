@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-const ADMIN_EMAIL = 'admin@manjuhiremth.in';
+const ADMIN_EMAIL = 'admin@manjuhiremath.in';
 const ADMIN_PASSWORD = 'Manju@1352';
 const COOKIE_NAME = 'admin_auth';
 

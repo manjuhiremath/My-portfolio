@@ -8,6 +8,7 @@ import BlogCard from '@/components/blog/BlogCard';
 import Pagination from '@/components/Pagination';
 import BannerAd from '@/components/ads/BannerAd';
 import MultiplexAd from '@/components/ads/MultiplexAd';
+import { fixUnsplashUrl, slugify } from '@/lib/utils';
 
 export const revalidate = 3600;
 const POSTS_PER_PAGE = 12;
@@ -20,7 +21,7 @@ function readableLabel(text = '') {
 
 export async function generateMetadata({ params }) {
   const { tag: rawTag } = await params;
-  const tagSlug = decodeURIComponent(rawTag).toLowerCase();
+  const tagSlug = slugify(decodeURIComponent(rawTag));
 
   try {
     await connectDB();
@@ -58,10 +59,16 @@ export async function generateMetadata({ params }) {
 
 async function getTagBlogs(tag, page = 1) {
   await connectDB();
-  const tagSlug = tag.toLowerCase();
+  const decodedTag = decodeURIComponent(tag);
+  const tagSlug = slugify(decodedTag);
   
-  const tagDoc = await Tag.findOne({ slug: tagSlug }).lean();
+  let tagDoc = await Tag.findOne({ slug: tagSlug }).lean();
   
+  if (!tagDoc) {
+    // Try finding by name case-insensitively if slug didn't work
+    tagDoc = await Tag.findOne({ name: { $regex: new RegExp(`^${decodedTag.replace(/-/g, ' ')}$`, 'i') } }).lean();
+  }
+
   if (!tagDoc) {
     return null;
   }

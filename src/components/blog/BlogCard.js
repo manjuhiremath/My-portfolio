@@ -25,15 +25,8 @@ function stripHtml(text = '') {
   return text.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
-function cleanExcerpt(text = '') {
-  if (!text) return 'Practical insights and guidance.';
-  let clean = text.replace(/```(?:html)?/gi, '').replace(/```/g, '');
-  clean = stripHtml(clean);
-  if (clean.length > 100) clean = clean.substring(0, 97) + '...';
-  return clean;
-}
 
-export default function BlogCard({ blog, categoryColor = '#6366f1', variant = 'default' }) {
+export default function BlogCard({ blog, categoryColor = 'oklch(60% 0.15 250)', variant = 'default' }) {
   if (!blog) return null;
 
   const categoryValue = blog.category?.name || blog.category || 'Uncategorized';
@@ -45,25 +38,25 @@ export default function BlogCard({ blog, categoryColor = '#6366f1', variant = 'd
     return (
       <Link
         href={href}
-        className="group flex gap-2 items-start py-2 border-b border-slate-100 dark:border-slate-700 last:border-0 hover:bg-slate-50 dark:hover:bg-slate-800 -mx-1 px-1 rounded-lg transition-colors"
+        className="group flex gap-2 items-start py-1 border-b border-gray-200 dark:border-slate-800 last:border-0 hover:bg-slate-50 dark:hover:bg-slate-800/50 -mx-2 px-1 rounded-md transition-all"
       >
-        <div className="relative w-12 h-10 flex-shrink-0 overflow-hidden rounded bg-slate-100 dark:bg-slate-700">
+        <div className="relative w-16 h-12 flex-shrink-0 overflow-hidden rounded-sm bg-slate-100 dark:bg-slate-800 shadow-sm">
           <Image
             src={imageUrl}
-            alt={blog.title || 'Blog post'}
+            alt={blog.title || 'Manifesto'}
             fill
-            sizes="48px"
+            sizes="64px"
             loading="lazy"
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            className="object-cover transition-transform duration-500 group-hover:scale-110"
           />
         </div>
-        <div className="flex-1 min-w-0">
-          <h3 className="line-clamp-2 text-xs font-bold leading-tight text-slate-900 dark:text-slate-100 group-hover:text-orange-600 transition-colors">
+        <div className="flex-1 min-w-0 space-y-1">
+          <h3 className="line-clamp-2 text-sm font-bold leading-tight text-slate-900 dark:text-slate-100 group-hover:text-primary transition-colors">
             {blog.title}
           </h3>
-          <div className="flex items-center gap-1.5 mt-1 text-[9px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+          <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
             <span style={{ color: categoryColor }}>{categoryValue}</span>
-            <span className="h-0.5 w-0.5 rounded-full bg-slate-300 dark:bg-slate-600" />
+            <span className="h-1 w-1 rounded-full bg-slate-200 dark:bg-slate-700" />
             <span>{formatDate(blog.createdAt)}</span>
           </div>
         </div>
@@ -74,56 +67,60 @@ export default function BlogCard({ blog, categoryColor = '#6366f1', variant = 'd
   return (
     <Link
       href={href}
-      className="group block overflow-hidden rounded-xl bg-white dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50 shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-1"
+      className="group block overflow-hidden rounded-md bg-white dark:bg-slate-800/30 border border-gray-200 dark:border-slate-800/50 shadow-soft transition-all duration-500 hover:shadow-md "
     >
-      <div className="relative aspect-[16/9] overflow-hidden bg-slate-100 dark:bg-slate-700">
+      <div className="relative aspect-[4/3] overflow-hidden bg-slate-100 dark:bg-slate-800">
         <Image
           src={imageUrl}
-          alt={blog.title || 'Blog post'}
+          alt={blog.title || 'Digital Manifesto'}
           fill
-          sizes="(max-width: 640px) 50vw, (max-width: 1200px) 33vw, 25vw"
+          sizes="(max-width: 640px) 100vw, (max-width: 1200px) 50vw, 33vw"
           loading="lazy"
-          className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+          className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-40 group-hover:opacity-60 transition-opacity duration-500" />
 
-        <div className="absolute top-2 left-2">
+        <div className="absolute top-4 left-4">
           <span
-            className="rounded px-1.5 py-0.5 text-[8px] font-black uppercase tracking-widest text-white shadow-sm backdrop-blur-md border border-white/10"
+            className="rounded-full px-1 py-1 text-[9px] font-black uppercase tracking-[0.2em] text-white shadow-xl backdrop-blur-md border border-white/10"
             style={{ backgroundColor: `${categoryColor}CC` }}
           >
             {categoryValue}
           </span>
         </div>
 
-        <div className="absolute bottom-2 right-2 flex items-center gap-1 rounded bg-black/40 px-1.5 py-0.5 text-[8px] font-bold text-white backdrop-blur-md border border-white/5">
-          <FiClock className="h-2.5 w-2.5" />
+        <div className="absolute bottom-4 right-4 flex items-center gap-1.5 rounded-full bg-black/40 px-3 py-1 text-[9px] font-black uppercase tracking-[0.1em] text-white backdrop-blur-md border border-white/5 shadow-lg">
+          <FiClock className="h-3 w-3" />
           <span>{blog.readingTime ? `${blog.readingTime}m` : calculateReadingTime(blog.content)}</span>
         </div>
       </div>
 
-      <div className="p-2.5 sm:p-3">
-        <div className="flex items-center gap-1.5 mb-1.5">
-          <span className="text-[8px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
-            {formatDate(blog.publishedAt || blog.createdAt)}
-          </span>
-        </div>
+      <div className="p-2 sm:p-3 space-y-1">
+       
 
-        <h3 className="line-clamp-2 text-xs sm:text-sm font-bold leading-tight tracking-tight text-slate-900 dark:text-white transition-colors duration-300 group-hover:text-orange-600">
+        <h3 className="line-clamp-2 h-10 sm:h-12  text-base font-bold leading-snug tracking-tight text-slate-900 dark:text-white transition-colors duration-300 group-hover:text-primary">
           {blog.title}
         </h3>
 
-        <p className="mt-1.5 hidden sm:line-clamp-2 text-[11px] leading-relaxed text-slate-500 dark:text-slate-400 font-medium">
-          {cleanExcerpt(blog.excerpt)}
+        <p className="line-clamp-3 text-[13px] leading-relaxed text-slate-500 dark:text-slate-400 font-medium">
+          {blog.excerpt}
         </p>
 
-        <div className="mt-2 flex items-center justify-between border-t border-slate-100 dark:border-slate-700/50 pt-2">
-          <div className="flex items-center gap-2 text-[9px] font-bold text-slate-400">
-            <span className="flex items-center gap-1">
-              <FiEye className="h-2.5 w-2.5" />
+        <div className="pt-3 flex items-center justify-between border-t border-gray-200 dark:border-slate-800/50">
+          <div className="flex items-center gap-3 text-[9px] font-black uppercase tracking-widest text-slate-400">
+            <span className="flex items-center gap-1.5">
+              <FiEye className="h-3 w-3 text-gray-500 dark:text-slate-600" />
               {(blog.views || 0).toLocaleString()}
             </span>
+             {/* <div className="flex items-center gap-2"> */}
+          <span className="text-[9px] font-black tracking-[0.1em] text-primary">
+            {formatDate(blog.publishedAt || blog.createdAt)}
+          </span>
+        {/* </div> */}
           </div>
+          <span className="text-[9px] font-black uppercase tracking-[0.1em] text-primary opacity-70 -translate-x-2 group-hover:opacity-100  transition-all duration-300">
+            Access →
+          </span>
         </div>
       </div>
     </Link>

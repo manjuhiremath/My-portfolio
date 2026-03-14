@@ -128,12 +128,21 @@ export default function BlogClient({ initialBlogs = [], initialCategories = [], 
     const names = initialCategories
       .filter(c => !c.parent)
       .map(c => c.name);
-    return [...new Set(names)];
-  }, [initialCategories]);
+    // Filter to only categories that actually have blogs in them to keep it clean
+    return [...new Set(names)].filter(name => 
+      mappedBlogs.some(b => 
+        b.category?.toLowerCase() === name.toLowerCase() ||
+        slugify(b.category) === slugify(name)
+      )
+    );
+  }, [initialCategories, mappedBlogs]);
 
   const categoryBlogs = useMemo(() => {
     if (activeFilter === 'all' || query.trim()) return [];
-    return mappedBlogs.filter(b => b.category?.toLowerCase() === activeFilter.toLowerCase());
+    return mappedBlogs.filter(b => 
+      b.category?.toLowerCase() === activeFilter.toLowerCase() ||
+      slugify(b.category) === slugify(activeFilter)
+    );
   }, [activeFilter, mappedBlogs, query]);
 
   const categoryFeatured = useMemo(
@@ -162,7 +171,9 @@ export default function BlogClient({ initialBlogs = [], initialCategories = [], 
     const rows = mappedBlogs.filter((blog) => {
       const categoryName = blog.category;
       const matchesCategory =
-        activeFilter === 'all' || categoryName?.toLowerCase() === activeFilter.toLowerCase();
+        activeFilter === 'all' || 
+        categoryName?.toLowerCase() === activeFilter.toLowerCase() ||
+        slugify(categoryName) === slugify(activeFilter);
       const tagNames = blog.tags || [];
       const matchesQuery =
         !normalizedQuery ||
@@ -190,27 +201,12 @@ export default function BlogClient({ initialBlogs = [], initialCategories = [], 
         <div className="absolute top-[20%] -right-[10%] w-[30%] h-[30%] bg-blue-500/5 dark:bg-blue-500/10 rounded-full blur-[100px]" />
       </div>
 
-      <main className="relative z-10 mx-auto max-w-[1440px] px-4 py-6 lg:px-8">
-        <header className="mb-8 text-center max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 mb-4 animate-fade-in">
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-orange-500"></span>
-            </span>
-            <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-600 dark:text-slate-400">Fresh Perspectives Weekly</span>
-          </div>
-          <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-slate-900 dark:text-white mb-4">
-            The Digital <span className="text-orange-500 italic">Manifesto.</span>
-          </h1>
-          <p className="text-base text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
-            Deep tech insights and architectural patterns for the modern builder.
-          </p>
-        </header>
+      <main className="relative z-10 mx-auto max-w-[1440px] px-4 py-6 lg:px-6 lg:py-8">
 
-        {mappedBlogs.length > 0 && <div className="mb-8"><BannerAd /></div>}
+        {/* {mappedBlogs.length > 0 && <div className="mb-6"><BannerAd /></div>} */}
         
         {isEditorialView ? (
-          <div className="space-y-12 lg:space-y-16">
+          <div className="space-y-8 lg:space-y-10">
             <section>
               <FeaturedHero
                 blog={featuredBlog}
@@ -218,12 +214,12 @@ export default function BlogClient({ initialBlogs = [], initialCategories = [], 
               />
             </section>
 
-            <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
-              <div className="lg:col-span-8 space-y-12">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+              <div className="lg:col-span-8 space-y-8">
                 <section>
-                  <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-black uppercase tracking-[0.2em] text-slate-900 dark:text-white flex items-center gap-3">
-                      <span className="h-6 w-1 bg-orange-500 rounded-full" />
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
+                      <span className="h-4 w-0.5 bg-orange-500 rounded-full" />
                       Top Stories
                     </h2>
                   </div>
@@ -251,7 +247,7 @@ export default function BlogClient({ initialBlogs = [], initialCategories = [], 
 
               <aside className="lg:col-span-4">
                 <div className="lg:sticky lg:top-24 space-y-8">
-                  <div className="p-6 rounded-[2rem] bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
+                  <div className="p-6 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
                     <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mb-4">Search</h3>
                     <div className="relative group">
                       <input 
@@ -259,9 +255,9 @@ export default function BlogClient({ initialBlogs = [], initialCategories = [], 
                         placeholder="Keywords..."
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
-                        className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl py-3 pl-10 pr-4 text-xs focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all shadow-sm group-hover:shadow-md"
+                        className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg py-2 pl-8 pr-3 text-[10px] focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all shadow-sm group-hover:shadow-md"
                       />
-                      <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4 group-hover:text-orange-500 transition-colors" />
+                      <FiSearch className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 w-3 h-3 group-hover:text-orange-500 transition-colors" />
                     </div>
                   </div>
 
@@ -277,20 +273,20 @@ export default function BlogClient({ initialBlogs = [], initialCategories = [], 
             </div>
           </div>
         ) : isCategoryEditorialView ? (
-          <div className="space-y-12">
-            <header className="border-b border-slate-100 dark:border-slate-800 pb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div className="space-y-6">
+            <header className="border-b border-slate-100 dark:border-slate-800 pb-4 flex flex-col md:flex-row md:items-end justify-between gap-3">
               <div>
-                <p className="text-[9px] font-black uppercase tracking-[0.4em] text-orange-500 mb-2 px-1">Archive</p>
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 dark:text-white capitalize">
+                <p className="text-[8px] font-bold uppercase tracking-wider text-orange-500 mb-1 px-1">Archive</p>
+                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-slate-900 dark:text-white capitalize">
                   {activeFilter}
                 </h1>
               </div>
               <div className="flex gap-2">
                 <button 
                   onClick={() => setActiveFilter('all')}
-                  className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-bold flex items-center gap-2 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
+                  className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-[10px] font-bold flex items-center gap-1.5 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
                 >
-                  <FiX className="w-3.5 h-3.5" /> Clear
+                  <FiX className="w-3 h-3" /> Clear
                 </button>
               </div>
             </header>
@@ -302,8 +298,8 @@ export default function BlogClient({ initialBlogs = [], initialCategories = [], 
                   categoryColor={getCategoryColor(initialCategories, activeFilter)}
                 />
 
-                <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
-                  <div className="lg:col-span-8 space-y-12">
+                <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+                  <div className="lg:col-span-8 space-y-6">
                     {categoryTrending.length > 0 && (
                       <TopStories
                         blogs={categoryTrending.slice(0, 4)}
@@ -311,11 +307,11 @@ export default function BlogClient({ initialBlogs = [], initialCategories = [], 
                       />
                     )}
                     {categoryLatest.length > 0 && (
-                      <LatestBlogsGrid blogs={categoryLatest} title="Recent Additions" />
+                      <LatestBlogsGrid blogs={categoryLatest} title="Recent" />
                     )}
                   </div>
                   <aside className="lg:col-span-4">
-                    <div className="lg:sticky lg:top-24 space-y-8">
+                    <div className="lg:sticky lg:top-20 space-y-4">
                       <TrendingSidebar
                         trendingBlogs={categoryTrending}
                         recentBlogs={categoryBlogs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 5)}
@@ -326,27 +322,27 @@ export default function BlogClient({ initialBlogs = [], initialCategories = [], 
                 </div>
               </>
             ) : (
-              <div className="text-center py-24 bg-slate-50 dark:bg-slate-800/50 rounded-[3rem] border border-dashed border-slate-200 dark:border-slate-700">
-                <div className="mb-6 inline-flex h-20 w-20 items-center justify-center rounded-full bg-white dark:bg-slate-900 shadow-sm">
-                  <FiSearch className="h-10 w-10 text-slate-300" />
+              <div className="text-center py-12 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-dashed border-slate-200 dark:border-slate-700">
+                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-white dark:bg-slate-900 shadow-sm">
+                  <FiSearch className="h-6 w-6 text-slate-300" />
                 </div>
-                <h3 className="text-2xl font-black text-slate-900 dark:text-white">No articles found</h3>
-                <p className="mt-2 text-slate-500 dark:text-slate-400 max-w-xs mx-auto font-medium">We haven&apos;t published any articles in the {activeFilter} category yet.</p>
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white">No articles found</h3>
+                <p className="mt-1 text-[10px] text-slate-500 dark:text-slate-400 max-w-xs mx-auto font-medium">We haven&apos;t published any articles in the {activeFilter} category yet.</p>
                 <button 
                   onClick={() => setActiveFilter('all')}
-                  className="mt-8 px-8 py-3 rounded-2xl bg-orange-500 text-white font-black uppercase tracking-widest shadow-lg shadow-orange-500/20 hover:scale-[1.02] active:scale-[0.98] transition-transform"
+                  className="mt-6 px-6 py-2 rounded-xl bg-orange-500 text-white font-bold uppercase tracking-wider shadow-lg shadow-orange-500/20 hover:scale-[1.02] active:scale-[0.98] transition-transform text-[10px]"
                 >
-                  Browse All Categories
+                  Browse All
                 </button>
               </div>
             )}
           </div>
         ) : (
-          <div className="space-y-8 pt-8">
-            <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="space-y-6 pt-4">
+            <header className="flex flex-col md:flex-row md:items-center justify-between gap-3">
               <div>
-                <h2 className="text-2xl font-black text-slate-900 dark:text-white">Search Results</h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Found {filteredBlogs.length} articles</p>
+                <h2 className="text-sm font-bold text-slate-900 dark:text-white">Search Results</h2>
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{filteredBlogs.length} articles</p>
               </div>
               <div className="flex items-center gap-2">
                 <select 
@@ -366,7 +362,7 @@ export default function BlogClient({ initialBlogs = [], initialCategories = [], 
               </div>
             </header>
 
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5">
               {filteredBlogs.map((blog) => (
                 <BlogCard
                   key={blog._id}
@@ -377,17 +373,17 @@ export default function BlogClient({ initialBlogs = [], initialCategories = [], 
             </div>
             
             {filteredBlogs.length === 0 && (
-              <div className="text-center py-24 bg-slate-50 dark:bg-slate-800/50 rounded-[3rem] border border-dashed border-slate-200 dark:border-slate-700">
-                <div className="mb-6 inline-flex h-20 w-20 items-center justify-center rounded-full bg-white dark:bg-slate-900 shadow-sm">
-                  <FiSearch className="h-10 w-10 text-slate-300" />
+              <div className="text-center py-12 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-dashed border-slate-200 dark:border-slate-700">
+                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-white dark:bg-slate-900 shadow-sm">
+                  <FiSearch className="h-6 w-6 text-slate-300" />
                 </div>
-                <h3 className="text-2xl font-black text-slate-900 dark:text-white">No matches found</h3>
-                <p className="mt-2 text-slate-500 dark:text-slate-400 max-w-xs mx-auto font-medium">Try different keywords or browse our categories instead.</p>
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white">No matches found</h3>
+                <p className="mt-1 text-[10px] text-slate-500 dark:text-slate-400 max-w-xs mx-auto font-medium">Try different keywords or browse our categories instead.</p>
                 <button 
                   onClick={() => setQuery('')}
-                  className="mt-8 px-8 py-3 rounded-2xl bg-orange-500 text-white font-black uppercase tracking-widest shadow-lg shadow-orange-500/20 hover:scale-[1.02] active:scale-[0.98] transition-transform"
+                  className="mt-6 px-6 py-2 rounded-xl bg-orange-500 text-white font-bold uppercase tracking-wider shadow-lg shadow-orange-500/20 hover:scale-[1.02] active:scale-[0.98] transition-transform text-[10px]"
                 >
-                  Reset Search
+                  Reset
                 </button>
               </div>
             )}
@@ -399,22 +395,25 @@ export default function BlogClient({ initialBlogs = [], initialCategories = [], 
           <section className="border-t border-slate-100 dark:border-slate-800 pt-12 mt-24 space-y-12">
             <div className="text-center space-y-2">
               <p className="text-[9px] font-black uppercase tracking-[0.4em] text-orange-500">Collections</p>
-              <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white uppercase">Browse Categories</h2>
+              <h2 className="text-xl font-black tracking-tight text-slate-900 dark:text-white uppercase">Browse Categories</h2>
             </div>
             
-            <div className="space-y-16">
+            <div className="space-y-8">
               {topLevelCategories.map((category) => (
                 <CategorySection
                   key={category}
                   category={category}
-                  blogs={mappedBlogs.filter(b => b.category === category)}
+                  blogs={mappedBlogs.filter(b => 
+                    b.category?.toLowerCase() === category.toLowerCase() ||
+                    slugify(b.category) === slugify(category)
+                  )}
                   categoryColor={getCategoryColor(initialCategories, category)}
                 />
               ))}
             </div>
           </section>
         )}
-        <div className="mt-32"><MultiplexAd /></div>
+        <div className="mt-12"><MultiplexAd /></div>
       </main>
     </div>
   );

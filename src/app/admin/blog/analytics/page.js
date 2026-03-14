@@ -27,7 +27,6 @@ import {
   FiRefreshCw as FiRefreshIcon
 } from 'react-icons/fi';
 import { toast } from 'sonner';
-import AdminActionToolbar from '@/components/admin/ui/AdminActionToolbar';
 import AdminMetricCard from '@/components/admin/ui/AdminMetricCard';
 import AdminPageHeader from '@/components/admin/ui/AdminPageHeader';
 import AdminStatusBadge from '@/components/admin/ui/AdminStatusBadge';
@@ -239,43 +238,31 @@ export default function AdminAnalyticsPage() {
               label="Total Blogs" 
               value={formatNumber(stats.metrics?.totalBlogs)} 
               hint={`${stats.metrics?.publishedBlogs} Published`}
-              icon={FiBookOpen}
-              tone="slate"
             />
             <AdminMetricCard 
               label="Total Views" 
               value={formatNumber(stats.metrics?.totalViews)} 
               hint="Lifetime reach"
-              icon={FiEye}
-              tone="violet"
             />
             <AdminMetricCard 
               label="Monthly Views" 
               value={formatNumber(stats.metrics?.monthlyViewsCurrent)} 
               trend={stats.metrics?.viewsTrend}
-              icon={FiTrendingUp}
-              tone="blue"
             />
             <AdminMetricCard 
               label="Avg SEO Score" 
               value={`${stats.metrics?.averageSeoScore}/100`} 
               hint="Content optimization"
-              icon={FiTarget}
-              tone="emerald"
             />
             <AdminMetricCard 
               label="Top Keywords" 
               value={formatNumber(stats.metrics?.keywordsCount)} 
               hint="Ranking terms"
-              icon={FiSearch}
-              tone="amber"
             />
             <AdminMetricCard 
               label="High SEO (>90)" 
               value={formatNumber(stats.metrics?.highSeoCount)} 
               hint="Perfect scores"
-              icon={FiCheckCircle}
-              tone="emerald"
             />
           </section>
 

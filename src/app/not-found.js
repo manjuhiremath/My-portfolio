@@ -44,8 +44,8 @@ export default function NotFound() {
         </div>
         
         <div className="mt-12 pt-8 border-t border-slate-200 dark:border-slate-800">
-          <p className="text-xs text-slate-400 dark:text-slate-500 uppercase tracking-widest font-medium">
-            Manjunath M Portfolio & Blog
+          <p className="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-[0.4em] font-black">
+            The Digital Manifesto Editorial
           </p>
         </div>
       </div>

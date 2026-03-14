@@ -87,7 +87,7 @@ export default function AdminBlogsClient() {
 
         const rows = (blogsJson.blogs || []).map((blog) => ({
           ...blog,
-          seoScore: calculateBlogSeoScore(blog),
+          seoScore: blog.seoScore && blog.seoScore > 0 ? blog.seoScore : calculateBlogSeoScore(blog),
         }));
 
         setBlogs(rows);

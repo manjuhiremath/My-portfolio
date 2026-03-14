@@ -138,10 +138,10 @@ export default function AdminDashboardPage() {
       ) : (
         <>
           <section className="grid grid-cols-2 gap-2 xl:grid-cols-5">
-            <AdminMetricCard label="Total Blogs" value={formatNumber(metrics?.totalBlogs)} hint={`${formatNumber(metrics?.blogsLast30Days)} in 30 days`} tone="blue" />
-            <AdminMetricCard label="Published" value={formatNumber(metrics?.publishedBlogs)} hint={`${formatNumber(metrics?.draftBlogs)} drafts`} tone="emerald" />
-            <AdminMetricCard label="Total Views" value={formatNumber(metrics?.totalViews)} hint="All-time page views" tone="violet" />
-            <AdminMetricCard label="Avg SEO Score" value={`${formatNumber(metrics?.averageSeoScore)}/100`} hint="Calculated from SEO fields" tone="amber" />
+            <AdminMetricCard label="Total Blogs" value={formatNumber(metrics?.totalBlogs)} hint={`${formatNumber(metrics?.blogsLast30Days)} in 30 days`} />
+            <AdminMetricCard label="Published" value={formatNumber(metrics?.publishedBlogs)} hint={`${formatNumber(metrics?.draftBlogs)} drafts`} />
+            <AdminMetricCard label="Total Views" value={formatNumber(metrics?.totalViews)} hint="All-time page views" />
+            <AdminMetricCard label="Avg SEO Score" value={`${formatNumber(metrics?.averageSeoScore)}/100`} hint="Calculated from SEO fields" />
             <AdminMetricCard label="Categories" value={formatNumber(metrics?.totalCategories)} hint="Taxonomy coverage" />
           </section>
 

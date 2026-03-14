@@ -58,10 +58,12 @@ export function calculateBlogSeoScore(blog = {}) {
   const seoDescription = String(blog.seoDescription || '');
   const excerpt = String(blog.excerpt || '');
   const content = String(blog.content || '');
+  
+  // Extract keyword strings robustly from both keywords and tags arrays
   const keywords = [
     ...(Array.isArray(blog.keywords) ? blog.keywords : []),
-    ...(Array.isArray(blog.tags) ? blog.tags : []),
-  ].filter(Boolean);
+    ...(Array.isArray(blog.tags) ? blog.tags.map(t => typeof t === 'object' ? (t.name || '') : String(t)) : []),
+  ].filter(Boolean).map(k => String(k).trim().toLowerCase());
 
   let score = 0;
 

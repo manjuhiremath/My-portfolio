@@ -110,7 +110,7 @@ export default function MobileBlogLayout({
           </div>
 
           {blog.featuredImage && (
-            <div className="relative aspect-[4/3] mb-10 overflow-hidden rounded-[2.5rem] shadow-2xl border border-slate-100 dark:border-slate-800 animate-in fade-in zoom-in-95 duration-1000">
+            <div className="relative aspect-[4/3] mb-10 overflow-hidden rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-800 animate-in fade-in zoom-in-95 duration-1000">
               <Image
                 src={fixUnsplashUrl(blog.featuredImage)}
                 alt={blog.title}
@@ -167,7 +167,7 @@ export default function MobileBlogLayout({
                 <span className="h-1.5 w-8 rounded-full bg-orange-500" />
                 <h2 className="text-xl font-black uppercase tracking-tight text-slate-900 dark:text-white">Recommendations</h2>
               </div>
-              <Suspense fallback={<div className="h-40 animate-pulse bg-slate-100 dark:bg-slate-800 rounded-3xl" />}>
+              <Suspense fallback={<div className="h-40 animate-pulse bg-slate-100 dark:bg-slate-800 rounded-2xl" />}>
                 <RelatedArticles blogs={relatedBlogs} />
               </Suspense>
             </div>

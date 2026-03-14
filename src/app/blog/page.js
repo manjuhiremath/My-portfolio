@@ -35,9 +35,9 @@ async function getInitialData(categoryParam = null) {
   }
 
   // Parallel fetch for speed
-  // If a category is selected, we fetch all blogs for that category (up to 500)
-  // If no category is selected, we fetch the latest 100 for the editorial view
-  const limit = (categoryParam && categoryParam !== 'all') ? 500 : 100;
+  // If a category is selected, we fetch all blogs for that category (up to 1000)
+  // If no category is selected, we fetch the latest 1000 for the editorial view
+  const limit = 1000;
 
   const [blogsData, categories, tags] = await Promise.all([
     Blog.find(blogQuery)

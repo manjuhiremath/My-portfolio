@@ -21,7 +21,7 @@ function calculateReadingTime(content) {
   return `${minutes} min read`;
 }
 
-export default function FeaturedHero({ blog, categoryColor = '#f97316' }) {
+export default function FeaturedHero({ blog, categoryColor = 'oklch(70% 0.18 45)' }) {
   if (!blog) return null;
 
   const categoryName = blog.category?.name || blog.category;
@@ -30,42 +30,40 @@ export default function FeaturedHero({ blog, categoryColor = '#f97316' }) {
   const imageUrl = fixUnsplashUrl(blog.featuredImage);
 
   return (
-    <article className="group relative overflow-hidden rounded-[2.5rem] bg-slate-900 border border-slate-800 shadow-2xl">
-      <div className="grid grid-cols-1 lg:grid-cols-12 min-h-[500px] lg:min-h-[600px]">
+    <article className="group relative overflow-hidden rounded-xl bg-slate-700 border border-slate-800 shadow-xl">
+      <div className="grid grid-cols-1 lg:grid-cols-12 min-h-[300px] lg:min-h-[350px] m-2 bg-slate-900 rounded-xl border-2 border-gray-700">
         {/* Content Side - 5 columns */}
-        <div className="relative z-20 flex flex-col justify-center p-8 sm:p-10 lg:col-span-5 lg:p-12 xl:p-16 order-2 lg:order-1">
-          <div className="space-y-6 lg:space-y-8">
-            <div className="flex items-center gap-3">
-              <span className="flex h-2 w-2 rounded-full animate-pulse" style={{ backgroundColor: categoryColor }} />
-              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">Featured Insight</span>
-            </div>
-
-            <Link href={href} className="block">
-              <h1 className="text-3xl font-black leading-[1.1] tracking-tight text-white transition-colors sm:text-4xl lg:text-4xl xl:text-5xl">
+        <div className="relative z-20 flex flex-col justify-center p-4 sm:p-6 lg:col-span-5 lg:p-8 order-2 lg:order-1">
+          <div className="space-y-3 lg:space-y-4">
+            <Link href={href} className="block group/title">
+              <h1 className="text-lg font-bold leading-tight tracking-tight text-white transition-colors sm:text-xl lg:text-xl group-hover/title:text-primary line-clamp-2">
                 {blog.title}
               </h1>
             </Link>
 
-            <p className="line-clamp-3 text-base leading-relaxed text-slate-400 font-medium max-w-lg">
-              {blog.excerpt || 'Explore this featured article to stay ahead in the industry with expert insights and practical guidance.'}
+            <p className="line-clamp-2 text-xs leading-relaxed text-slate-400 font-medium max-w-xl">
+              {blog.excerpt || 'Access the technical documentation and strategic analysis behind this priority manifesto.'}
             </p>
 
-            <div className="flex flex-wrap items-center gap-6 pt-2 text-slate-400">
+            <div className="flex flex-wrap items-center gap-3 pt-2 text-slate-500">
               <div className="flex items-center gap-2">
-                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">{formatDate(blog.createdAt)}</span>
-                <span className="h-1 w-1 rounded-full bg-slate-700" />
-                <FiClock className="h-4 w-4 text-orange-500" />
-                <span className="text-[10px] font-black uppercase tracking-widest">{blog.readingTime ? `${blog.readingTime} min` : calculateReadingTime(blog.content)}</span>
+                <span className="text-[9px] font-bold uppercase tracking-wide">{formatDate(blog.createdAt)}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <FiClock className="h-3 w-3 text-primary" />
+                <span className="text-[9px] font-bold uppercase tracking-wide text-slate-400">
+                  {blog.readingTime ? `${blog.readingTime} MIN` : calculateReadingTime(blog.content)}
+                </span>
               </div>
             </div>
 
-            <div className="pt-4">
+            <div className="pt-2">
               <Link
                 href={href}
-                className="group/btn inline-flex items-center gap-3 rounded-2xl bg-white px-8 py-4 text-xs font-black uppercase tracking-[0.2em] text-slate-900 shadow-xl shadow-white/5"
+                className="group/btn inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2 text-[9px] font-bold uppercase tracking-wide text-slate-900 shadow-lg transition-all hover:scale-[1.02] hover:bg-primary hover:text-white active:scale-[0.98]"
               >
-                Deep Dive
-                <FiArrowRight className="h-4 w-4" />
+                Read More
+                <FiArrowRight className="h-3 w-3 transition-transform group-hover/btn:translate-x-0.5" />
               </Link>
             </div>
           </div>
@@ -78,18 +76,10 @@ export default function FeaturedHero({ blog, categoryColor = '#f97316' }) {
             alt={blog.title}
             fill
             priority
-            className="object-cover"
+            className="object-fit transition-transform rounded-xl duration-[2000ms] group-hover:scale-110"
             sizes="(max-width: 1024px) 100vw, 60vw"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent lg:bg-gradient-to-r lg:from-slate-900 lg:via-transparent lg:to-transparent" />
-          
-          <div className="absolute top-8 right-8">
-            <div className="px-4 py-2 rounded-2xl bg-black/40 backdrop-blur-xl border border-white/10 shadow-2xl">
-              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white">
-                {categoryName}
-              </span>
-            </div>
-          </div>
         </div>
       </div>
     </article>

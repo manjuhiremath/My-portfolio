@@ -1,17 +1,17 @@
-import { Playfair_Display, DM_Sans, JetBrains_Mono } from "next/font/google";
+import { Inter, Lora, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import Script from "next/script";
 import { AuthProvider } from "@/context/AuthContext";
 import "./globals.css";
 
-const playfair = Playfair_Display({
-  variable: "--font-display",
+const inter = Inter({
+  variable: "--font-heading",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800", "900"],
   display: 'swap',
 });
 
-const dmSans = DM_Sans({
+const lora = Lora({
   variable: "--font-body",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -27,11 +27,11 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata = {
   metadataBase: new URL("https://www.manjuhiremath.in"),
-  title: "Manjunath M | Full Stack Developer",
-  description: "Full Stack MERN Developer specializing in React.js, Next.js, and Node.js. Experienced in building scalable web applications with modern technologies.",
-  keywords: ["Full Stack Developer", "React.js", "Next.js", "Node.js", "MERN Stack", "Web Developer", "JavaScript"],
-  authors: [{ name: "Manjunath M" }],
-  creator: "Manjunath M",
+  title: "The Digital Manifesto | Strategic Architectural Insights",
+  description: "A weekly journal exploring high-performance engineering, modern architectural patterns, and the aesthetics of the digital era. Strategic analysis for the modern builder.",
+  keywords: ["architectural patterns", "software engineering", "digital manifesto", "engineering excellence", "technical analysis", "high-performance systems"],
+  authors: [{ name: "The Digital Manifesto Editorial" }],
+  creator: "The Digital Manifesto",
   icons: {
     icon: "/logo.png",
     shortcut: "/logo.png",
@@ -41,22 +41,27 @@ export const metadata = {
     type: "website",
     locale: "en_US",
     url: "https://www.manjuhiremath.in",
-    title: "Manjunath M | Full Stack Developer",
-    description: "Full Stack MERN Developer specializing in React.js, Next.js, and Node.js.",
-    siteName: "Manjunath M Portfolio",
+    title: "The Digital Manifesto | Strategic Architectural Insights",
+    description: "A weekly journal exploring high-performance engineering and modern architectural patterns.",
+    siteName: "The Digital Manifesto",
     images: [
       {
-        url: "/Profilemanju.jpeg",
+        url: "/logo.png",
         width: 1200,
         height: 1200,
-        alt: "Manjunath M - Full Stack Developer",
+        alt: "The Digital Manifesto",
       },
     ],
   },
   alternates: {
     canonical: "https://www.manjuhiremath.in",
   },
-
+  twitter: {
+    card: "summary_large_image",
+    title: "The Digital Manifesto | Strategic Architectural Insights",
+    description: "A weekly journal exploring high-performance engineering and modern architectural patterns.",
+    images: ["/logo.png"],
+  },
   robots: {
     index: true,
     follow: true,
@@ -71,7 +76,7 @@ export default function RootLayout({ children }) {
         <link rel="dns-prefetch" href="https://res.cloudinary.com" />
       </head>
       <body
-        className={`${playfair.variable} ${dmSans.variable} ${jetbrainsMono.variable} antialiased bg-white dark:bg-slate-900`}
+        className={`${inter.variable} ${lora.variable} ${jetbrainsMono.variable} antialiased bg-white dark:bg-slate-900`}
       >
         {/* AdSense script using next/script component */}
         <Script 

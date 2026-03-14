@@ -3,6 +3,8 @@
 import dynamic from 'next/dynamic';
 import { Suspense } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
+import Footer from '@/components/Footer';
 
 const Hero = dynamic(() => import('@/components/portfolio/Hero'), {
   ssr: true,
@@ -21,40 +23,42 @@ const Projects = dynamic(() => import('@/components/portfolio/Projects'), {
   loading: () => <div className="py-20 text-center text-gray-500 dark:text-slate-400 bg-white dark:bg-slate-900">Loading projects...</div>,
 });
 
-const Links = dynamic(() => import('@/components/portfolio/Links'), {
-  loading: () => <div className="py-20 text-center text-gray-500 dark:text-slate-400 bg-white dark:bg-slate-900">Loading links...</div>,
-});
-
 export default function Home() {
     return (
-        <main className="bg-white dark:bg-slate-900 min-h-screen transition-colors duration-500">
-            <nav className="fixed top-0 left-0 right-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-b border-gray-100 dark:border-slate-800 z-50">
-                <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-                    <a href="#" className="flex items-center gap-2 text-lg font-bold text-gray-900 dark:text-white">
-                        <Image src="/logo.png" alt="Manjunath M Logo" width={40} height={40} className="object-contain rounded-md" />
-                        <span>Manjunath M</span>
-                    </a>
-                    <div className="flex gap-6">
-                        <a href="#skills" className="text-gray-700 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 text-sm font-medium">
-                            Skills
-                        </a>
-                        <a href="#projects" className="text-gray-700 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 text-sm font-medium">
-                            Projects
-                        </a>
-                        <a href="#links" className="text-gray-700 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 text-sm font-medium">
-                            Contact
-                        </a>
+        <main className="bg-white dark:bg-slate-900 min-h-screen transition-colors duration-500 overflow-hidden">
+            <nav className="fixed top-0 left-0 right-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-100 dark:border-slate-800 z-50 transition-all duration-500">
+                <div className="max-w-[1440px] mx-auto px-6 lg:px-12 py-4 flex justify-between items-center">
+                    <Link href="/" className="flex items-center gap-4 group">
+                        <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl shadow-xl ring-1 ring-black/5 dark:ring-white/10 bg-white p-1">
+                            <Image src="/logo.png" alt="Manifesto" width={40} height={40} className="h-full w-full object-contain" />
+                        </div>
+                        <span className="text-xl font-black tracking-tighter text-slate-900 dark:text-white uppercase font-display leading-none">
+                            THE <span className="text-primary italic">MANIFESTO.</span>
+                        </span>
+                    </Link>
+                    <div className="flex items-center gap-8">
+                        <Link href="/blog" className="text-slate-500 dark:text-slate-400 hover:text-primary transition-all text-[10px] font-black uppercase tracking-[0.3em]">
+                            Library
+                        </Link>
+                        <Link href="/about" className="text-slate-500 dark:text-slate-400 hover:text-primary transition-all text-[10px] font-black uppercase tracking-[0.3em]">
+                            Origins
+                        </Link>
+                        <Link href="/blog" className="btn btn-primary px-6 py-2.5 text-[9px] font-black uppercase tracking-[0.3em] shadow-xl shadow-primary/20">
+                            Enter Archive
+                        </Link>
                     </div>
                 </div>
             </nav>
 
             <Hero />
             
-            <Suspense fallback={<div className="py-20 text-center text-gray-600 dark:text-slate-400 bg-white dark:bg-slate-900" aria-live="polite">Loading...</div>}>
-                <Skills />
-                <Projects />
-                <Links />
+            <Suspense fallback={<div className="py-20 text-center text-slate-600 dark:text-slate-400" aria-live="polite">Loading...</div>}>
+                <div className="max-w-[1440px] mx-auto px-6 lg:px-12 pb-32 space-y-32">
+                    <Skills />
+                    <Projects />
+                </div>
             </Suspense>
+            <Footer />
         </main>
     );
 }

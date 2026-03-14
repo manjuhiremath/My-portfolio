@@ -1,8 +1,8 @@
 import Link from 'next/link';
 
 export const metadata = {
-  title: "Privacy Policy | Manjunath M",
-  description: "Our Privacy Policy outlines how we collect, use, and protect your information at manjuhiremath.in.",
+  title: "Security | The Digital Manifesto",
+  description: "Privacy and data protection protocols for The Digital Manifesto platform.",
 };
 
 export default function PrivacyPolicyPage() {

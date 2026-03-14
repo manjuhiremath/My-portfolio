@@ -45,6 +45,12 @@ export default function AdminLayout({ children }) {
   const currentItem = useMemo(() => getCurrentItem(pathname), [pathname]);
   const { logout } = useAuth();
 
+  const isLoginPage = pathname === '/admin/login';
+
+  if (isLoginPage) {
+    return <>{children}</>;
+  }
+
   return (
     <ProtectedRoute>
       <div className="min-h-screen bg-slate-100 text-slate-900 antialiased">

@@ -34,48 +34,56 @@ const skills = [
 
 const Skills = () => {
     return (
-        <section id="skills" className="py-20 px-6 bg-gray-50">
-            <div className="max-w-6xl mx-auto">
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 text-center mb-4">
-                    Skills & Expertise
-                </h2>
-                <p className="text-gray-500 text-center mb-12 max-w-2xl mx-auto">
-                    Technologies I work with to build modern web applications
-                </p>
+        <section id="skills" className="py-32 bg-white dark:bg-slate-900 transition-colors duration-500">
+            <div className="space-y-20">
+                <div className="text-center space-y-4">
+                    <p className="text-[10px] font-black uppercase tracking-[0.5em] text-primary">Technical Infrastructure</p>
+                    <h2 className="text-4xl md:text-6xl font-black text-slate-900 dark:text-white tracking-tighter uppercase font-display">
+                        Core Capabilities
+                    </h2>
+                    <p className="text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-medium">
+                        The architectural foundation and technical stack powering the Digital Manifesto ecosystem.
+                    </p>
+                </div>
                 
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                     {skills.map((skill) => (
                         <div
                             key={skill.name}
-                            className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:border-gray-300 transition-colors duration-200"
+                            className="group bg-slate-50 dark:bg-slate-800/30 p-10 rounded-xl border border-slate-100 dark:border-slate-800 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5"
                         >
-                            <div className="flex items-center gap-3 mb-3">
-                                <span style={{ color: skill.color }}>
+                            <div className="flex items-center gap-5 mb-8">
+                                <div className="p-4 rounded-2xl bg-white dark:bg-slate-800 shadow-soft group-hover:scale-110 transition-transform duration-500" style={{ color: skill.color }}>
                                     {skill.icon}
-                                </span>
-                                <h3 className="font-semibold text-gray-900">{skill.name}</h3>
+                                </div>
+                                <h3 className="text-lg font-black text-slate-900 dark:text-white uppercase tracking-tight">{skill.name}</h3>
                             </div>
-                            <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                                <div 
-                                    className="h-full bg-gray-900 rounded-full transition-all duration-300"
-                                    style={{ width: `${skill.level}%` }}
-                                />
+                            <div className="space-y-3">
+                                <div className="flex justify-between items-end">
+                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Efficiency Rating</span>
+                                    <span className="text-sm font-black text-primary tabular-nums">{skill.level}%</span>
+                                </div>
+                                <div className="h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                                    <div 
+                                        className="h-full bg-primary rounded-full transition-all duration-1000 group-hover:scale-x-105 origin-left"
+                                        style={{ width: `${skill.level}%` }}
+                                    />
+                                </div>
                             </div>
-                            <span className="text-gray-500 text-xs mt-1 block">{skill.level}%</span>
                         </div>
                     ))}
                 </div>
 
-                <div className="mt-16">
-                    <h3 className="text-xl font-semibold text-gray-900 mb-6 text-center">
-                        Technical Stack
+                <div className="pt-20 border-t border-slate-100 dark:border-slate-800">
+                    <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-12 text-center">
+                        Full Stack Index
                     </h3>
-                    <div className="flex flex-wrap justify-center gap-3">
+                    <div className="flex flex-wrap justify-center gap-4">
                         {Object.entries(TECHNICAL_SKILLS).map(([category, techs]) => 
                             techs.map((tech) => (
                                 <span
                                     key={tech}
-                                    className="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg text-sm transition-colors duration-200 hover:border-gray-400"
+                                    className="px-6 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-400 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 hover:border-primary hover:text-primary hover:bg-white dark:hover:bg-slate-800 shadow-sm"
                                 >
                                     {tech}
                                 </span>

@@ -142,12 +142,12 @@ export async function getDashboardStats() {
     Blog.find()
       .sort({ updatedAt: -1 })
       .limit(18)
-      .select('title slug published createdAt updatedAt category views seoTitle seoDescription excerpt content tags keywords readingTime')
+      .select('title slug published createdAt updatedAt category views seoTitle seoDescription excerpt content tags keywords readingTime seoScore')
       .lean(),
     Blog.find({ published: true })
       .sort({ views: -1, publishedAt: -1 })
       .limit(15)
-      .select('title slug views publishedAt category seoTitle seoDescription excerpt content tags keywords readingTime')
+      .select('title slug views publishedAt category seoTitle seoDescription excerpt content tags keywords readingTime seoScore')
       .lean(),
     Blog.aggregate([
       { $match: { published: true } },
@@ -172,12 +172,12 @@ export async function getDashboardStats() {
       { $sort: { _id: 1 } },
     ]),
     Blog.find()
-      .select('title seoTitle seoDescription excerpt content tags keywords')
+      .select('title seoTitle seoDescription excerpt content tags keywords seoScore')
       .lean(),
     Blog.find({ published: true })
       .sort({ views: -1 })
       .limit(60)
-      .select('title slug views tags keywords')
+      .select('title slug views tags keywords seoScore')
       .lean(),
   ]);
 
@@ -190,7 +190,7 @@ export async function getDashboardStats() {
   let highSeoCount = 0;
 
   const seoData = seoBlogs.map((blog) => {
-    const score = calculateBlogSeoScore(blog);
+    const score = blog.seoScore || calculateBlogSeoScore(blog);
     if (score >= 90) highSeoCount++;
     if (!blog.seoDescription || blog.seoDescription.length < 50) missingMetaCount++;
     if (!blog.content?.includes('<img')) missingImagesCount++;
@@ -207,7 +207,7 @@ export async function getDashboardStats() {
 
   const topArticles = topArticlesRaw.map((blog) => ({
     ...blog,
-    seoScore: calculateBlogSeoScore(blog),
+    seoScore: blog.seoScore || calculateBlogSeoScore(blog),
   }));
 
   const monthKeys = buildLastMonthKeys(12);
@@ -233,7 +233,7 @@ export async function getDashboardStats() {
 
   const recentBlogs = recentBlogsRaw.map((blog) => ({
     ...blog,
-    seoScore: calculateBlogSeoScore(blog),
+    seoScore: blog.seoScore || calculateBlogSeoScore(blog),
   }));
 
   return {
