@@ -1,16 +1,34 @@
 'use client';
 
 import { useEffect, useMemo, useState, useRef } from 'react';
-import { FiDownload, FiImage, FiPlus, FiRefreshCw, FiUploadCloud, FiTrash2, FiCopy, FiExternalLink, FiFolderPlus } from 'react-icons/fi';
+import { 
+  FiDownload, 
+  FiImage, 
+  FiPlus, 
+  FiRefreshCw, 
+  FiUploadCloud, 
+  FiTrash2, 
+  FiCopy, 
+  FiExternalLink, 
+  FiFolderPlus,
+  FiX,
+  FiInfo,
+  FiFileText,
+  FiCalendar,
+  FiType,
+  FiLink as FiLinkIcon
+} from 'react-icons/fi';
 import { toast } from 'sonner';
 import AdminActionToolbar from '@/components/admin/ui/AdminActionToolbar';
 import AdminPageHeader from '@/components/admin/ui/AdminPageHeader';
 import AdminStatusBadge from '@/components/admin/ui/AdminStatusBadge';
 import Image from 'next/image';
+import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 
 function toMediaItems(blogs = []) {
   const items = [];
-  
+
   blogs.forEach((blog) => {
     // Add featured image
     if (blog.featuredImage) {
@@ -24,7 +42,7 @@ function toMediaItems(blogs = []) {
         type: 'Featured',
       });
     }
-    
+
     // Add section images
     if (Array.isArray(blog.sectionImages)) {
       blog.sectionImages.forEach((img, idx) => {
@@ -42,7 +60,7 @@ function toMediaItems(blogs = []) {
       });
     }
   });
-  
+
   return items;
 }
 
@@ -51,6 +69,7 @@ export default function AdminMediaPage() {
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
   const [uploading, setUploading] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
   const fileInputRef = useRef(null);
 
   async function loadMedia() {
@@ -80,11 +99,6 @@ export default function AdminMediaPage() {
       return;
     }
 
-    if (file.size > 10 * 1024 * 1024) {
-      toast.error('File size must be less than 10MB');
-      return;
-    }
-
     try {
       setUploading(true);
       const formData = new FormData();
@@ -101,13 +115,7 @@ export default function AdminMediaPage() {
       }
 
       const data = await res.json();
-      toast.success('File uploaded successfully to Cloudinary');
-      
-      // Copy URL to clipboard
-      navigator.clipboard.writeText(data.url);
-      toast.info('Image URL copied to clipboard');
-      
-      // Refresh list
+      toast.success('File uploaded successfully');
       loadMedia();
     } catch (error) {
       toast.error(error.message);
@@ -122,40 +130,14 @@ export default function AdminMediaPage() {
     toast.success('URL copied to clipboard');
   };
 
-  const handleExportData = () => {
-    const exportData = mediaItems.map(item => ({
-      filename: item.url.split('/').pop(),
-      url: item.url,
-      linkedArticle: item.title,
-      articleSlug: item.slug,
-      type: item.type,
-      updatedAt: item.updatedAt
-    }));
-
-    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `media-library-export-${new Date().toISOString().split('T')[0]}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    toast.success(`Exported ${exportData.length} assets`);
-  };
-
-  const handleNewFolder = () => {
-    toast.info('Cloudinary folder creation - Use Cloudinary dashboard for folder management');
-  };
-
   const mediaItems = useMemo(() => {
     const normalized = query.trim().toLowerCase();
     const allItems = toMediaItems(blogs);
-    
+
     // De-duplicate by URL
     const uniqueItems = [];
     const urls = new Set();
-    
+
     allItems.forEach(item => {
       if (!urls.has(item.url)) {
         urls.add(item.url);
@@ -166,7 +148,7 @@ export default function AdminMediaPage() {
     return uniqueItems.filter((item) => {
       if (!normalized) return true;
       return (
-        item.title?.toLowerCase().includes(normalized) || 
+        item.title?.toLowerCase().includes(normalized) ||
         item.slug?.toLowerCase().includes(normalized) ||
         item.url?.toLowerCase().includes(normalized)
       );
@@ -174,23 +156,23 @@ export default function AdminMediaPage() {
   }, [blogs, query]);
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4 max-w-[1600px] mx-auto pb-10">
       <input 
-        type="file" 
-        ref={fileInputRef} 
-        className="hidden" 
+        type="file"
+        ref={fileInputRef}
+        className="hidden"
         accept="image/*"
         onChange={handleFileUpload}
       />
-      
+
       <AdminPageHeader
-        title="Media Library"
-        description="Manage featured images and visual assets across all blog posts."
+        title="Media Assets"
+        description="Browse and manage all visual content indexed across the Digital Manifesto."
         actions={[
-          { 
-            label: uploading ? 'Uploading...' : 'Upload Asset', 
+          {
+            label: uploading ? 'Uploading...' : 'Upload Asset',
             onClick: () => fileInputRef.current?.click(),
-            icon: <FiUploadCloud className="h-3.5 w-3.5" />, 
+            icon: <FiUploadCloud className="h-3.5 w-3.5" />,
             variant: 'primary',
             disabled: uploading
           },
@@ -204,159 +186,195 @@ export default function AdminMediaPage() {
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search assets or articles..."
-            className="h-8 w-64 rounded-md border border-slate-300 pl-8 pr-2.5 text-xs outline-none focus:border-slate-500 transition-all"
+            placeholder="Search gallery..."
+            className="h-8 w-64 rounded-lg border border-slate-200 pl-8 pr-2.5 text-xs outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all bg-white dark:bg-slate-900 dark:border-slate-800"
           />
         </div>
-        <div className="h-4 w-px bg-slate-200 mx-1" />
-        <button 
-          onClick={() => fileInputRef.current?.click()}
-          className="inline-flex h-8 items-center gap-1 rounded-md border border-slate-300 px-2.5 text-xs text-slate-700 hover:bg-slate-50 transition-colors"
-        >
-          <FiPlus className="h-3.5 w-3.5 text-indigo-500" />
-          Quick Upload
-        </button>
-        <button 
-          onClick={handleNewFolder}
-          className="inline-flex h-8 items-center gap-1 rounded-md border border-slate-300 px-2.5 text-xs text-slate-700 hover:bg-slate-50 transition-colors"
-        >
-          <FiFolderPlus className="h-3.5 w-3.5 text-indigo-500" />
-          New Folder
-        </button>
-        <button 
-          onClick={handleExportData}
-          type="button" 
-          className="inline-flex h-8 items-center gap-1 rounded-md border border-slate-300 px-2.5 text-xs text-slate-700 hover:bg-slate-50"
-        >
-          <FiDownload className="h-3.5 w-3.5" />
-          Export Data
-        </button>
+        <div className="h-4 w-px bg-slate-200 dark:bg-slate-800 mx-2" />
+        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+          Showing {mediaItems.length} Assets
+        </p>
       </AdminActionToolbar>
 
-      {uploading && (
-        <div className="rounded-lg border border-indigo-100 bg-indigo-50/50 p-3 flex items-center gap-3 animate-pulse">
-          <div className="h-2 flex-1 bg-slate-200 rounded-full overflow-hidden">
-            <div className="h-full bg-indigo-500 w-1/2 animate-[progress_2s_ease-in-out_infinite]" />
-          </div>
-          <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-wider">Uploading to Cloudinary...</span>
-        </div>
-      )}
+      <div className="flex gap-6 items-start">
+        {/* Gallery Grid */}
+        <section className={`flex-1 transition-all duration-500 ${selectedItem ? 'w-2/3' : 'w-full'}`}>
+          {loading ? (
+            <div className="grid grid-cols-4 md:grid-cols-8 lg:grid-cols-12 gap-3">
+              {[...Array(24)].map((_, i) => (
+                <div key={i} className="aspect-square rounded-xl bg-slate-100 dark:bg-slate-800 animate-pulse border border-slate-200 dark:border-slate-700" />
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-4 md:grid-cols-8 lg:grid-cols-12 gap-3">
+              {mediaItems.map((item) => (
+                <motion.button
+                  key={item.id}
+                  layoutId={item.id}
+                  onClick={() => setSelectedItem(item)}
+                  className={`relative aspect-square overflow-hidden rounded-xl border-2 transition-all duration-300 group
+                    ${selectedItem?.id === item.id 
+                      ? 'border-indigo-500 ring-4 ring-indigo-500/10 z-10 scale-105 shadow-xl' 
+                      : 'border-white dark:border-slate-900 hover:border-slate-200 dark:hover:border-slate-700 shadow-sm'
+                    } bg-slate-50 dark:bg-slate-800`}
+                >
+                  <Image
+                    src={item.url}
+                    alt={item.title}
+                    fill
+                    sizes="120px"
+                    className="object-cover transition-transform duration-500 group-hover:scale-110"
+                    unoptimized={true}
+                  />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors" />
+                  
+                  {item.type === 'Featured' && (
+                    <div className="absolute top-1 right-1 h-1.5 w-1.5 rounded-full bg-indigo-500 shadow-glow shadow-indigo-500/50" />
+                  )}
+                </motion.button>
+              ))}
+              
+              {!mediaItems.length && (
+                <div className="col-span-full py-20 text-center bg-white dark:bg-slate-900 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800">
+                  <FiImage className="mx-auto h-10 w-10 text-slate-300 mb-4" />
+                  <p className="text-sm font-bold text-slate-900 dark:text-white">No assets discovered</p>
+                  <p className="text-xs text-slate-500 mt-1">Try a different search or upload a new image.</p>
+                </div>
+              )}
+            </div>
+          )}
+        </section>
 
-      <section className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-        {loading ? (
-          <div className="p-12 text-center">
-            <div className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-slate-200 border-t-indigo-500 mb-2" />
-            <p className="text-xs text-slate-500 font-medium">Scanning assets library...</p>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs">
-              <thead className="bg-slate-50 text-[10px] uppercase tracking-[0.05em] font-bold text-slate-500 border-b border-slate-200">
-                <tr>
-                  <th className="px-4 py-3 text-left w-16">Preview</th>
-                  <th className="px-4 py-3 text-left">Asset Details</th>
-                  <th className="px-4 py-3 text-left">Linked Article</th>
-                  <th className="px-4 py-3 text-left">Context</th>
-                  <th className="px-4 py-3 text-left">Updated</th>
-                  <th className="px-4 py-3 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {mediaItems.map((item) => (
-                  <tr key={item.id} className="group hover:bg-slate-50/80 transition-colors">
-                    <td className="px-4 py-2">
-                      <div className="relative h-10 w-10 overflow-hidden rounded border border-slate-200 bg-slate-50">
-                        <Image
-                          src={item.url}
-                          alt={item.title}
-                          fill
-                          sizes="40px"
-                          className="object-cover transition-transform group-hover:scale-110"
-                          unoptimized={true}
-                        />
-                      </div>
-                    </td>
-                    <td className="px-4 py-2">
-                      <div className="flex flex-col max-w-[200px]">
-                        <span className="font-semibold text-slate-800 truncate" title={item.url.split('/').pop()}>
-                          {item.url.split('/').pop() || 'Unnamed Asset'}
-                        </span>
-                        <span className="text-[10px] text-slate-400 truncate font-mono">{item.url}</span>
-                      </div>
-                    </td>
-                    <td className="px-4 py-2">
-                      <div className="flex flex-col max-w-[180px]">
-                        <span className="text-slate-700 truncate font-medium">{item.title}</span>
-                        <span className="text-[10px] text-slate-400">slug: {item.slug}</span>
-                      </div>
-                    </td>
-                    <td className="px-4 py-2">
-                      <AdminStatusBadge 
-                        value={item.type} 
-                        variant={item.type === 'Featured' ? 'indigo' : 'info'} 
+        {/* Info Sidebar */}
+        <AnimatePresence>
+          {selectedItem && (
+            <motion.aside
+              initial={{ opacity: 0, x: 20, width: 0 }}
+              animate={{ opacity: 1, x: 0, width: '380px' }}
+              exit={{ opacity: 0, x: 20, width: 0 }}
+              className="sticky top-24 flex-shrink-0 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden"
+            >
+              <div className="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/50">
+                <div className="flex items-center gap-2">
+                  <FiInfo className="text-indigo-500 h-4 w-4" />
+                  <h3 className="text-xs font-black uppercase tracking-widest text-slate-900 dark:text-white">Asset Details</h3>
+                </div>
+                <button 
+                  onClick={() => setSelectedItem(null)}
+                  className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-400 transition-colors"
+                >
+                  <FiX className="h-4 w-4" />
+                </button>
+              </div>
+
+              <div className="p-6 space-y-6 overflow-y-auto max-h-[calc(100vh-200px)]">
+                {/* Large Preview */}
+                <div className="relative aspect-video rounded-xl overflow-hidden shadow-lg border border-slate-100 dark:border-slate-800 bg-slate-50">
+                  <Image
+                    src={selectedItem.url}
+                    alt={selectedItem.title}
+                    fill
+                    className="object-cover"
+                    unoptimized={true}
+                  />
+                </div>
+
+                <div className="space-y-5">
+                  <div className="space-y-1">
+                    <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                      <FiFileText className="h-3 w-3" /> File Name
+                    </label>
+                    <p className="text-sm font-bold text-slate-900 dark:text-white break-all">
+                      {selectedItem.url.split('/').pop() || 'Untitled Asset'}
+                    </p>
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                      <FiLinkIcon className="h-3 w-3" /> Public URL
+                    </label>
+                    <div className="flex gap-2">
+                      <input 
+                        readOnly 
+                        value={selectedItem.url} 
+                        className="flex-1 h-8 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 text-[10px] font-mono text-slate-500"
                       />
-                    </td>
-                    <td className="px-4 py-2 text-slate-500 font-medium">
-                      {new Date(item.updatedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
-                    </td>
-                    <td className="px-4 py-2">
-                      <div className="flex justify-end gap-1.5">
-                        <button 
-                          onClick={() => copyToClipboard(item.url)}
-                          className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors"
-                          title="Copy URL"
-                        >
-                          <FiCopy className="h-3.5 w-3.5" />
-                        </button>
-                        <a 
-                          href={item.url} 
-                          target="_blank" 
-                          rel="noreferrer" 
-                          className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors"
-                          title="View Original"
-                        >
-                          <FiExternalLink className="h-3.5 w-3.5" />
-                        </a>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-                {!mediaItems.length ? (
-                  <tr>
-                    <td colSpan={6} className="px-4 py-16 text-center">
-                      <div className="flex flex-col items-center gap-3">
-                        <div className="h-12 w-12 rounded-full bg-slate-50 flex items-center justify-center">
-                          <FiImage className="h-6 w-6 text-slate-300" />
-                        </div>
-                        <div className="space-y-1">
-                          <p className="text-sm font-bold text-slate-900">No visual assets discovered</p>
-                          <p className="text-xs text-slate-500 max-w-[240px] mx-auto">
-                            We couldn&apos;t find any images linked to your blogs or in your library.
-                          </p>
-                        </div>
-                        <button 
-                          onClick={() => fileInputRef.current?.click()}
-                          className="mt-2 text-xs font-bold text-indigo-600 hover:text-indigo-700 bg-indigo-50 px-4 py-2 rounded-full transition-colors"
-                        >
-                          Upload first asset
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ) : null}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </section>
-      
-      <style jsx>{`
-        @keyframes progress {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(200%); }
+                      <button 
+                        onClick={() => copyToClipboard(selectedItem.url)}
+                        className="h-8 w-8 flex items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-colors"
+                      >
+                        <FiCopy className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                        <FiType className="h-3 w-3" /> Asset Type
+                      </label>
+                      <AdminStatusBadge
+                        value={selectedItem.type}
+                        variant={selectedItem.type === 'Featured' ? 'indigo' : 'info'}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                        <FiCalendar className="h-3 w-3" /> Indexed On
+                      </label>
+                      <p className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                        {new Date(selectedItem.updatedAt).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-1">
+                    <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                      <FiExternalLink className="h-3 w-3" /> Linked Article
+                    </label>
+                    <Link 
+                      href={`/blog/${selectedItem.slug}`}
+                      className="group block"
+                    >
+                      <p className="text-xs font-bold text-indigo-600 group-hover:text-indigo-700 group-hover:underline transition-all">
+                        {selectedItem.title}
+                      </p>
+                      <p className="text-[10px] text-slate-400 mt-0.5">slug: {selectedItem.slug}</p>
+                    </Link>
+                  </div>
+                </div>
+
+                <div className="pt-6 grid grid-cols-2 gap-3">
+                  <a
+                    href={selectedItem.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all"
+                  >
+                    <FiExternalLink className="h-3.5 w-3.5" />
+                    Open Original
+                  </a>
+                  <button
+                    onClick={() => {
+                      toast.error('Deletion restricted: Asset is currently linked to an active manifesto.');
+                    }}
+                    className="flex h-10 items-center justify-center gap-2 rounded-xl border border-rose-100 dark:border-rose-900/30 bg-rose-50/50 dark:bg-rose-900/10 text-xs font-bold text-rose-600 hover:bg-rose-100 transition-all"
+                  >
+                    <FiTrash2 className="h-3.5 w-3.5" />
+                    Purge Asset
+                  </button>
+                </div>
+              </div>
+            </motion.aside>
+          )}
+        </AnimatePresence>
+      </div>
+
+      <style jsx global>{`
+        .shadow-glow {
+          box-shadow: 0 0 10px var(--tw-shadow-color);
         }
       `}</style>
     </div>
   );
 }
-

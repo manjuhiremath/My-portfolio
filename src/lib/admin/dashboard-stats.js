@@ -29,10 +29,15 @@ function createKeywordRankings(blogs = []) {
   const keywordMap = new Map();
 
   for (const blog of blogs) {
-    const keywords = [...(blog.keywords || []), ...(blog.tags || [])];
+    const keywords = [
+      ...(blog.keywords || []), 
+      ...(blog.tags || []).map(t => typeof t === 'object' ? (t.name || '') : '')
+    ];
     for (const rawKeyword of keywords) {
       const keyword = String(rawKeyword || '').trim().toLowerCase();
-      if (!keyword) continue;
+      if (!keyword || keyword.length < 2) continue; // Skip empty or too short
+      if (/^[0-9a-fA-F]{24}$/.test(keyword)) continue; // Skip ObjectIDs if they leaked through
+      
       const existing = keywordMap.get(keyword);
       if (!existing || (blog.views || 0) > existing.views) {
         keywordMap.set(keyword, {
@@ -152,6 +157,22 @@ export async function getDashboardStats() {
     Blog.aggregate([
       { $match: { published: true } },
       { $group: { _id: '$category', count: { $sum: 1 }, views: { $sum: '$views' } } },
+      {
+        $lookup: {
+          from: 'categories',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'categoryInfo',
+        },
+      },
+      { $unwind: { path: '$categoryInfo', preserveNullAndEmptyArrays: true } },
+      {
+        $project: {
+          _id: { $ifNull: ['$categoryInfo.name', 'Uncategorized'] },
+          count: 1,
+          views: 1,
+        },
+      },
       { $sort: { views: -1 } },
       { $limit: 10 },
     ]),
@@ -178,6 +199,7 @@ export async function getDashboardStats() {
       .sort({ views: -1 })
       .limit(60)
       .select('title slug views tags keywords seoScore')
+      .populate('tags')
       .lean(),
   ]);
 

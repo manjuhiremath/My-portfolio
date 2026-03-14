@@ -25,6 +25,7 @@
     "react-dom": "19.1.0",
     "react-icons": "^5.5.0",
     "react-quill-new": "^3.8.3",
+    "recharts": "^3.8.0",
     "slugify": "^1.6.6",
     "sonner": "^2.0.7"
   },
