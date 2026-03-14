@@ -32,40 +32,6 @@ const Hero = () => {
                     Full Stack MERN Developer specializing in high-performance web applications, architectural excellence, and modern engineering patterns.
                 </p>
                 
-                <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-                    <Link
-                        href="/blog"
-                        className="group inline-flex items-center justify-center gap-3 rounded-xl bg-gray-900 dark:bg-white px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.2em] text-white dark:text-gray-900 shadow-xl transition-all hover:scale-105 active:scale-95"
-                    >
-                        Access Archive
-                        <FiArrowRight className="h-3.5 w-3.5 transition-transform group-hover:trangray-x-1" />
-                    </Link>
-                    <Link
-                        href="/about"
-                        className="group inline-flex items-center justify-center gap-3 rounded-xl bg-white dark:bg-gray-800 px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.2em] text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 shadow-sm transition-all hover:bg-gray-50 dark:hover:bg-gray-700 active:scale-95"
-                    >
-                        The Origins
-                    </Link>
-                </div>
-                
-                <div className="pt-16 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto border-t border-gray-100 dark:border-gray-800/50">
-                    <div className="flex flex-col items-center gap-1">
-                        <span className="text-[8px] font-black uppercase tracking-[0.3em] text-gray-400">Entries</span>
-                        <span className="text-xl font-black text-gray-900 dark:text-white tabular-nums leading-none font-display">440+</span>
-                    </div>
-                    <div className="flex flex-col items-center gap-1">
-                        <span className="text-[8px] font-black uppercase tracking-[0.3em] text-gray-400">Reach</span>
-                        <span className="text-xl font-black text-gray-900 dark:text-white tabular-nums leading-none font-display">50K+</span>
-                    </div>
-                    <div className="flex flex-col items-center gap-1">
-                        <span className="text-[8px] font-black uppercase tracking-[0.3em] text-gray-400">Uptime</span>
-                        <span className="text-xl font-black text-gray-900 dark:text-white tabular-nums leading-none font-display">99.9%</span>
-                    </div>
-                    <div className="flex flex-col items-center gap-1">
-                        <span className="text-[8px] font-black uppercase tracking-[0.3em] text-gray-400">Status</span>
-                        <span className="text-xl font-black text-primary leading-none font-display">STABLE</span>
-                    </div>
-                </div>
             </div>
 
             <button
