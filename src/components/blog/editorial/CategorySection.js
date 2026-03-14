@@ -98,12 +98,6 @@ export default function CategorySection({ category, initialBlogs = [], categoryC
                   <p className="line-clamp-2 text-[13px] text-gray-300 font-medium max-w-xl leading-relaxed font-body">
                     {featured.excerpt || 'A definitive technical investigation into the future of this strategic sector.'}
                   </p>
-                  
-                  <div className="pt-2 flex items-center gap-3">
-                    <span className="rounded-full bg-primary/90 px-4 py-1.5 text-[9px] font-black uppercase tracking-widest text-white shadow-lg">
-                      Read Deep Dive
-                    </span>
-                  </div>
                 </div>
               </div>
             </Link>
@@ -135,13 +129,13 @@ export default function CategorySection({ category, initialBlogs = [], categoryC
                   <h3 className="line-clamp-2 text-[13px] sm:text-[14px] font-bold leading-snug tracking-tight text-gray-900 dark:text-white group-hover:text-primary transition-colors font-display">
                     {blog.title}
                   </h3>
-                  <p className="line-clamp-2 text-[13px] text-gray-500 dark:text-gray-400 font-medium max-w-xl leading-relaxed font-body">
+                  <p className="line-clamp-2 text-[13px] text-gray-800 dark:text-gray-300 font-medium max-w-xl leading-relaxed font-body">
                     {blog.excerpt || 'A definitive technical investigation into the future of this strategic sector.'}
                   </p>
-                  <div className="flex items-center gap-3 text-[9px] font-black uppercase tracking-widest text-gray-400">
-                    <span className="text-primary/70">{new Date(blog.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+                  <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest ">
+                    <span className="text-gray-800 dark:text-gray-300">{new Date(blog.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
                     <span className="h-0.5 w-0.5 rounded-full bg-gray-300 dark:bg-gray-700" />
-                    <span className="flex items-center gap-1">
+                    <span className="flex items-center text-gray-800 dark:text-gray-300 gap-1">
                       <FiClock className="h-2.5 w-2.5" />
                       {blog.readingTime || 3}M
                     </span>

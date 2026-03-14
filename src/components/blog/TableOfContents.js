@@ -5,7 +5,7 @@ import { useEffect, useState, useRef, Fragment } from 'react';
 export default function TableOfContents({ headings }) {
   const [activeId, setActiveId] = useState('');
   const [progress, setProgress] = useState(0);
-  const indicatorRef = useRef(null);
+  const scrollContainerRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,6 +17,35 @@ export default function TableOfContents({ headings }) {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Sync TOC scroll position with active heading
+  useEffect(() => {
+    if (!activeId || !scrollContainerRef.current) return;
+
+    // Small delay to ensure React has finished rendering the 'active' class
+    const timer = setTimeout(() => {
+      const container = scrollContainerRef.current;
+      const activeLink = container.querySelector(`.toc-link.active`);
+      
+      if (activeLink) {
+        const containerRect = container.getBoundingClientRect();
+        const linkRect = activeLink.getBoundingClientRect();
+        
+        // Calculate the position of the link relative to the container's top
+        const relativeTop = linkRect.top - containerRect.top + container.scrollTop;
+        
+        // Target position to center the link
+        const targetTop = relativeTop - (container.offsetHeight / 2) + (linkRect.height / 2);
+
+        container.scrollTo({
+          top: targetTop,
+          behavior: 'smooth'
+        });
+      }
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [activeId]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -82,8 +111,22 @@ export default function TableOfContents({ headings }) {
           border: 1px solid var(--toc-border);
           border-radius: 4px;
           padding: 20px 0 16px;
-          min-height: 600px;
-          overflow: hidden;
+          max-height: 60vh;
+          overflow-y: auto;
+          scrollbar-width: thin;
+          scrollbar-color: #f97316 transparent;
+        }
+
+        /* Custom Scrollbar for Webkit */
+        .toc-wrap::-webkit-scrollbar {
+          width: 2px;
+        }
+        .toc-wrap::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .toc-wrap::-webkit-scrollbar-thumb {
+          background-color: #f97316;
+          border-radius: 20px;
         }
 
         /* Left progress bar */
@@ -251,7 +294,7 @@ export default function TableOfContents({ headings }) {
         }
       `}</style>
 
-      <div className="toc-wrap">
+      <div className="toc-wrap" ref={scrollContainerRef}>
         {/* Left progress track */}
         <div className="toc-progress-track">
           <div

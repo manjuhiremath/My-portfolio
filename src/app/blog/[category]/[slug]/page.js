@@ -268,7 +268,7 @@ export default async function BlogPostPage({ params }) {
     if (blog.category) {
       const categoryValue = blog.category.toString();
       if (/^[0-9a-fA-F]{24}$/.test(categoryValue)) {
-        try { categoryDoc = await Category.findById(blog.category).lean(); } catch {}
+        try { categoryDoc = await Category.findById(blog.category).lean(); } catch { }
       }
       if (categoryDoc) {
         categoryId = categoryDoc._id;
@@ -281,7 +281,7 @@ export default async function BlogPostPage({ params }) {
         } catch { categoryId = null; categoryName = categoryValue; }
       }
     } else categoryName = 'Uncategorized';
-    
+
     const categorySlug = slugify(categoryName);
     let tagNames = [];
     if (blog.tags?.length > 0) {
@@ -337,7 +337,7 @@ export default async function BlogPostPage({ params }) {
         <ViewTracker slug={slug} />
         <ReadingProgressBar />
 
-        <MobileBlogLayout 
+        <MobileBlogLayout
           blog={serializedBlog}
           relatedBlogs={serializedRelatedBlogs}
           categoryName={categoryName}
@@ -346,63 +346,59 @@ export default async function BlogPostPage({ params }) {
           contentParts={mobileContentParts}
         />
 
-        <main className="hidden md:block mx-auto max-w-[1440px] px-6 lg:px-12 py-4">
+        <main className="hidden md:block mx-auto max-w-[1200px] px-6 lg:px-8 py-4">
           {/* Magazine Breadcrumb */}
-          <nav className="mb-4 flex items-center gap-3 text-[10px] font-semibold tracking-[0.1em] text-gray-600">
-            <Link href="/blog" className="hover:text-primary transition-colors">Manifesto</Link>
-            <span className="h-1 w-1 rounded-full bg-gray-200 dark:bg-gray-800" />
-            <Link href={`/blog?category=${encodeURIComponent(categoryName)}`} className="hover:text-primary transition-colors">{categoryName}</Link>
-            <span className="h-1 w-1 rounded-full bg-gray-200 dark:bg-gray-800" />
-            <span className="max-w-[200px] truncate text-gray-700 dark:text-gray-400 opacity-60">Entry {serializedBlog.slug}</span>
-          </nav>
-
-          <div className="grid grid-cols-1  lg:grid-cols-[80px_1fr_320px] xl:grid-cols-[100px_1fr_380px]">
-            {/* Left Sidebar: Share & Actions */}
+          <div className="flex justify-between items-center">
+            <nav className="mb-6 flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-gray-500">
+              <Link href="/blog" className="hover:text-primary transition-colors">Home</Link>
+              <span className="">{`>`}</span>
+              <Link href={`/blog?category=${encodeURIComponent(categoryName)}`} className="hover:text-primary transition-colors">{categoryName}</Link>
+              <span className="">{`>`}</span>
+              <span className="truncate underline underline-offset-4 text-primary">Entry {serializedBlog.slug}</span>
+            </nav>
             <aside className="hidden lg:block">
-              <div className="sticky top-32 flex flex-col items-center gap-6">
-                <button className="flex h-12 w-12 items-center justify-center rounded-2xl border border-gray-100 bg-white text-gray-600 shadow-soft hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 dark:border-gray-800 dark:bg-gray-800 dark:text-gray-400"><FiTwitter className="h-5 w-5" /></button>
-                <button className="flex h-12 w-12 items-center justify-center rounded-2xl border border-gray-100 bg-white text-gray-600 shadow-soft hover:bg-[#0077b5] hover:text-white hover:border-[#0077b5] transition-all duration-300 dark:border-gray-800 dark:bg-gray-800 dark:text-gray-400"><FiLinkedin className="h-5 w-5" /></button>
-                <button className="flex h-12 w-12 items-center justify-center rounded-2xl border border-gray-100 bg-white text-gray-600 shadow-soft hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-300 dark:border-gray-800 dark:bg-gray-800 dark:text-gray-400"><FiLink className="h-5 w-5" /></button>
+              <div className="flex items-center gap-4">
+                <button title="Share on Twitter" className="flex h-8 w-8 items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-500 shadow-sm hover:bg-primary hover:text-white hover:border-primary transition-all dark:border-gray-800 dark:bg-gray-800 dark:text-gray-400"><FiTwitter className="h-4 w-4" /></button>
+                <button title="Share on LinkedIn" className="flex h-8 w-8 items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-500 shadow-sm hover:bg-[#0077b5] hover:text-white hover:border-[#0077b5] transition-all dark:border-gray-800 dark:bg-gray-800 dark:text-gray-400"><FiLinkedin className="h-4 w-4" /></button>
+                <button title="Copy Link" className="flex h-8 w-8 items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-500 shadow-sm hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all dark:border-gray-800 dark:bg-gray-800 dark:text-gray-400"><FiLink className="h-4 w-4" /></button>
               </div>
             </aside>
+          </div>
 
-            {/* Middle: Content */}
-            <div className="min-w-0">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
+            <div className="min-w-0 lg:col-span-3">
               <article>
-                <header className="mb-5 space-y-8">
-                  <div className="flex flex-wrap gap-3">
-                    <Link href={`/blog?category=${encodeURIComponent(categoryName)}`} className="rounded-full bg-primary px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-white shadow-lg shadow-primary/20">{categoryName}</Link>
+                <header className="mb-8 space-y-4">
+                  <div className="flex flex-wrap gap-2">
+                    <Link href={`/blog?category=${encodeURIComponent(categoryName)}`} className="rounded-md bg-primary/10 px-3 py-1 text-[9px] font-black uppercase tracking-widest text-primary border border-primary/20">{categoryName}</Link>
                     {tagNames.slice(0, 3).map((tag) => (
-                      <Link key={tag} href={`/blog/tag/${encodeURIComponent(tag)}`} className="rounded-full bg-gray-50 dark:bg-gray-800 px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 hover:text-primary transition-colors border border-gray-100 dark:border-gray-700">#{tag}</Link>
+                      <Link key={tag} href={`/blog/tag/${encodeURIComponent(tag)}`} className="rounded-md bg-gray-50 dark:bg-gray-800 px-3 py-1 text-[9px] font-black uppercase tracking-widest text-gray-400 hover:text-primary transition-colors border border-gray-100 dark:border-gray-700">#{tag}</Link>
                     ))}
                   </div>
 
-                  <h1 className="text-3xl font-black leading-[1.05] tracking-tighter text-gray-900 dark:text-white sm:text-4xl lg:text-5xl xl:text-6xl font-display">
+                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white font-display">
                     {serializedBlog.title}
                   </h1>
 
-                  <div className="flex flex-wrap items-center gap-6 pt-8 border-t border-gray-300 dark:border-gray-800 text-[11px] font-black uppercase tracking-[0.3em] text-gray-400">
-                    <span className="text-primary">{new Date(serializedBlog.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
-                    <span className="h-1 w-1 rounded-full bg-gray-200 dark:bg-gray-800" />
-                    <span className="flex items-center gap-2"><FiClock className="h-4 w-4 text-primary" /> {readingTime} MIN READ</span>
-                    <span className="h-1 w-1 rounded-full bg-gray-200 dark:bg-gray-800" />
-                    <span className="flex items-center gap-2"><FiEye className="h-4 w-4 text-gray-300 dark:text-gray-600" /> {(serializedBlog.views || 0).toLocaleString()} IMPACT</span>
+                  <div className="flex flex-wrap items-center gap-4 py-4 border-y border-gray-100 dark:border-gray-800 text-[10px] font-black uppercase tracking-widest text-gray-400">
+                    <span className="text-primary">{new Date(serializedBlog.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                    <span className="flex items-center gap-1.5"><FiClock className="h-3.5 w-3.5" /> {readingTime} MIN READ</span>
+                    <span className="flex items-center gap-1.5"><FiEye className="h-3.5 w-3.5" /> {(serializedBlog.views || 0).toLocaleString()} VIEWS</span>
                   </div>
                 </header>
 
                 {serializedBlog.featuredImage ? (
-                  <div className="relative mb-16 aspect-[21/9] overflow-hidden rounded-[3rem] bg-gray-100 dark:bg-gray-800 shadow-2xl ring-1 ring-black/5 dark:ring-white/5">
-                    <Image src={fixUnsplashUrl(serializedBlog.featuredImage)} alt={serializedBlog.title} fill sizes="(max-width: 1536px) 100vw, 1200px" className="object-cover" priority />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                  <div className="relative mb-10 aspect-video overflow-hidden rounded-2xl bg-gray-100 dark:bg-gray-800 shadow-xl border border-gray-200 dark:border-gray-800">
+                    <Image src={fixUnsplashUrl(serializedBlog.featuredImage)} alt={serializedBlog.title} fill sizes="(max-width: 1200px) 100vw, 800px" className="object-cover" priority />
                   </div>
                 ) : null}
 
-                <div className="blog-content transition-all duration-500">
+                <div className="blog-content transition-all duration-500 font-body leading-relaxed text-[15px] sm:text-[16px]">
                   {contentParts.map((part, i) => (
                     <div key={i} className="flow">
                       <div dangerouslySetInnerHTML={{ __html: part }} />
                       {i < contentParts.length - 1 && (
-                        <div className="my-16 py-12 border-y border-gray-50 dark:border-gray-800/50">
+                        <div className="my-10 py-8 border-y border-gray-50 dark:border-gray-800/50">
                           <ArticleAd />
                         </div>
                       )}
@@ -411,30 +407,30 @@ export default async function BlogPostPage({ params }) {
                 </div>
 
                 {serializedBlog.faq?.length ? (
-                  <div className="mt-24 rounded-[3rem] bg-gray-50 dark:bg-gray-800/30 p-8 lg:p-12 border border-gray-300 dark:border-gray-800 shadow-sm max-w-[65ch] mx-auto">
-                    <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-10 tracking-tighter uppercase font-display">Technical FAQ</h2>
-                    <div className="space-y-4">
+                  <div className="mt-16 rounded-2xl bg-gray-50 dark:bg-gray-800/20 p-6 lg:p-10 border border-gray-200 dark:border-gray-800 shadow-sm max-w-[70ch]">
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-8 tracking-tight uppercase font-display">FAQ</h2>
+                    <div className="space-y-3">
                       {serializedBlog.faq.map((item, i) => (
-                        <details key={i} className="group rounded-3xl border border-gray-100 dark:border-gray-700/50 bg-white dark:bg-gray-900/50 transition-all overflow-hidden shadow-sm hover:shadow-md">
-                          <summary className="cursor-pointer px-6 py-5 text-sm font-bold text-gray-900 dark:text-white hover:text-primary list-none flex items-center justify-between transition-colors">
+                        <details key={i} className="group rounded-xl border border-gray-200 dark:border-gray-700/50 bg-white dark:bg-gray-900/50 transition-all overflow-hidden">
+                          <summary className="cursor-pointer px-5 py-4 text-sm font-bold text-gray-900 dark:text-white hover:text-primary list-none flex items-center justify-between transition-colors">
                             {item.question}
-                            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-50 dark:bg-gray-800 transition-transform group-open:rotate-180 group-open:bg-primary group-open:text-white shadow-sm"><svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" /></svg></span>
+                            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-50 dark:bg-gray-800 transition-transform group-open:rotate-180"><svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" /></svg></span>
                           </summary>
-                          <div className="px-6 pb-6 text-sm text-gray-600 dark:text-gray-400 leading-relaxed pt-2 border-t border-gray-50 dark:border-gray-800/50">{item.answer}</div>
+                          <div className="px-5 pb-5 text-[14px] text-gray-600 dark:text-gray-400 leading-relaxed pt-1 border-t border-gray-50 dark:border-gray-800/50">{item.answer}</div>
                         </details>
                       ))}
                     </div>
                   </div>
                 ) : null}
-                <div className="mt-16"><MultiplexAd /></div>
+                <div className="mt-12"><MultiplexAd /></div>
               </article>
             </div>
 
             {/* Right Sidebar: TOC & CTA */}
             <aside className="hidden xl:block">
-              <div className="sticky  space-y-10">
+              <div className="sticky top-24 space-y-8">
                 <TableOfContents headings={headings} />
-                
+
                 <SidebarAd />
               </div>
             </aside>
@@ -442,17 +438,17 @@ export default async function BlogPostPage({ params }) {
 
           {/* Related Articles */}
           {serializedRelatedBlogs?.length ? (
-            <section className="mt-32 border-t border-gray-100 dark:border-gray-800 pt-20">
-              <div className="mb-12 flex items-end justify-between px-2">
-                <div className="space-y-2">
-                  <p className="text-[10px] font-black uppercase tracking-[0.5em] text-primary">Further Exploration</p>
-                  <h2 className="text-4xl font-black text-gray-900 dark:text-white tracking-tighter uppercase font-display">Related Manifestos</h2>
+            <section className="mt-5 border-t border-gray-100 dark:border-gray-800 pt-5">
+              <div className="mb-8 flex items-end justify-between px-2">
+                <div className="space-y-1">
+                  <p className="text-[9px] font-black uppercase tracking-[0.3em] text-primary">Continue Reading</p>
+                  <h2 className="text-md font-bold text-gray-900 dark:text-white tracking-tight uppercase font-display">Related Articles</h2>
                 </div>
-                <Link href="/blog" className="group flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.3em] text-gray-400 hover:text-primary transition-all mb-2">
-                  Library <FiArrowRight className="h-4 w-4 transition-transform group-hover:trangray-x-1" />
+                <Link href="/blog" className="group flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-primary transition-all mb-1">
+                  Library <FiArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
                 </Link>
               </div>
-              <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4">
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4">
                 {serializedRelatedBlogs.map((relatedBlog) => {
                   let relatedCatName = 'Uncategorized';
                   if (relatedBlog.category) {
@@ -462,16 +458,15 @@ export default async function BlogPostPage({ params }) {
                       relatedCatName = String(relatedBlog.category);
                     }
                   }
-                  
+
                   return (
-                    <Link key={relatedBlog._id} href={`/blog/${slugify(relatedCatName)}/${relatedBlog.slug}`} className="group block space-y-4">
-                      <div className="relative aspect-[4/3] overflow-hidden rounded-3xl bg-gray-100 dark:bg-gray-800 shadow-sm transition-all duration-500 group-hover:shadow-xl group-hover:-trangray-y-1">
-                        <Image src={fixUnsplashUrl(relatedBlog.featuredImage)} alt={relatedBlog.title} fill sizes="(max-width: 768px) 50vw, 25vw" className="object-cover transition-transform duration-700 group-hover:scale-110" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <Link key={relatedBlog._id} href={`/blog/${slugify(relatedCatName)}/${relatedBlog.slug}`} className="group block space-y-2">
+                      <div className="relative aspect-video overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-800 shadow-sm transition-all group-hover:shadow-md">
+                        <Image src={fixUnsplashUrl(relatedBlog.featuredImage)} alt={relatedBlog.title} fill sizes="(max-width: 768px) 50vw, 25vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
                       </div>
-                      <div className="px-1 space-y-2">
-                        <p className="text-[9px] font-black text-primary uppercase tracking-[0.3em]">{String(relatedCatName)}</p>
-                        <h3 className="line-clamp-2 text-sm font-black leading-tight text-gray-900 dark:text-white group-hover:text-primary transition-colors">{relatedBlog.title}</h3>
+                      <div className="px-1 space-y-1">
+                        <p className="text-[8px] font-black text-primary uppercase tracking-[0.3em]">{String(relatedCatName)}</p>
+                        <h3 className="line-clamp-2 text-xs font-bold leading-tight text-gray-900 dark:text-white group-hover:text-primary transition-colors">{relatedBlog.title}</h3>
                       </div>
                     </Link>
                   );

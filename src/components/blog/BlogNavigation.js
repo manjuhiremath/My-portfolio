@@ -68,22 +68,17 @@ export default function BlogNavigation() {
         {/* Top bar with brand - Compact */}
         <div className="hidden md:flex items-center justify-between border-b border-gray-50 dark:border-gray-800/50 px-4 py-2">
           <Link href="/blog" className="flex items-center gap-2 group">
-            <div className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-lg shadow-sm ring-1 ring-black/5 dark:ring-white/10 bg-white p-0.5">
-              <Image src="/logo.png" alt="Manifesto" width={28} height={28} className="h-full w-full object-contain" />
+            <div className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-lg shadow-sm ring-1 ring-black/5 dark:ring-white/10 bg-white ">
+              <Image src="/logo.png" alt="Manifesto" width={28} height={28} className="h-full w-full object-cover" />
             </div>
             <span className="text-xs font-bold tracking-tight text-gray-900 dark:text-white uppercase font-display">
-              THE <span className="text-primary italic">MANIFESTO.</span>
+               <span className="text-gray-800 dark:text-gray-200 italic">MANIFESTO</span>
             </span>
           </Link>
-          <div className="flex items-center gap-3 text-[8px] font-bold uppercase tracking-wider text-gray-400">
+          <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-wider text-gray-400">
             <div className="flex items-center gap-1">
-              <FiTrendingUp className="w-2.5 h-2.5 text-primary" />
-              <span>{totalBlogs} ARTICLES</span>
-            </div>
-            <span className="h-3 w-px bg-gray-100 dark:bg-gray-800" />
-            <div className="flex items-center gap-1">
-              <FiClock className="w-2.5 h-2.5 text-primary" />
-              <span>UPDATING DAILY</span>
+              <FiTrendingUp className="w-2.5 h-2.5 text-gray-800 dark:text-gray-200" />
+              <span className="text-gray-800 dark:text-gray-200">{totalBlogs} ARTICLES</span>
             </div>
           </div>
         </div>

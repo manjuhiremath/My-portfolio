@@ -24,7 +24,7 @@
   --gray-900: oklch(15% 0.01 250);
 
   /* Vertical Rhythm: Base unit 24px (1.5 * 16px) */
-  --base-unit: 1.5rem;
+  --base-unit: 1rem;
   --space-xs: calc(0.25 * var(--base-unit));
   --space-sm: calc(0.5 * var(--base-unit));
   --space-md: var(--base-unit);
@@ -63,7 +63,7 @@
   --surface-2: oklch(26% 0.01 250);
   --surface-3: oklch(30% 0.01 250);
 
-  --line-height-base: 1.7; /* More breathing room for light text on dark */
+  --line-height-base: 1.6; /* More breathing room for light text on dark */
   --body-weight: 350; /* Slightly lighter weight for dark mode */
 }
 
@@ -190,7 +190,7 @@ nav, button, .btn, .tag, .metadata {
 
 .blog-content h3 {
   font-size: var(--text-lg);
-  margin-top: var(--space-lg);
+  margin-top: var(--space-xs);
   margin-bottom: var(--space-xs);
   color: var(--primary);
 }
