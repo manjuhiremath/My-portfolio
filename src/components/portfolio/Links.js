@@ -37,7 +37,7 @@ const Links = () => {
                 <h2 className="text-3xl md:text-4xl font-bold text-gray-900 text-center mb-4">
                     Get In Touch
                 </h2>
-                <p className="text-gray-500 text-center mb-12 max-w-2xl mx-auto">
+                <p className="text-gray-700 text-center mb-12 max-w-2xl mx-auto">
                     Lets connect and discuss opportunities
                 </p>
                 
@@ -48,7 +48,7 @@ const Links = () => {
                             href={link.url}
                             target={link.name === 'Phone' ? '_self' : '_blank'}
                             rel="noopener noreferrer"
-                            className="bg-white p-4 rounded-xl border border-gray-200 text-center hover:border-gray-400 hover:shadow-sm transition-all duration-200 flex flex-col items-center gap-2"
+                            className="bg-white p-4 rounded-xl border border-gray-200 text-center hover:border-gray-300 hover:shadow-sm transition-all duration-200 flex flex-col items-center gap-2"
                         >
                             <span className="text-gray-700">
                                 {socialIcons[link.name]}

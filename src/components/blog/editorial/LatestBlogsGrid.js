@@ -2,7 +2,24 @@ import BlogCard from '@/components/blog/BlogCard';
 import { FiArrowRight } from 'react-icons/fi';
 import Link from 'next/link';
 
-export default function LatestBlogsGrid({ blogs, title = 'Latest Articles' }) {
+import { SkeletonBlogCard } from '../BlogSkeletons';
+
+export default function LatestBlogsGrid({ blogs, title = 'Latest Articles', loading = false }) {
+  if (loading) {
+    return (
+      <section className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="h-6 w-48 bg-gray-200 dark:bg-gray-800 rounded"></div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <SkeletonBlogCard key={i} />
+          ))}
+        </div>
+      </section>
+    );
+  }
+
   if (!blogs || blogs.length === 0) return null;
 
   return (
@@ -10,7 +27,7 @@ export default function LatestBlogsGrid({ blogs, title = 'Latest Articles' }) {
       {/* Section Header */}
       <div className="flex items-center justify-between px-2">
         <div className="flex items-center gap-4">
-          <h2 className="text-lg font-black uppercase tracking-tight text-gray-900 dark:text-white flex items-center gap-3">
+          <h2 className="text-lg font-black uppercase tracking-tight text-gray-900 dark:text-white flex items-center gap-3 font-display">
             <span className="h-6 w-1 bg-primary rounded-full shadow-lg shadow-primary/20" />
             {title}
           </h2>
@@ -20,17 +37,28 @@ export default function LatestBlogsGrid({ blogs, title = 'Latest Articles' }) {
           className="group hidden items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 hover:text-primary transition-all sm:flex"
         >
           <span>Library</span>
-          <FiArrowRight className="h-4 w-4 transition-transform group-hover:trangray-x-1" />
+          <FiArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
         </Link>
       </div>
 
-      {/* Articles Grid - Balanced */}
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {blogs.slice(0, 8).map((blog) => (
+      {/* Featured Post - First One */}
+      {blogs[0] && (
+        <div className="mb-6">
+          <BlogCard
+            blog={blogs[0]}
+            variant="featured"
+            categoryColor={blogs[0].categoryColor || '#f97316'}
+          />
+        </div>
+      )}
+
+      {/* Rest of the posts - Using BlogCard default variant */}
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+        {blogs.slice(1, 9).map((blog) => (
           <BlogCard
             key={blog._id}
             blog={blog}
-            categoryColor={blog.categoryColor || 'oklch(60% 0.15 250)'}
+            categoryColor={blog.categoryColor || '#f97316'}
           />
         ))}
       </div>

@@ -191,7 +191,7 @@ export default function AdminTagsClient() {
           
           <div className="overflow-x-auto">
             <table className="w-full text-left">
-              <thead className="bg-gray-50/30 text-[10px] uppercase tracking-widest text-gray-500 border-b border-gray-200">
+              <thead className="bg-gray-50/30 text-[10px] uppercase tracking-widest text-gray-700 border-b border-gray-200">
                 <tr>
                   <th className="px-3 py-2 font-bold w-1/3">Tag Name</th>
                   <th className="px-3 py-2 font-bold text-center">Blogs</th>

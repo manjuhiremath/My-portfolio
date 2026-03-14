@@ -41,7 +41,7 @@ const Skills = () => {
                     <h2 className="text-4xl md:text-6xl font-black text-gray-900 dark:text-white tracking-tighter uppercase font-display">
                         Core Capabilities
                     </h2>
-                    <p className="text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto font-medium">
+                    <p className="text-lg text-gray-700 dark:text-gray-400 max-w-2xl mx-auto font-medium">
                         The architectural foundation and technical stack powering the Digital Manifesto ecosystem.
                     </p>
                 </div>

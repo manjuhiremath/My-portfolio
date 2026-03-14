@@ -35,7 +35,7 @@ export default function AdminSettingsPage() {
 
       <section className="grid grid-cols-1 gap-3 xl:grid-cols-2">
         <article className="space-y-3 rounded-lg border border-gray-200 bg-white p-3">
-          <h2 className="text-xs font-semibold uppercase tracking-wide text-gray-500">Content Workflow</h2>
+          <h2 className="text-xs font-semibold uppercase tracking-wide text-gray-700">Content Workflow</h2>
 
           <label className="flex items-center justify-between rounded border border-gray-200 px-2 py-2 text-xs">
             <span className="text-gray-700">Enable auto internal links</span>
@@ -70,7 +70,7 @@ export default function AdminSettingsPage() {
         </article>
 
         <article className="space-y-3 rounded-lg border border-gray-200 bg-white p-3">
-          <h2 className="text-xs font-semibold uppercase tracking-wide text-gray-500">Defaults</h2>
+          <h2 className="text-xs font-semibold uppercase tracking-wide text-gray-700">Defaults</h2>
 
           <label className="block text-xs text-gray-600">
             Timezone

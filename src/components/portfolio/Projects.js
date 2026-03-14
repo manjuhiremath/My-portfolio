@@ -15,7 +15,7 @@ const Projects = () => {
                     <h2 className="text-4xl md:text-6xl font-black text-gray-900 dark:text-white tracking-tighter uppercase font-display">
                         Architectural Case Studies
                     </h2>
-                    <p className="text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto font-medium">
+                    <p className="text-lg text-gray-700 dark:text-gray-400 max-w-2xl mx-auto font-medium">
                         A selection of technical implementations and high-performance system architectures.
                     </p>
                 </div>
@@ -47,7 +47,7 @@ const Projects = () => {
                                         ))}
                                     </div>
                                     
-                                    <p className="text-base text-gray-500 dark:text-gray-400 leading-relaxed font-medium">
+                                    <p className="text-base text-gray-700 dark:text-gray-400 leading-relaxed font-medium">
                                         {stripMarkdown(project.points[0])}
                                     </p>
 
@@ -84,7 +84,7 @@ const Projects = () => {
                                     className="group block bg-gray-50 dark:bg-gray-800/30 p-8 rounded-xl border border-gray-100 dark:border-gray-800 transition-all duration-500 hover:border-primary/30 hover:shadow-xl"
                                 >
                                     <h4 className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight mb-2">{project.name}</h4>
-                                    <p className="text-[10px] text-gray-500 dark:text-gray-400 leading-relaxed font-medium line-clamp-2 uppercase tracking-wider">{project.description}</p>
+                                    <p className="text-[10px] text-gray-700 dark:text-gray-400 leading-relaxed font-medium line-clamp-2 uppercase tracking-wider">{project.description}</p>
                                 </a>
                             ))}
                         </div>

@@ -16,11 +16,11 @@ const Hero = dynamic(() => import('@/components/portfolio/Hero'), {
 });
 
 const Skills = dynamic(() => import('@/components/portfolio/Skills'), {
-  loading: () => <div className="py-20 text-center text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-900">Loading skills...</div>,
+  loading: () => <div className="py-20 text-center text-gray-700 dark:text-gray-400 bg-white dark:bg-gray-900">Loading skills...</div>,
 });
 
 const Projects = dynamic(() => import('@/components/portfolio/Projects'), {
-  loading: () => <div className="py-20 text-center text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-900">Loading projects...</div>,
+  loading: () => <div className="py-20 text-center text-gray-700 dark:text-gray-400 bg-white dark:bg-gray-900">Loading projects...</div>,
 });
 
 export default function Home() {
@@ -37,10 +37,10 @@ export default function Home() {
                         </span>
                     </Link>
                     <div className="flex items-center gap-8">
-                        <Link href="/blog" className="text-gray-500 dark:text-gray-400 hover:text-primary transition-all text-[10px] font-black uppercase tracking-[0.3em]">
+                        <Link href="/blog" className="text-gray-700 dark:text-gray-400 hover:text-primary transition-all text-[10px] font-black uppercase tracking-[0.3em]">
                             Library
                         </Link>
-                        <Link href="/about" className="text-gray-500 dark:text-gray-400 hover:text-primary transition-all text-[10px] font-black uppercase tracking-[0.3em]">
+                        <Link href="/about" className="text-gray-700 dark:text-gray-400 hover:text-primary transition-all text-[10px] font-black uppercase tracking-[0.3em]">
                             Origins
                         </Link>
                         <Link href="/blog" className="btn btn-primary px-6 py-2.5 text-[9px] font-black uppercase tracking-[0.3em] shadow-xl shadow-primary/20">

@@ -264,7 +264,7 @@ export default function AdminBlogs() {
                     <div className="flex items-start justify-between gap-3 mb-3">
                       <div className="flex-1 min-w-0">
                         <h3 className="text-sm font-semibold text-gray-900 line-clamp-2">{blog.title}</h3>
-                        <p className="text-xs text-gray-500 mt-1">{blog.category} / {blog.subcategory}</p>
+                        <p className="text-xs text-gray-700 mt-1">{blog.category} / {blog.subcategory}</p>
                       </div>
                       <span className={`flex-shrink-0 px-2.5 py-1 text-xs font-medium rounded-full ${
                         blog.published ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
@@ -272,7 +272,7 @@ export default function AdminBlogs() {
                         {blog.published ? 'Published' : 'Draft'}
                       </span>
                     </div>
-                    <div className="flex items-center gap-4 text-xs text-gray-500 mb-3">
+                    <div className="flex items-center gap-4 text-xs text-gray-700 mb-3">
                       <div className="flex items-center gap-1">
                         <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -341,10 +341,10 @@ export default function AdminBlogs() {
                     <tr key={blog._id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-3 py-2 border-r border-gray-100">
                         <div className="text-sm font-semibold text-gray-900">{blog.title}</div>
-                        <div className="text-xs text-gray-500">{blog.subcategory}</div>
+                        <div className="text-xs text-gray-700">{blog.subcategory}</div>
                       </td>
                       <td className="px-3 py-2 border-r border-gray-100">
-                        <span className="text-xs text-gray-500 font-mono bg-gray-100 px-2 py-0.5 rounded">{blog.slug}</span>
+                        <span className="text-xs text-gray-700 font-mono bg-gray-100 px-2 py-0.5 rounded">{blog.slug}</span>
                       </td>
                       <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-600 border-r border-gray-100">{blog.category}</td>
                       <td className="px-3 py-2 whitespace-nowrap border-r border-gray-100">
@@ -363,10 +363,10 @@ export default function AdminBlogs() {
                           {blog.views?.toLocaleString() || 0}
                         </div>
                       </td>
-                      <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500 border-r border-gray-100">
+                      <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-700 border-r border-gray-100">
                         {blog.publishedAt ? new Date(blog.publishedAt).toLocaleDateString() : '-'}
                       </td>
-                      <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500 border-r border-gray-100">
+                      <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-700 border-r border-gray-100">
                         {blog.updatedAt ? new Date(blog.updatedAt).toLocaleDateString() : new Date(blog.createdAt).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right bg-gray-100 border-l border-gray-500 text-sm">

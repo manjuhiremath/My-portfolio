@@ -98,7 +98,7 @@ export default function BlogNavigation() {
               onClick={() => handleFilter('all')}
               className={`whitespace-nowrap rounded-lg px-2 py-1 text-[10px] font-bold uppercase tracking-wide transition-all ${activeFilter === 'all'
                   ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-sm'
-                  : 'bg-gray-50 dark:bg-gray-800/50 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary'
+                  : 'bg-gray-50 dark:bg-gray-800/50 text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary'
                 }`}
             >
               ALL
@@ -123,7 +123,7 @@ export default function BlogNavigation() {
 
             <button
               onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-gray-50 dark:bg-gray-800/50 text-gray-500 hover:bg-primary hover:text-white transition-all shadow-sm active:scale-95"
+              className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-gray-50 dark:bg-gray-800/50 text-gray-700 hover:bg-primary hover:text-white transition-all shadow-sm active:scale-95"
               aria-label="Toggle search"
             >
               {isSearchOpen ? <FiX className="h-3.5 w-3.5" /> : <FiSearch className="h-3.5 w-3.5" />}

@@ -125,7 +125,7 @@ export default function AdminSeoToolsPage() {
       />
 
       {/* Website Scraper Section */}
-      <section className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-soft">
+      <section className="rounded-2xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 shadow-soft">
         <h2 className="mb-5 flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-gray-900 dark:text-white">
           <FiGlobe className="text-indigo-500" />
           Target Origin Scraper
@@ -135,7 +135,7 @@ export default function AdminSeoToolsPage() {
             value={scrapeUrl}
             onChange={(e) => setScrapeUrl(e.target.value)}
             placeholder="https://example.com/technical-manifesto"
-            className="flex-1 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50 px-4 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all dark:text-white"
+            className="flex-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 px-4 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all dark:text-white"
           />
           <button
             onClick={handleScrape}
@@ -175,11 +175,11 @@ export default function AdminSeoToolsPage() {
             animate={{ opacity: 1, scale: 1 }}
             className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3"
           >
-            <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 shadow-soft">
+            <div className="rounded-2xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 p-5 shadow-soft">
               <h3 className="mb-2 text-[10px] font-black uppercase tracking-widest text-gray-400">Page Title</h3>
               <p className="text-sm text-gray-900 dark:text-gray-200 font-bold leading-relaxed">{scrapedData.title || 'N/A'}</p>
             </div>
-            <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 shadow-soft xl:col-span-2">
+            <div className="rounded-2xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 p-5 shadow-soft xl:col-span-2">
               <h3 className="mb-2 text-[10px] font-black uppercase tracking-widest text-gray-400">Meta Description</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400 font-medium leading-relaxed">{scrapedData.description || 'N/A'}</p>
             </div>
@@ -191,18 +191,18 @@ export default function AdminSeoToolsPage() {
       <AdminActionToolbar>
         <div className="flex items-center gap-3">
           <FiTarget className="h-4 w-4 text-indigo-500" />
-          <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">Semantic Focus Keyword</span>
+          <span className="text-[10px] font-black uppercase tracking-widest text-gray-700">Semantic Focus Keyword</span>
         </div>
         <input
           value={keyword}
           onChange={(event) => setKeyword(event.target.value)}
           placeholder="e.g. distributed-ledger-protocol"
-          className="h-8 w-64 rounded-lg border border-gray-200 dark:border-gray-800 px-3 text-xs outline-none focus:border-indigo-500 bg-white dark:bg-gray-900 dark:text-white transition-all"
+          className="h-8 w-64 rounded-lg border border-gray-300 dark:border-gray-700 px-3 text-xs outline-none focus:border-indigo-500 bg-white dark:bg-gray-900 dark:text-white transition-all"
         />
       </AdminActionToolbar>
 
       <section className="grid grid-cols-1 gap-4 xl:grid-cols-[1.6fr_1fr]">
-        <article className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-soft">
+        <article className="rounded-2xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 shadow-soft">
           <h2 className="mb-4 text-xs font-black uppercase tracking-[0.2em] text-gray-900 dark:text-white">Content Analysis Node</h2>
           <textarea
             value={content}
@@ -213,28 +213,28 @@ export default function AdminSeoToolsPage() {
         </article>
 
         <div className="space-y-4">
-          <article className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-soft">
+          <article className="rounded-2xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 shadow-soft">
             <h2 className="mb-5 text-xs font-black uppercase tracking-[0.2em] text-gray-900 dark:text-white flex items-center gap-2">
               <FiBarChart2 className="text-indigo-500" />
               Strategic SEO Audit
             </h2>
             <div className="space-y-3">
               <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800">
-                <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">Lexical Count</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-gray-700">Lexical Count</span>
                 <span className="text-sm font-black text-gray-900 dark:text-white">{analysis.words} Words</span>
               </div>
               <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800">
-                <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">Readability Rating</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-gray-700">Readability Rating</span>
                 <AdminStatusBadge value={`${analysis.readability}/100`} variant={analysis.readability >= 80 ? 'success' : analysis.readability >= 60 ? 'info' : 'warning'} />
               </div>
               <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800">
-                <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">Keyword Density</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-gray-700">Keyword Density</span>
                 <span className={`text-sm font-black ${Number(analysis.density) > 2.5 || Number(analysis.density) < 0.5 ? 'text-rose-600' : 'text-emerald-600'}`}>
                   {analysis.density}%
                 </span>
               </div>
               <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800">
-                <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">Semantic Links</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-gray-700">Semantic Links</span>
                 <span className="text-sm font-black text-gray-900 dark:text-white">{analysis.internalLinks} Nodes</span>
               </div>
             </div>
@@ -249,7 +249,7 @@ export default function AdminSeoToolsPage() {
           </article>
 
           {/* Heading Analysis */}
-          <article className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-soft">
+          <article className="rounded-2xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 shadow-soft">
             <h2 className="mb-4 text-xs font-black uppercase tracking-[0.2em] text-gray-900 dark:text-white">Hierarchical Structure</h2>
             <div className="max-h-64 space-y-2 overflow-y-auto pr-2 custom-scrollbar">
               {scrapedData?.headings ? (
@@ -257,7 +257,7 @@ export default function AdminSeoToolsPage() {
                   texts.map((text, i) => (
                     <div key={`${tag}-${i}`} className="flex items-center justify-between rounded-lg border border-gray-100 dark:border-gray-800 px-3 py-2 text-[11px] font-bold bg-gray-50/50 dark:bg-gray-800/20">
                       <span className="truncate text-gray-600 dark:text-gray-400 pr-4">{text}</span>
-                      <span className={`px-1.5 py-0.5 rounded text-[9px] font-black uppercase ${tag === 'h1' ? 'bg-indigo-100 text-indigo-600' : 'bg-gray-100 text-gray-500'}`}>{tag}</span>
+                      <span className={`px-1.5 py-0.5 rounded text-[9px] font-black uppercase ${tag === 'h1' ? 'bg-indigo-100 text-indigo-600' : 'bg-gray-100 text-gray-700'}`}>{tag}</span>
                     </div>
                   ))
                 ))
@@ -283,7 +283,7 @@ export default function AdminSeoToolsPage() {
           <motion.section 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-soft"
+            className="rounded-2xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 shadow-soft"
           >
             <h2 className="mb-6 flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-gray-900 dark:text-white">
               <FiImage className="text-indigo-500" />

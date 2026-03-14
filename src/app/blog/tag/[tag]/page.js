@@ -50,10 +50,18 @@ export async function generateMetadata({ params }) {
         type: 'website',
         url: `/blog/tag/${rawTag}`,
       },
+      robots: {
+        index: true,
+        follow: true,
+      },
     };
   } catch {
     const label = readableLabel(rawTag);
-    return { title: `#${label}`, description: `Articles tagged with ${label}.` };
+    return { 
+      title: `#${label}`, 
+      description: `Articles tagged with ${label}.`,
+      robots: { index: true, follow: true } 
+    };
   }
 }
 
@@ -139,7 +147,7 @@ export default async function TagPage({ params, searchParams }) {
       <main className="mx-auto max-w-7xl space-y-6 px-4 py-8 sm:px-6 lg:px-8">
         {data.blogs.length > 0 && <BannerAd />}
         {/* Breadcrumbs */}
-        <nav className="flex flex-wrap items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+        <nav className="flex flex-wrap items-center gap-2 text-xs text-gray-700 dark:text-gray-400">
           <Link href="/" className="hover:text-gray-700 dark:hover:text-gray-200">Home</Link>
           <span>/</span>
           <Link href="/blog" className="hover:text-gray-700 dark:hover:text-gray-200">Blog</Link>
@@ -159,7 +167,7 @@ export default async function TagPage({ params, searchParams }) {
               <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-3xl">
                 #{label}
               </h1>
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              <p className="mt-1 text-sm text-gray-700 dark:text-gray-400">
                 {data.total} article{data.total === 1 ? '' : 's'} with this tag
               </p>
             </div>

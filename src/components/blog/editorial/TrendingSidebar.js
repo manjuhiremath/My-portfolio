@@ -2,37 +2,41 @@ import Link from 'next/link';
 import { slugify } from '@/lib/utils';
 import { FiTrendingUp, FiClock, FiTag, FiArrowRight } from 'react-icons/fi';
 
-export default function TrendingSidebar({ trendingBlogs, recentBlogs, popularTags }) {
+import { SkeletonTrendingSidebar } from '../BlogSkeletons';
+
+export default function TrendingSidebar({ trendingBlogs, recentBlogs, popularTags, loading = false }) {
+  if (loading) return <SkeletonTrendingSidebar />;
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* Trending / Most Read Section */}
-      <section className="rounded-lg bg-gray-50 dark:bg-gray-800/30 p-4 border border-gray-100 dark:border-gray-800/50 shadow-sm transition-all hover:shadow-md">
-        <div className="flex items-center gap-2 mb-4">
-          <div className="h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center text-primary shadow-sm">
-            <FiTrendingUp className="h-2.5 w-2.5" />
+      <section className="rounded-xl bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 p-5 shadow-lg dark:shadow-2xl transition-all hover:shadow-primary/5">
+        <div className="flex items-center gap-2.5 mb-5">
+          <div className="h-6 w-6 rounded-full bg-primary/20 dark:bg-primary/20 flex items-center justify-center text-primary shadow-sm">
+            <FiTrendingUp className="h-3.5 w-3.5" />
           </div>
-          <h2 className="text-[11px] font-bold uppercase tracking-wider text-gray-900 dark:text-white">
-            Trending
+          <h2 className="text-xs font-black uppercase tracking-[0.2em] text-gray-900 dark:text-white font-display">
+            Trending <span className="text-primary opacity-50">Now</span>
           </h2>
         </div>
-        <div className="space-y-3">
+        <div className="space-y-4">
           {(trendingBlogs || []).slice(0, 5).map((blog, index) => {
             const categoryName = blog.category?.name || blog.category;
             const categorySlug = slugify(categoryName);
             const href = `/blog/${categorySlug}/${blog.slug}`;
 
             return (
-              <Link key={blog._id} href={href} className="group flex items-start gap-2">
-                <span className="flex-shrink-0 text-xs font-bold text-gray-800 dark:text-gray-300  transition-colors leading-none pt-0.5">
-                  0{index + 1}
+              <Link key={blog._id} href={href} className="group flex items-start gap-3">
+                <span className="flex-shrink-0 text-lg font-black text-primary/30 dark:text-primary/30 group-hover:text-primary/60 transition-colors leading-none font-display">
+                  {index + 1}
                 </span>
                 <div className="min-w-0 space-y-1">
-                  <h3 className="line-clamp-2 text-[11px] font-bold leading-snug text-gray-900 dark:text-gray-100 group-hover:text-primary transition-colors">
+                  <h3 className="line-clamp-2 text-[13px] font-bold leading-snug text-gray-800 dark:text-gray-100 group-hover:text-primary transition-colors font-display">
                     {blog.title}
                   </h3>
-                  <div className="flex items-center gap-1 text-[8px] font-bold uppercase tracking-wider text-gray-500">
-                    <span className="text-primary">{categoryName}</span>
-                    <span>{(blog.views || 0).toLocaleString()}</span>
+                  <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-500">
+                    <span className="text-primary/80">{categoryName}</span>
+                    <span className="h-0.5 w-0.5 rounded-full bg-gray-300 dark:bg-gray-700" />
+                    <span>{(blog.views || 0).toLocaleString()} views</span>
                   </div>
                 </div>
               </Link>
@@ -42,32 +46,34 @@ export default function TrendingSidebar({ trendingBlogs, recentBlogs, popularTag
       </section>
 
       {/* Fresh Feed */}
-      <section className="rounded-lg bg-gray-900 p-4 border border-gray-800 shadow-lg transition-all">
-        <div className="flex items-center gap-2 mb-4">
-          <div className="h-5 w-5 rounded-full bg-white/5 flex items-center justify-center text-primary shadow-sm">
-            <FiClock className="h-2.5 w-2.5" />
+      <section className="rounded-xl bg-white dark:bg-gray-900 p-5 border border-gray-200 dark:border-gray-800 shadow-lg dark:shadow-xl transition-all hover:shadow-primary/5">
+        <div className="flex items-center gap-2.5 mb-5">
+          <div className="h-6 w-6 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center text-primary shadow-sm">
+            <FiClock className="h-3.5 w-3.5" />
           </div>
-          <h2 className="text-[8px] font-bold uppercase tracking-wider text-white">
-            Recent
+          <h2 className="text-xs font-black uppercase tracking-[0.2em] text-gray-900 dark:text-white font-display">
+            The <span className="text-primary">Latest</span>
           </h2>
         </div>
-        <div className="space-y-3">
+        <div className="space-y-5">
           {(recentBlogs || []).map((blog) => {
             const categoryName = blog.category?.name || blog.category;
             const categorySlug = slugify(categoryName);
             const href = `/blog/${categorySlug}/${blog.slug}`;
 
             return (
-              <Link key={blog._id} href={href} className="group block space-y-1">
-                <p className="text-[7px] font-bold text-gray-500 uppercase tracking-wider">
-                  {categoryName}
-                </p>
-                <h3 className="line-clamp-2 text-[10px] font-bold leading-snug text-white group-hover:text-gray-400  transition-colors">
+              <Link key={blog._id} href={href} className="group block space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <p className="text-[10px] font-black text-primary uppercase tracking-widest">
+                    {categoryName}
+                  </p>
+                  <p className="text-[9px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider">
+                    {new Date(blog.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                  </p>
+                </div>
+                <h3 className="line-clamp-2 text-[12px] font-bold leading-snug text-gray-800 dark:text-white group-hover:text-primary/80 transition-colors font-display">
                   {blog.title}
                 </h3>
-                <p className="text-[7px] text-gray-500 font-bold uppercase tracking-wider">
-                  {new Date(blog.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                </p>
               </Link>
             );
           })}
@@ -75,21 +81,21 @@ export default function TrendingSidebar({ trendingBlogs, recentBlogs, popularTag
       </section>
 
       {/* Tags */}
-      <section className="rounded-lg bg-white dark:bg-gray-800/30 p-4 border border-gray-100 dark:border-gray-800/50 shadow-sm">
-        <div className="flex items-center gap-2 mb-3">
-          <div className="h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center text-primary shadow-sm">
-            <FiTag className="h-2.5 w-2.5" />
+      <section className="rounded-xl bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 p-5 shadow-lg dark:shadow-soft transition-all hover:shadow-primary/5">
+        <div className="flex items-center gap-2.5 mb-4">
+          <div className="h-6 w-6 rounded-full bg-primary/20 dark:bg-primary/20 flex items-center justify-center text-primary shadow-sm">
+            <FiTag className="h-3.5 w-3.5" />
           </div>
-          <h2 className="text-[8px] font-bold uppercase tracking-wider text-gray-900 dark:text-white">
-            Tags
+          <h2 className="text-xs font-black uppercase tracking-[0.2em] text-gray-900 dark:text-white font-display">
+            Popular <span className="text-primary opacity-50">Tags</span>
           </h2>
         </div>
-        <div className="flex flex-wrap gap-1">
+        <div className="flex flex-wrap gap-2">
           {(popularTags || []).map((tag) => (
             <Link
               key={tag}
               href={`/blog/tag/${encodeURIComponent(tag)}`}
-              className="rounded-lg border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 px-2 py-1 text-[7px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider transition-all hover:border-primary hover:text-primary hover:bg-white dark:hover:bg-gray-800 shadow-sm"
+              className="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-3 py-1.5 text-[10px] font-black text-gray-600 dark:text-gray-400 uppercase tracking-widest transition-all hover:border-primary/50 hover:text-primary hover:bg-primary/5 dark:hover:bg-gray-800 shadow-sm"
             >
               #{tag}
             </Link>
@@ -98,20 +104,21 @@ export default function TrendingSidebar({ trendingBlogs, recentBlogs, popularTag
       </section>
 
       {/* Newsletter Card */}
-      <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-gray-900 to-gray-800 p-4 text-white shadow-lg border border-gray-800">
-        <div className="relative z-10 text-center space-y-3">
-          <div className="space-y-1">
-            <h4 className="text-xs font-bold tracking-tight leading-tight uppercase font-display">Join the <span className="text-primary italic">Manifesto.</span></h4>
-            <p className="text-[8px] font-medium text-gray-400 leading-relaxed max-w-[20ch] mx-auto">Deep tech insights weekly.</p>
+      <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-100 to-white dark:from-gray-950 dark:to-gray-900 p-6 text-gray-900 dark:text-white shadow-lg dark:shadow-2xl border border-gray-200 dark:border-gray-800">
+        <div className="absolute top-0 right-0 -mr-8 -mt-8 h-32 w-32 rounded-full bg-primary/10 blur-3xl" />
+        <div className="relative z-10 text-center space-y-4">
+          <div className="space-y-2">
+            <h4 className="text-sm font-black tracking-tight leading-tight uppercase font-display">Join the <span className="text-primary italic">Manifesto.</span></h4>
+            <p className="text-[11px] font-medium text-gray-600 dark:text-gray-400 leading-relaxed max-w-[22ch] mx-auto">Weekly deep-dives into software architecture and strategy.</p>
           </div>
-          <form className="space-y-2" onSubmit={(e) => e.preventDefault()}>
+          <form className="space-y-3" onSubmit={(e) => e.preventDefault()}>
             <input
               type="email"
-              placeholder="Your email..."
-              className="w-full rounded-lg bg-white/5 border border-white/10 px-3 py-2 text-[9px] text-white placeholder:text-gray-600 outline-none transition-all focus:bg-white/10 focus:border-primary/50 shadow-inner"
+              placeholder="Your email address"
+              className="w-full rounded-lg bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 px-4 py-2.5 text-[11px] text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-600 outline-none transition-all focus:bg-white dark:focus:bg-white/10 focus:border-primary/50 shadow-inner"
             />
-            <button className="btn btn-primary w-full py-2 text-[8px] font-bold uppercase tracking-wider shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98]">
-              Subscribe
+            <button className="btn btn-primary w-full py-2.5 text-[10px] font-black uppercase tracking-[0.2em] shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+              Subscribe Now
             </button>
           </form>
         </div>

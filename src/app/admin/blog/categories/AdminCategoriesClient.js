@@ -168,7 +168,7 @@ export default function AdminCategoriesClient() {
           
           <div className="overflow-x-auto">
             <table className="w-full text-left">
-              <thead className="bg-gray-50/30 text-[10px] uppercase tracking-widest text-gray-500 border-b border-gray-200">
+              <thead className="bg-gray-50/30 text-[10px] uppercase tracking-widest text-gray-700 border-b border-gray-200">
                 <tr>
                   <th className="px-3 py-2 font-bold w-1/3">Category Name</th>
                   <th className="px-3 py-2 font-bold text-center">Blogs</th>
@@ -213,7 +213,7 @@ export default function AdminCategoriesClient() {
                             {(cat.tags || []).slice(0, 5).map((tag) => (
                               <span 
                                 key={tag._id || tag} 
-                                className="inline-flex items-center rounded bg-gray-50 px-1 py-0.5 text-[8px] font-medium text-gray-500 border border-gray-100"
+                                className="inline-flex items-center rounded bg-gray-50 px-1 py-0.5 text-[8px] font-medium text-gray-700 border border-gray-100"
                               >
                                 #{tag.name || tag}
                               </span>

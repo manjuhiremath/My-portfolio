@@ -247,27 +247,13 @@ export default function BlogClient({ initialBlogs = [], initialCategories = [], 
 
               <aside className="lg:col-span-4">
                 <div className="lg:sticky lg:top-24 space-y-8">
-                  <div className="p-6 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800">
-                    <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 mb-4">Search</h3>
-                    <div className="relative group">
-                      <input 
-                        type="text" 
-                        placeholder="Keywords..."
-                        value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                        className="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg py-2 pl-8 pr-3 text-[10px] focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all shadow-sm group-hover:shadow-md"
-                      />
-                      <FiSearch className="absolute left-2.5 top-1/2 -trangray-y-1/2 text-gray-400 w-3 h-3 group-hover:text-orange-500 transition-colors" />
-                    </div>
-                  </div>
-
-                  <SidebarAd />
-                  
                   <TrendingSidebar
                     trendingBlogs={trendingBlogs}
                     recentBlogs={recentBlogs}
                     popularTags={popularTags}
                   />
+                  <SidebarAd />
+                  
                 </div>
               </aside>
             </div>
@@ -327,7 +313,7 @@ export default function BlogClient({ initialBlogs = [], initialCategories = [], 
                   <FiSearch className="h-6 w-6 text-gray-300" />
                 </div>
                 <h3 className="text-sm font-bold text-gray-900 dark:text-white">No articles found</h3>
-                <p className="mt-1 text-[10px] text-gray-500 dark:text-gray-400 max-w-xs mx-auto font-medium">We haven&apos;t published any articles in the {activeFilter} category yet.</p>
+                <p className="mt-1 text-[10px] text-gray-700 dark:text-gray-400 max-w-xs mx-auto font-medium">We haven&apos;t published any articles in the {activeFilter} category yet.</p>
                 <button 
                   onClick={() => setActiveFilter('all')}
                   className="mt-6 px-6 py-2 rounded-xl bg-orange-500 text-white font-bold uppercase tracking-wider shadow-lg shadow-orange-500/20 hover:scale-[1.02] active:scale-[0.98] transition-transform text-[10px]"
@@ -342,7 +328,7 @@ export default function BlogClient({ initialBlogs = [], initialCategories = [], 
             <header className="flex flex-col md:flex-row md:items-center justify-between gap-3">
               <div>
                 <h2 className="text-sm font-bold text-gray-900 dark:text-white">Search Results</h2>
-                <p className="text-[10px] text-gray-500 dark:text-gray-400 font-medium">{filteredBlogs.length} articles</p>
+                <p className="text-[10px] text-gray-700 dark:text-gray-400 font-medium">{filteredBlogs.length} articles</p>
               </div>
               <div className="flex items-center gap-2">
                 <select 
@@ -378,7 +364,7 @@ export default function BlogClient({ initialBlogs = [], initialCategories = [], 
                   <FiSearch className="h-6 w-6 text-gray-300" />
                 </div>
                 <h3 className="text-sm font-bold text-gray-900 dark:text-white">No matches found</h3>
-                <p className="mt-1 text-[10px] text-gray-500 dark:text-gray-400 max-w-xs mx-auto font-medium">Try different keywords or browse our categories instead.</p>
+                <p className="mt-1 text-[10px] text-gray-700 dark:text-gray-400 max-w-xs mx-auto font-medium">Try different keywords or browse our categories instead.</p>
                 <button 
                   onClick={() => setQuery('')}
                   className="mt-6 px-6 py-2 rounded-xl bg-orange-500 text-white font-bold uppercase tracking-wider shadow-lg shadow-orange-500/20 hover:scale-[1.02] active:scale-[0.98] transition-transform text-[10px]"
@@ -392,7 +378,7 @@ export default function BlogClient({ initialBlogs = [], initialCategories = [], 
 
         {/* Browse Categories - Always show at bottom for easy navigation */}
         {!query.trim() && (
-          <section className="border-t border-gray-100 dark:border-gray-800 pt-12 mt-24 space-y-12">
+          <section className="border-t border-gray-100 dark:border-gray-800 pt-12 mt-5 space-y-5">
             <div className="text-center space-y-2">
               <p className="text-[9px] font-black uppercase tracking-[0.4em] text-orange-500">Collections</p>
               <h2 className="text-xl font-black tracking-tight text-gray-900 dark:text-white uppercase">Browse Categories</h2>

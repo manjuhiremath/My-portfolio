@@ -297,10 +297,10 @@ export default function AdminMediaPage() {
               ))}
               
               {!mediaItems.length && (
-                <div className="col-span-full py-20 text-center bg-white dark:bg-gray-900 rounded-2xl border border-dashed border-gray-200 dark:border-gray-800">
+                <div className="col-span-full py-20 text-center bg-white dark:bg-gray-900 rounded-2xl border border-dashed border-gray-300 dark:border-gray-700">
                   <FiImage className="mx-auto h-10 w-10 text-gray-300 mb-4" />
                   <p className="text-sm font-bold text-gray-900 dark:text-white">No assets discovered</p>
-                  <p className="text-xs text-gray-500 mt-1">Try a different search or upload a new image.</p>
+                  <p className="text-xs text-gray-700 mt-1">Try a different search or upload a new image.</p>
                 </div>
               )}
             </div>
@@ -314,7 +314,7 @@ export default function AdminMediaPage() {
               initial={{ opacity: 0, x: 20, width: 0 }}
               animate={{ opacity: 1, x: 0, width: '380px' }}
               exit={{ opacity: 0, x: 20, width: 0 }}
-              className="sticky top-24 flex-shrink-0 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-2xl overflow-hidden"
+              className="sticky top-24 flex-shrink-0 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-2xl shadow-2xl overflow-hidden"
             >
               <div className="p-5 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between bg-gray-50/50 dark:bg-gray-800/50">
                 <div className="flex items-center gap-2">
@@ -359,7 +359,7 @@ export default function AdminMediaPage() {
                       <input 
                         readOnly 
                         value={selectedItem.url} 
-                        className="flex-1 h-8 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-3 text-[10px] font-mono text-gray-500"
+                        className="flex-1 h-8 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-3 text-[10px] font-mono text-gray-700"
                       />
                       <button 
                         onClick={() => copyToClipboard(selectedItem.url)}
@@ -413,7 +413,7 @@ export default function AdminMediaPage() {
                     href={selectedItem.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex h-10 items-center justify-center gap-2 rounded-xl border border-gray-200 dark:border-gray-800 text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
+                    className="flex h-10 items-center justify-center gap-2 rounded-xl border border-gray-300 dark:border-gray-700 text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
                   >
                     <FiExternalLink className="h-3.5 w-3.5" />
                     Open Original

@@ -59,7 +59,7 @@ export default function Pagination({ currentPage, totalPages, baseUrl }) {
               className={`inline-flex h-9 min-w-9 items-center justify-center rounded-xl text-[10px] font-black transition-all ${
                 page === currentPage
                   ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/20'
-                  : 'text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:text-orange-500'
+                  : 'text-gray-700 hover:bg-white dark:hover:bg-gray-700 hover:text-orange-500'
               }`}
             >
               {page}

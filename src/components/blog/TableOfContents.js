@@ -49,8 +49,6 @@ export default function TableOfContents({ headings }) {
   return (
     <aside className="toc-root">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&display=swap');
-
         .toc-root {
           --toc-bg: #fafaf8;
           --toc-border: #e8e4dc;
@@ -61,7 +59,7 @@ export default function TableOfContents({ headings }) {
           --toc-accent-light: #fdf0e8;
           --toc-track: #ede9e0;
           --toc-line: #ddd8cc;
-          font-family: 'DM Mono', monospace;
+          font-family: var(--font-mono), monospace;
         }
 
         @media (prefers-color-scheme: dark) {
@@ -111,7 +109,7 @@ export default function TableOfContents({ headings }) {
           margin-bottom: 14px;
         }
         .toc-label {
-          font-family: 'DM Mono', monospace;
+          font-family: var(--font-mono), monospace;
           font-size: 9px;
           font-weight: 500;
           letter-spacing: 0.22em;
@@ -120,9 +118,9 @@ export default function TableOfContents({ headings }) {
           margin: 0 0 4px;
         }
         .toc-progress-text {
-          font-family: 'Fraunces', serif;
+          font-family: var(--font-display), serif;
           font-size: 11px;
-          font-weight: 300;
+          font-weight: 400;
           color: var(--toc-accent);
           letter-spacing: 0.01em;
         }
@@ -174,7 +172,7 @@ export default function TableOfContents({ headings }) {
 
         /* Number */
         .toc-num {
-          font-family: 'DM Mono', monospace;
+          font-family: var(--font-mono), monospace;
           font-size: 9px;
           font-weight: 400;
           color: var(--toc-text-muted);
@@ -189,7 +187,7 @@ export default function TableOfContents({ headings }) {
 
         /* Text */
         .toc-text {
-          font-family: 'DM Mono', monospace;
+          font-family: var(--font-mono), monospace;
           font-size: 11px;
           line-height: 1.45;
           transition: color 0.2s;
@@ -239,7 +237,7 @@ export default function TableOfContents({ headings }) {
           justify-content: space-between;
         }
         .toc-count {
-          font-family: 'DM Mono', monospace;
+          font-family: var(--font-mono), monospace;
           font-size: 9px;
           letter-spacing: 0.12em;
           color: var(--toc-text-muted);

@@ -20,7 +20,7 @@ export default function ContactPage() {
         
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
           <div className="lg:col-span-5 space-y-12">
-            <p className="text-xl text-gray-500 dark:text-gray-400 leading-relaxed font-medium">
+            <p className="text-xl text-gray-700 dark:text-gray-400 leading-relaxed font-medium">
               We maintain open channels for strategic inquiries, technical analysis feedback, and architectural contributions.
             </p>
             

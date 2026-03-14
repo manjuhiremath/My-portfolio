@@ -50,6 +50,7 @@ export async function generateMetadata({ params }) {
       return {
         title: 'Blog Category',
         description: 'Browse category articles.',
+        robots: { index: true, follow: true },
       };
     }
 
@@ -74,7 +75,7 @@ export async function generateMetadata({ params }) {
       description,
       keywords: category.keywords || [category.name.toLowerCase()],
       alternates: {
-        canonical: `/blog/${rawCategory}`,
+        canonical: `/blog/${rawCategory.toLowerCase()}`,
       },
       openGraph: {
         title,
@@ -86,6 +87,10 @@ export async function generateMetadata({ params }) {
         card: 'summary',
         title,
         description,
+      },
+      robots: {
+        index: true,
+        follow: true,
       },
     };
   } catch {
@@ -192,7 +197,7 @@ export default async function CategoryPage({ params, searchParams }) {
     <div className="min-h-screen bg-background">
       <main className="mx-auto max-w-7xl space-y-6 px-4 py-8 sm:px-6 lg:px-8">
         {blogs.length > 0 && <BannerAd />}
-        <nav className="flex flex-wrap items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+        <nav className="flex flex-wrap items-center gap-2 text-xs text-gray-700 dark:text-gray-400">
           <Link href="/" className="hover:text-gray-700 dark:hover:text-gray-200">
             Home
           </Link>

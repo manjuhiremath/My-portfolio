@@ -21,7 +21,10 @@ function calculateReadingTime(content) {
   return `${minutes} min read`;
 }
 
-export default function FeaturedHero({ blog, categoryColor = 'oklch(70% 0.18 45)' }) {
+import { SkeletonBlogCard } from '../BlogSkeletons';
+
+export default function FeaturedHero({ blog, categoryColor = 'oklch(70% 0.18 45)', loading = false }) {
+  if (loading) return <SkeletonBlogCard variant="featured" />;
   if (!blog) return null;
 
   const categoryName = blog.category?.name || blog.category;
@@ -36,7 +39,7 @@ export default function FeaturedHero({ blog, categoryColor = 'oklch(70% 0.18 45)
         <div className="relative z-20 flex flex-col justify-center p-4 sm:p-6 lg:col-span-5 lg:p-8 order-2 lg:order-1">
           <div className="space-y-3 lg:space-y-4">
             <Link href={href} className="block group/title">
-              <h1 className="text-lg font-bold leading-tight tracking-tight text-white transition-colors sm:text-xl lg:text-xl group-hover/title:text-primary line-clamp-2">
+              <h1 className="text-lg font-bold leading-tight tracking-tight text-white transition-colors sm:text-xl lg:text-xl group-hover/title:text-primary line-clamp-2 font-display">
                 {blog.title}
               </h1>
             </Link>
@@ -45,13 +48,13 @@ export default function FeaturedHero({ blog, categoryColor = 'oklch(70% 0.18 45)
               {blog.excerpt || 'Access the technical documentation and strategic analysis behind this priority manifesto.'}
             </p>
 
-            <div className="flex flex-wrap items-center gap-3 pt-2 text-gray-500">
+            <div className="flex flex-wrap items-center gap-3 pt-2 text-gray-700">
               <div className="flex items-center gap-2">
-                <span className="text-[9px] font-bold uppercase tracking-wide">{formatDate(blog.createdAt)}</span>
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">{formatDate(blog.createdAt)}</span>
               </div>
               <div className="flex items-center gap-1">
                 <FiClock className="h-3 w-3 text-primary" />
-                <span className="text-[9px] font-bold uppercase tracking-wide text-gray-400">
+                <span className="text-[10px] font-bold uppercase tracking-wide text-gray-400">
                   {blog.readingTime ? `${blog.readingTime} MIN` : calculateReadingTime(blog.content)}
                 </span>
               </div>

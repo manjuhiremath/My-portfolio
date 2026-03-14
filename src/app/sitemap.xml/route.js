@@ -1,9 +1,7 @@
 import { connectDB } from "@/lib/mongodb";
 import Blog from "@/models/Blog";
 import Category from "@/models/Category";
-import Tag from "@/models/Tag";
 
-// Escape XML special characters
 function escapeXml(str) {
   if (!str) return '';
   return str
@@ -24,7 +22,6 @@ function slugify(text = '') {
     .replace(/^-+|-+$/g, '');
 }
 
-// Helper to add URL to XML
 function addUrl(xml, loc, lastmod, changefreq = 'daily', priority = '0.7') {
   xml += '  <url>\n';
   xml += `    <loc>${escapeXml(loc)}</loc>\n`;
@@ -35,57 +32,108 @@ function addUrl(xml, loc, lastmod, changefreq = 'daily', priority = '0.7') {
   return xml;
 }
 
-export async function GET() {
+function addImage(xml, url, title, caption, license) {
+  xml += '    <image:image>\n';
+  xml += `      <image:loc>${escapeXml(url)}</image:loc>\n`;
+  xml += `      <image:title>${escapeXml(title)}</image:title>\n`;
+  if (caption) {
+    xml += `      <image:caption>${escapeXml(caption)}</image:caption>\n`;
+  }
+  if (license) {
+    xml += `      <image:license>${escapeXml(license)}</image:license>\n`;
+  }
+  xml += '    </image:image>\n';
+  return xml;
+}
+
+export async function GET(request) {
+  const { searchParams } = new URL(request.url);
+  const categoryId = searchParams.get('id');
+  const baseUrl = process.env.NEXT_PUBLIC_URL || 'https://www.manjuhiremath.in';
+
   try {
     await connectDB();
-    
-    const baseUrl = process.env.NEXT_PUBLIC_URL || 'https://www.manjuhiremath.in';
-    const currentDate = new Date().toISOString();
 
-    // Fetch everything needed
-    const [blogs, categories, tags] = await Promise.all([
-      Blog.find({ published: true }).select('slug category updatedAt createdAt tags').lean(),
-      Category.find().select('slug name updatedAt createdAt').lean(),
-      Tag.find().select('slug name updatedAt createdAt').lean()
-    ]);
+    // USE CASE 1: Main sitemap index - lists all category sitemaps
+    if (!categoryId) {
+      const categories = await Category.find().select('slug name updatedAt').lean();
+      
+      let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+      xml += '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+      
+      // Category sitemaps: sitemap.xml?id=technology
+      categories.forEach(cat => {
+        const slug = cat.slug || slugify(cat.name);
+        xml += '  <sitemap>\n';
+        xml += `    <loc>${baseUrl}/sitemap.xml?id=${slug}</loc>\n`;
+        xml += `    <lastmod>${cat.updatedAt ? new Date(cat.updatedAt).toISOString() : new Date().toISOString()}</lastmod>\n`;
+        xml += '  </sitemap>\n';
+      });
 
-    // Build lookup maps
-    const catMap = {};
-    categories.forEach(c => {
-      catMap[c._id.toString()] = c;
-      catMap[c.name] = c;
-    });
+      xml += '</sitemapindex>';
+
+      return new Response(xml, {
+        headers: {
+          'Content-Type': 'application/xml',
+          'Cache-Control': 'public, max-age=3600',
+        },
+      });
+    }
+
+    // USE CASE 2: Category-specific sitemap with all content images
+    const category = await Category.findOne({ 
+      $or: [
+        { slug: categoryId },
+        { name: { $regex: new RegExp(`^${categoryId}$`, 'i') } }
+      ]
+    }).lean();
+
+    if (!category) {
+      return new Response('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>', {
+        headers: { 'Content-Type': 'application/xml' },
+      });
+    }
+
+    const blogs = await Blog.find({ 
+      $or: [
+        { category: category._id },
+        { category: category.name }
+      ],
+      published: true 
+    })
+    .select('slug title excerpt featuredImage sectionImages category createdAt updatedAt')
+    .sort({ createdAt: -1 })
+    .lean();
 
     let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
-    xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+    xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n';
 
-    // 1. HOME & BLOG ROOT & CORE PAGES
-    xml = addUrl(xml, `${baseUrl}/`, currentDate, 'daily', '1.0');
-    xml = addUrl(xml, `${baseUrl}/blog`, currentDate, 'daily', '0.9');
-    xml = addUrl(xml, `${baseUrl}/about`, currentDate, 'monthly', '0.5');
-    xml = addUrl(xml, `${baseUrl}/privacy-policy`, currentDate, 'monthly', '0.3');
-    xml = addUrl(xml, `${baseUrl}/contact`, currentDate, 'monthly', '0.5');
+    const categorySlug = category.slug || slugify(category.name);
+    const currentDate = new Date().toISOString();
 
-    // 2. CATEGORY PAGES
-    categories.forEach(cat => {
-      const url = `${baseUrl}/blog/${cat.slug || slugify(cat.name)}`;
-      xml = addUrl(xml, url, currentDate, 'daily', '0.8');
-    });
-
-    // 3. TAG PAGES
-    tags.forEach(tag => {
-      const url = `${baseUrl}/blog/tag/${tag.slug || slugify(tag.name)}`;
-      xml = addUrl(xml, url, currentDate, 'daily', '0.6');
-    });
-
-    // 4. INDIVIDUAL BLOG POSTS
     blogs.forEach(blog => {
-      const rawCat = blog.category?.toString() || '';
-      const catDoc = catMap[rawCat];
-      const categorySlug = catDoc?.slug || slugify(catDoc?.name || rawCat || 'uncategorized');
-      
-      const url = `${baseUrl}/blog/${categorySlug}/${blog.slug}`;
-      xml = addUrl(xml, url, currentDate, 'daily', '0.8');
+      const blogUrl = `${baseUrl}/blog/${categorySlug}/${blog.slug}`;
+      xml += '  <url>\n';
+      xml += `    <loc>${escapeXml(blogUrl)}</loc>\n`;
+      xml += `    <lastmod>${blog.updatedAt ? new Date(blog.updatedAt).toISOString() : currentDate}</lastmod>\n`;
+      xml += '    <changefreq>weekly</changefreq>\n';
+      xml += '    <priority>0.8</priority>\n';
+
+      // 1. Add Featured Image
+      if (blog.featuredImage) {
+        xml = addImage(xml, blog.featuredImage, blog.title, blog.excerpt);
+      }
+
+      // 2. Add all Section/Content Images
+      if (blog.sectionImages && Array.isArray(blog.sectionImages)) {
+        blog.sectionImages.forEach((imgUrl, index) => {
+          if (imgUrl) {
+            xml = addImage(xml, imgUrl, `${blog.title} - Image ${index + 1}`, blog.title);
+          }
+        });
+      }
+
+      xml += '  </url>\n';
     });
 
     xml += '</urlset>';

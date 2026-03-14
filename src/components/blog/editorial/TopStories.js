@@ -21,7 +21,18 @@ function calculateReadingTime(content) {
   return `${minutes}m`;
 }
 
-export default function TopStories({ blogs, getCategoryColor }) {
+import { SkeletonBlogCard } from '../BlogSkeletons';
+
+export default function TopStories({ blogs, getCategoryColor, loading = false }) {
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {[1, 2, 3, 4].map((i) => (
+          <SkeletonBlogCard key={i} variant="compact" />
+        ))}
+      </div>
+    );
+  }
   if (!blogs || blogs.length === 0) return null;
 
   return (
@@ -38,7 +49,7 @@ export default function TopStories({ blogs, getCategoryColor }) {
           return (
             <article key={blog._id} className="group relative">
               {/* Image Container */}
-              <Link href={href} className="relative block aspect-[25/10] overflow-hidden rounded-md bg-gray-100 dark:bg-gray-800 shadow-sm transition-all duration-500 hover:shadow-md hover:-trangray-y-0.5">
+              <Link href={href} className="relative block aspect-[20/10] overflow-hidden rounded-md bg-gray-100 dark:bg-gray-800 shadow-sm transition-all duration-500 hover:shadow-md hover:-trangray-y-0.5">
                 <Image
                   src={imageUrl}
                   alt={blog.title}
@@ -66,10 +77,10 @@ export default function TopStories({ blogs, getCategoryColor }) {
               {/* Content */}
               <div className="pt-3 px-1 space-y-2">
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-[8px] font-bold uppercase tracking-wider text-primary">
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-primary">
                     {formatDate(blog.createdAt)}
                   </span>
-                  <span className="text-[8px] font-bold uppercase tracking-wider text-gray-800">
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-gray-400">
                     {(blog.views || 0).toLocaleString()} views
                   </span>
                 </div>
@@ -80,7 +91,7 @@ export default function TopStories({ blogs, getCategoryColor }) {
                   </h3>
                 </Link>
 
-                <p className="line-clamp-2 text-[11px] leading-relaxed text-gray-500 dark:text-gray-400 font-medium max-w-prose">
+                <p className="line-clamp-2 text-[11px] leading-relaxed text-gray-700 dark:text-gray-400 font-medium max-w-prose">
                   {blog.excerpt || 'Access the technical documentation and strategic analysis behind this manifesto.'}
                 </p>
                 

@@ -461,7 +461,7 @@ export default function EditBlog() {
     return (
       <div className="min-h-screen bg-[#FAFAFA] dark:bg-gray-900 flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <div className="h-10 w-10 animate-spin rounded-full border-4 border-gray-200 dark:border-gray-800 border-t-indigo-500" />
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-gray-300 dark:border-gray-700 border-t-indigo-500" />
           <div className="text-[#18181B] dark:text-gray-400 font-space-grotesk text-sm font-bold uppercase tracking-widest">Loading blog...</div>
         </div>
       </div>

@@ -16,7 +16,7 @@ export default function EmptyState({
         </svg>
       </div>
       <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>
-      <p className="text-gray-500 mb-6 max-w-sm">{description}</p>
+      <p className="text-gray-700 mb-6 max-w-sm">{description}</p>
       {actionLabel && (
         onAction ? (
           <button

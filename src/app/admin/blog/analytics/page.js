@@ -228,7 +228,7 @@ export default function AdminAnalyticsPage() {
       {loading ? (
         <div className="flex flex-col items-center justify-center min-h-[400px] bg-white rounded-xl border border-gray-200">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mb-4" />
-          <p className="text-sm text-gray-500 font-medium">Assembling your data engine...</p>
+          <p className="text-sm text-gray-700 font-medium">Assembling your data engine...</p>
         </div>
       ) : (
         <>
@@ -273,7 +273,7 @@ export default function AdminAnalyticsPage() {
                 <div className="flex items-center justify-between mb-6">
                   <div>
                     <h3 className="text-sm font-bold text-gray-900">Traffic Momentum</h3>
-                    <p className="text-[11px] text-gray-500">Monthly view distribution over the last year</p>
+                    <p className="text-[11px] text-gray-700">Monthly view distribution over the last year</p>
                   </div>
                   <div className="flex gap-1.5">
                     <button className="h-6 px-2 text-[10px] font-bold bg-gray-100 text-gray-600 rounded">12M</button>
@@ -327,7 +327,7 @@ export default function AdminAnalyticsPage() {
                       <div key={i} className="flex items-center gap-2 px-2 py-1.5 rounded-lg border border-gray-50 bg-gray-50/50">
                         <div className="h-2 w-2 rounded-full" style={{ backgroundColor: item.color }} />
                         <div className="flex flex-col">
-                          <span className="text-[9px] text-gray-500 font-bold uppercase">{item.key}</span>
+                          <span className="text-[9px] text-gray-700 font-bold uppercase">{item.key}</span>
                           <span className="text-xs font-bold text-gray-800">{item.count}</span>
                         </div>
                       </div>
@@ -443,7 +443,7 @@ export default function AdminAnalyticsPage() {
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-xs">
-                  <thead className="bg-gray-50/50 text-[10px] uppercase tracking-wider text-gray-500 font-bold border-b border-gray-100">
+                  <thead className="bg-gray-50/50 text-[10px] uppercase tracking-wider text-gray-700 font-bold border-b border-gray-100">
                     <tr>
                       <th 
                         className="px-5 py-3 text-left cursor-pointer hover:text-indigo-600"
@@ -487,7 +487,7 @@ export default function AdminAnalyticsPage() {
                             variant={item.seoScore >= 80 ? 'success' : item.seoScore >= 60 ? 'info' : 'warning'} 
                           />
                         </td>
-                        <td className="px-5 py-3 text-gray-500 font-medium text-[10px]">
+                        <td className="px-5 py-3 text-gray-700 font-medium text-[10px]">
                           {item.publishedAt ? new Date(item.publishedAt).toLocaleDateString() : '-'}
                         </td>
                       </tr>
@@ -508,7 +508,7 @@ export default function AdminAnalyticsPage() {
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-xs">
-                  <thead className="bg-gray-50/50 text-[10px] uppercase tracking-wider text-gray-500 font-bold border-b border-gray-100">
+                  <thead className="bg-gray-50/50 text-[10px] uppercase tracking-wider text-gray-700 font-bold border-b border-gray-100">
                     <tr>
                       <th className="px-5 py-3 text-left">Keyword</th>
                       <th className="px-5 py-3 text-left">Pos</th>

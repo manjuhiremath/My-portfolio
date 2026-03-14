@@ -1,20 +1,27 @@
-import { Inter, Lora, JetBrains_Mono } from "next/font/google";
+import { Inter, Poppins, Karla, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import Script from "next/script";
 import { AuthProvider } from "@/context/AuthContext";
 import "./globals.css";
 
 const inter = Inter({
-  variable: "--font-heading",
+  variable: "--font-sans",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800", "900"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
+const karla = Karla({
+  variable: "--font-body",
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
   display: 'swap',
 });
 
-const lora = Lora({
-  variable: "--font-body",
+const poppins = Poppins({
+  variable: "--font-display",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["600", "700", "800"],
   display: 'swap',
 });
 
@@ -76,7 +83,7 @@ export default function RootLayout({ children }) {
         <link rel="dns-prefetch" href="https://res.cloudinary.com" />
       </head>
       <body
-        className={`${inter.variable} ${lora.variable} ${jetbrainsMono.variable} antialiased bg-white dark:bg-gray-900`}
+        className={`${inter.variable} ${karla.variable} ${poppins.variable} ${jetbrainsMono.variable} antialiased bg-white dark:bg-gray-900`}
       >
         {/* AdSense script using next/script component */}
         <Script 

@@ -19,7 +19,7 @@ const Hero = () => {
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
                             <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
                         </span>
-                        <span className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-500 dark:text-gray-400">System Status: Operational</span>
+                        <span className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-700 dark:text-gray-400">System Status: Operational</span>
                     </div>
                     
                     <h1 className="text-6xl md:text-8xl lg:text-9xl font-black tracking-[calc(-0.05em)] text-gray-900 dark:text-white leading-[0.9] font-display">
@@ -27,7 +27,7 @@ const Hero = () => {
                     </h1>
                 </div>
                 
-                <p className="text-xl md:text-2xl text-gray-500 dark:text-gray-400 max-w-3xl mx-auto font-medium leading-relaxed">
+                <p className="text-xl md:text-2xl text-gray-700 dark:text-gray-400 max-w-3xl mx-auto font-medium leading-relaxed">
                     Analyzing the strategic architecture of the digital era. A weekly journal exploring technical excellence, high-performance code, and modern engineering patterns.
                 </p>
                 

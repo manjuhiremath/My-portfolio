@@ -18,7 +18,7 @@ export default function AboutPage() {
         </header>
         
         <div className="prose dark:prose-invert max-w-[65ch]">
-          <p className="text-xl text-gray-500 dark:text-gray-400 font-medium leading-relaxed mb-12">
+          <p className="text-xl text-gray-700 dark:text-gray-400 font-medium leading-relaxed mb-12">
             The Digital Manifesto is an editorial protocol dedicated to the strategic analysis of high-performance engineering and modern architectural patterns.
           </p>
           
@@ -40,22 +40,22 @@ export default function AboutPage() {
                 <div className="bg-gray-50 dark:bg-gray-800/50 p-8 rounded-[2rem] border border-gray-100 dark:border-gray-800">
                   <span className="text-[9px] font-black uppercase tracking-[0.3em] text-primary mb-4 block">Domain 01</span>
                   <h3 className="text-lg font-black text-gray-900 dark:text-white uppercase mb-2">Systems & AI</h3>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 font-medium leading-relaxed">Architectural patterns, autonomous agents, and high-performance computing.</p>
+                  <p className="text-xs text-gray-700 dark:text-gray-400 font-medium leading-relaxed">Architectural patterns, autonomous agents, and high-performance computing.</p>
                 </div>
                 <div className="bg-gray-50 dark:bg-gray-800/50 p-8 rounded-[2rem] border border-gray-100 dark:border-gray-800">
                   <span className="text-[9px] font-black uppercase tracking-[0.3em] text-primary mb-4 block">Domain 02</span>
                   <h3 className="text-lg font-black text-gray-900 dark:text-white uppercase mb-2">Global Strategy</h3>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 font-medium leading-relaxed">Geopolitics, international relations, and security protocols.</p>
+                  <p className="text-xs text-gray-700 dark:text-gray-400 font-medium leading-relaxed">Geopolitics, international relations, and security protocols.</p>
                 </div>
                 <div className="bg-gray-50 dark:bg-gray-800/50 p-8 rounded-[2rem] border border-gray-100 dark:border-gray-800">
                   <span className="text-[9px] font-black uppercase tracking-[0.3em] text-primary mb-4 block">Domain 03</span>
                   <h3 className="text-lg font-black text-gray-900 dark:text-white uppercase mb-2">War Economics</h3>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 font-medium leading-relaxed">Global economy shifts, market volatility, and energy security.</p>
+                  <p className="text-xs text-gray-700 dark:text-gray-400 font-medium leading-relaxed">Global economy shifts, market volatility, and energy security.</p>
                 </div>
                 <div className="bg-gray-50 dark:bg-gray-800/50 p-8 rounded-[2rem] border border-gray-100 dark:border-gray-800">
                   <span className="text-[9px] font-black uppercase tracking-[0.3em] text-primary mb-4 block">Domain 04</span>
                   <h3 className="text-lg font-black text-gray-900 dark:text-white uppercase mb-2">Digital Era</h3>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 font-medium leading-relaxed">Creator economy, Web3 evolution, and technical innovation.</p>
+                  <p className="text-xs text-gray-700 dark:text-gray-400 font-medium leading-relaxed">Creator economy, Web3 evolution, and technical innovation.</p>
                 </div>
               </div>
             </section>

@@ -123,9 +123,9 @@ export default function AdminDashboardPage() {
       />
 
       {loading ? (
-        <div className="flex flex-col items-center justify-center min-h-[400px] bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800">
+        <div className="flex flex-col items-center justify-center min-h-[400px] bg-white dark:bg-gray-900 rounded-2xl border border-gray-300 dark:border-gray-700">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-4" />
-          <p className="text-sm text-gray-500 font-medium">Synchronizing protocol data...</p>
+          <p className="text-sm text-gray-700 font-medium">Synchronizing protocol data...</p>
         </div>
       ) : (
         <>
@@ -174,20 +174,20 @@ export default function AdminDashboardPage() {
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Search recent index..."
-                className="h-8 w-64 rounded-lg border border-gray-200 dark:border-gray-800 px-3 text-xs outline-none focus:border-primary transition-all bg-white dark:bg-gray-900 dark:text-white"
+                className="h-8 w-64 rounded-lg border border-gray-300 dark:border-gray-700 px-3 text-xs outline-none focus:border-primary transition-all bg-white dark:bg-gray-900 dark:text-white"
               />
             </div>
             <select
               value={status}
               onChange={(event) => setStatus(event.target.value)}
-              className="h-8 rounded-lg border border-gray-200 dark:border-gray-800 px-2 text-xs outline-none bg-white dark:bg-gray-900 dark:text-gray-300"
+              className="h-8 rounded-lg border border-gray-300 dark:border-gray-700 px-2 text-xs outline-none bg-white dark:bg-gray-900 dark:text-gray-300"
             >
               <option value="all">All Status</option>
               <option value="published">Live</option>
               <option value="draft">Queue</option>
             </select>
             <div className="h-4 w-px bg-gray-200 dark:bg-gray-800 mx-1" />
-            <button onClick={loadStats} className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-gray-200 dark:border-gray-800 px-3 text-xs text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+            <button onClick={loadStats} className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-gray-300 dark:border-gray-700 px-3 text-xs text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
               <FiRefreshCw className="h-3 w-3" />
               Sync
             </button>
@@ -195,7 +195,7 @@ export default function AdminDashboardPage() {
 
           {/* SECONDARY INSIGHTS */}
           <section className="grid grid-cols-1 gap-4 xl:grid-cols-[1.5fr_1fr]">
-            <article className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 shadow-soft">
+            <article className="rounded-2xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 p-5 shadow-soft">
               <div className="mb-6 flex items-center justify-between">
                 <div>
                   <h2 className="text-sm font-black uppercase tracking-widest text-gray-900 dark:text-white">Traffic Momentum</h2>
@@ -225,13 +225,13 @@ export default function AdminDashboardPage() {
               </div>
             </article>
 
-            <article className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 shadow-soft">
+            <article className="rounded-2xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 p-5 shadow-soft">
               <h2 className="mb-6 text-sm font-black uppercase tracking-widest text-gray-900 dark:text-white">SEO Health Protocol</h2>
               <div className="space-y-5">
                 {seoDistribution.map((item) => (
                   <div key={item.key} className="space-y-2">
                     <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-wider">
-                      <span className="text-gray-500">{item.key}</span>
+                      <span className="text-gray-700">{item.key}</span>
                       <span className="text-gray-900 dark:text-gray-300">{item.count} Assets</span>
                     </div>
                     <div className="h-2 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
@@ -260,7 +260,7 @@ export default function AdminDashboardPage() {
 
           {/* TABLES */}
           <section className="grid grid-cols-1 gap-4 xl:grid-cols-[2fr_1fr]">
-            <article className="overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-soft">
+            <article className="overflow-hidden rounded-2xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-soft">
               <div className="border-b border-gray-100 dark:border-gray-800 px-5 py-4 flex items-center justify-between bg-gray-50/50 dark:bg-gray-800/20">
                 <h2 className="text-sm font-black uppercase tracking-widest text-gray-900 dark:text-white">Recent Index Activity</h2>
                 <Link href="/admin/blog/blogs" className="text-[10px] font-black text-primary uppercase tracking-widest hover:underline">View Ledger</Link>
@@ -303,7 +303,7 @@ export default function AdminDashboardPage() {
                         <td className="px-5 py-4 text-right">
                           <Link 
                             href={`/admin/blog/blogs/edit/${blog.slug}`} 
-                            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 dark:border-gray-800 text-gray-400 hover:text-primary hover:border-primary transition-all"
+                            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-300 dark:border-gray-700 text-gray-400 hover:text-primary hover:border-primary transition-all"
                           >
                             <FiArrowRight className="h-4 w-4" />
                           </Link>
@@ -315,7 +315,7 @@ export default function AdminDashboardPage() {
               </div>
             </article>
 
-            <article className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-soft overflow-hidden">
+            <article className="rounded-2xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-soft overflow-hidden">
               <div className="border-b border-gray-100 dark:border-gray-800 px-5 py-4 bg-gray-50/50 dark:bg-gray-800/20">
                 <h2 className="text-sm font-black uppercase tracking-widest text-gray-900 dark:text-white">Top Performing Assets</h2>
               </div>
@@ -327,18 +327,18 @@ export default function AdminDashboardPage() {
                     className="flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all group"
                   >
                     <div className="flex items-center gap-4 min-w-0">
-                      <span className="text-xl font-black text-gray-100 dark:text-gray-800 group-hover:text-primary/20 transition-colors">{index + 1}</span>
+                      <span className="text-xl font-black text-gray-100 dark:text-gray-500 group-hover:text-primary/20 transition-colors">{index + 1}</span>
                       <div className="min-w-0">
                         <p className="truncate text-xs font-bold text-gray-800 dark:text-gray-200 group-hover:text-primary transition-colors">{article.title}</p>
                         <p className="text-[10px] text-gray-400 font-black uppercase tracking-tighter mt-0.5">{formatNumber(article.views)} Impacts</p>
                       </div>
                     </div>
-                    <FiMoreHorizontal className="text-gray-300 group-hover:text-gray-500" />
+                    <FiMoreHorizontal className="text-gray-300 group-hover:text-gray-700" />
                   </Link>
                 ))}
               </div>
               <div className="p-4 bg-gray-50/50 dark:bg-gray-800/20 border-t border-gray-100 dark:border-gray-800">
-                <button className="w-full py-2 text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 hover:text-primary transition-colors">
+                <button className="w-full py-2 text-[10px] font-black uppercase tracking-[0.2em] text-gray-700 hover:text-primary transition-colors">
                   Recalculate Protocol Ranks
                 </button>
               </div>

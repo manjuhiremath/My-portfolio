@@ -149,7 +149,7 @@ export default function MobileBlogLayout({
                 <Link
                   key={tag}
                   href={`/blog/tag/${encodeURIComponent(tag)}`}
-                  className="px-4 py-2 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800 text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400"
+                  className="px-4 py-2 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800 text-[10px] font-bold uppercase tracking-widest text-gray-700 dark:text-gray-400"
                 >
                   #{tag}
                 </Link>
@@ -178,7 +178,7 @@ export default function MobileBlogLayout({
       {/* Sticky Bottom Share Bar */}
       <div className="fixed bottom-0 left-0 right-0 z-50 p-6 pb-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-t border-gray-100 dark:border-gray-800 animate-in slide-in-from-bottom-full duration-700 delay-500 fill-mode-both">
         <div className="max-w-screen-sm mx-auto flex items-center justify-between gap-6">
-          <p className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.3em]">Pass it on</p>
+          <p className="text-[10px] font-black text-gray-400 dark:text-gray-700 uppercase tracking-[0.3em]">Pass it on</p>
           <div className="flex items-center gap-3">
             <button 
               onClick={shareTwitter}

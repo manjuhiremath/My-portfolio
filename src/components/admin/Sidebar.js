@@ -53,7 +53,7 @@ export default function Sidebar({ isOpen, setIsOpen, currentPath }) {
         <nav className="p-4 space-y-6 overflow-y-auto h-[calc(100%-4rem)]">
           {navItems.map((section, idx) => (
             <div key={idx}>
-              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3">
+              <h3 className="text-xs font-semibold text-gray-700 uppercase tracking-wider mb-3 px-3">
                 {section.section}
               </h3>
               <ul className="space-y-1">

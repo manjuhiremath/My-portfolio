@@ -352,24 +352,24 @@ export default function AIModelsPage() {
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-6">
         <div className="bg-white p-3 rounded-xl border border-gray-200">
-          <p className="text-xs text-gray-500">Total Models</p>
+          <p className="text-xs text-gray-700">Total Models</p>
           <p className="text-xl font-bold text-gray-900">{stats.total}</p>
         </div>
         <div className="bg-white p-3 rounded-xl border border-gray-200">
-          <p className="text-xs text-gray-500">Active</p>
+          <p className="text-xs text-gray-700">Active</p>
           <p className="text-xl font-bold text-emerald-600">{stats.active}</p>
         </div>
         <div className="bg-white p-3 rounded-xl border border-gray-200">
-          <p className="text-xs text-gray-500">Default</p>
+          <p className="text-xs text-gray-700">Default</p>
           <p className="text-xl font-bold text-indigo-600">{stats.default}</p>
         </div>
         <div className="bg-white p-3 rounded-xl border border-gray-200">
-          <p className="text-xs text-gray-500">Free</p>
+          <p className="text-xs text-gray-700">Free</p>
           <p className="text-xl font-bold text-amber-600">{stats.free}</p>
         </div>
         {stats.byProvider.slice(0, 2).map(p => (
           <div key={p.id} className="bg-white p-3 rounded-xl border border-gray-200">
-            <p className="text-xs text-gray-500">{p.name}</p>
+            <p className="text-xs text-gray-700">{p.name}</p>
             <p className="text-xl font-bold text-gray-700">{p.count}</p>
           </div>
         ))}
@@ -424,7 +424,7 @@ export default function AIModelsPage() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
           </svg>
           <h3 className="text-lg font-medium text-gray-900 mb-2">No AI Models</h3>
-          <p className="text-gray-500 mb-4">Add your first AI model or sync with Ollama</p>
+          <p className="text-gray-700 mb-4">Add your first AI model or sync with Ollama</p>
           <div className="flex justify-center gap-3">
             <button
               onClick={openAddModal}
@@ -476,7 +476,7 @@ export default function AIModelsPage() {
                                 <span className="px-1.5 py-0.5 bg-emerald-50 text-emerald-700 text-[10px] rounded">FREE</span>
                               )}
                             </div>
-                            <p className="text-xs text-gray-500 font-mono mt-0.5">{model.modelId}</p>
+                            <p className="text-xs text-gray-700 font-mono mt-0.5">{model.modelId}</p>
                             {model.description && (
                               <p className="text-xs text-gray-400 mt-1 line-clamp-1">{model.description}</p>
                             )}
@@ -488,7 +488,7 @@ export default function AIModelsPage() {
                           <span className={`px-2 py-1 rounded text-xs font-medium w-fit ${getProviderTypeColor(model.providerType)}`}>
                             {providerType?.name || model.providerType}
                           </span>
-                          <span className="text-xs text-gray-500">{model.provider}</span>
+                          <span className="text-xs text-gray-700">{model.provider}</span>
                         </div>
                       </td>
                       <td className="px-4 py-3">
@@ -519,7 +519,7 @@ export default function AIModelsPage() {
                           className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
                             model.isActive 
                               ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100' 
-                              : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                           }`}
                         >
                           {model.isActive ? 'Active' : 'Inactive'}
@@ -594,7 +594,7 @@ export default function AIModelsPage() {
                       <div className={`text-xs font-medium px-2 py-0.5 rounded w-fit mb-1 ${type.color}`}>
                         {type.name}
                       </div>
-                      <p className="text-xs text-gray-500">{type.description}</p>
+                      <p className="text-xs text-gray-700">{type.description}</p>
                     </button>
                   ))}
                 </div>
@@ -612,7 +612,7 @@ export default function AIModelsPage() {
                     className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm disabled:bg-gray-100"
                     required
                   />
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-gray-700 mt-1">
                     {formData.providerType === 'ollama' && 'e.g., llama3.2, mistral, deepseek-coder'}
                     {formData.providerType === 'openrouter' && 'e.g., meta-llama/llama-3.3-70b-instruct:free'}
                     {formData.providerType === 'openai' && 'e.g., gpt-4, gpt-3.5-turbo'}

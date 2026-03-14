@@ -291,16 +291,16 @@ export default function AdminBlogsClient() {
       </AdminActionToolbar>
 
       <section className="overflow-hidden rounded-lg border border-gray-200 bg-white">
-        <div className="border-b border-gray-200 px-3 py-2 text-[11px] text-gray-500">
+        <div className="border-b border-gray-200 px-3 py-2 text-[11px] text-gray-700">
           Showing {pagedRows.length} of {filteredRows.length} blogs
         </div>
 
         {loading ? (
-          <div className="p-8 text-center text-xs text-gray-500">Loading blogs...</div>
+          <div className="p-8 text-center text-xs text-gray-700">Loading blogs...</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
-              <thead className="bg-gray-50 text-[11px] uppercase tracking-wide text-gray-500">
+              <thead className="bg-gray-50 text-[11px] uppercase tracking-wide text-gray-700">
                 <tr>
                   <th className="px-3 py-2 text-left">
                     <button type="button" onClick={() => changeSort('title')} className="inline-flex items-center gap-1 font-medium">
@@ -341,7 +341,7 @@ export default function AdminBlogsClient() {
                   <tr key={blog._id} className="h-9 hover:bg-gray-50">
                     <td className="px-3 py-2">
                       <p className="max-w-[320px] truncate font-medium text-gray-800">{blog.title}</p>
-                      <p className="truncate text-[11px] text-gray-500">{blog.slug}</p>
+                      <p className="truncate text-[11px] text-gray-700">{blog.slug}</p>
                     </td>
                     <td className="px-3 py-2 text-gray-600">
                       {typeof blog.category === 'object' ? (blog.category?.name || 'Uncategorized') : 'Uncategorized'}
@@ -405,7 +405,7 @@ export default function AdminBlogsClient() {
 
                 {!pagedRows.length ? (
                   <tr>
-                    <td colSpan={7} className="px-3 py-8 text-center text-xs text-gray-500">
+                    <td colSpan={7} className="px-3 py-8 text-center text-xs text-gray-700">
                       No blogs found for current filters.
                     </td>
                   </tr>
@@ -416,7 +416,7 @@ export default function AdminBlogsClient() {
         )}
 
         <div className="flex items-center justify-between border-t border-gray-200 px-3 py-2">
-          <p className="text-[11px] text-gray-500">
+          <p className="text-[11px] text-gray-700">
             Page {page} of {totalPages}
           </p>
           <div className="flex items-center gap-1">

@@ -353,7 +353,7 @@ export default async function BlogPostPage({ params }) {
             <span className="h-1 w-1 rounded-full bg-gray-200 dark:bg-gray-800" />
             <Link href={`/blog?category=${encodeURIComponent(categoryName)}`} className="hover:text-primary transition-colors">{categoryName}</Link>
             <span className="h-1 w-1 rounded-full bg-gray-200 dark:bg-gray-800" />
-            <span className="max-w-[200px] truncate text-gray-500 dark:text-gray-400 opacity-60">Entry {serializedBlog.slug}</span>
+            <span className="max-w-[200px] truncate text-gray-700 dark:text-gray-400 opacity-60">Entry {serializedBlog.slug}</span>
           </nav>
 
           <div className="grid grid-cols-1  lg:grid-cols-[80px_1fr_320px] xl:grid-cols-[100px_1fr_380px]">
@@ -381,7 +381,7 @@ export default async function BlogPostPage({ params }) {
                     {serializedBlog.title}
                   </h1>
 
-                  <div className="flex flex-wrap items-center gap-6 pt-8 border-t border-gray-100 dark:border-gray-800/50 text-[11px] font-black uppercase tracking-[0.3em] text-gray-400">
+                  <div className="flex flex-wrap items-center gap-6 pt-8 border-t border-gray-300 dark:border-gray-800 text-[11px] font-black uppercase tracking-[0.3em] text-gray-400">
                     <span className="text-primary">{new Date(serializedBlog.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
                     <span className="h-1 w-1 rounded-full bg-gray-200 dark:bg-gray-800" />
                     <span className="flex items-center gap-2"><FiClock className="h-4 w-4 text-primary" /> {readingTime} MIN READ</span>
@@ -411,7 +411,7 @@ export default async function BlogPostPage({ params }) {
                 </div>
 
                 {serializedBlog.faq?.length ? (
-                  <div className="mt-24 rounded-[3rem] bg-gray-50 dark:bg-gray-800/30 p-8 lg:p-12 border border-gray-100 dark:border-gray-800/50 shadow-sm max-w-[65ch] mx-auto">
+                  <div className="mt-24 rounded-[3rem] bg-gray-50 dark:bg-gray-800/30 p-8 lg:p-12 border border-gray-300 dark:border-gray-800 shadow-sm max-w-[65ch] mx-auto">
                     <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-10 tracking-tighter uppercase font-display">Technical FAQ</h2>
                     <div className="space-y-4">
                       {serializedBlog.faq.map((item, i) => (

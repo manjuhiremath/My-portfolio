@@ -140,7 +140,7 @@ export default function Footer() {
                 <li key={cat._id}>
                   <Link
                     href={`/blog?category=${encodeURIComponent(cat.name)}`}
-                    className="text-xs font-bold text-gray-500 hover:text-white hover:trangray-x-1 transition-all inline-block"
+                    className="text-xs font-bold text-gray-700 hover:text-white hover:trangray-x-1 transition-all inline-block"
                   >
                     {cat.name}
                   </Link>
@@ -178,7 +178,7 @@ export default function Footer() {
                   <li key={link.name}>
                     <Link
                       href={link.href}
-                      className="text-xs font-bold text-gray-500 hover:text-white transition-colors"
+                      className="text-xs font-bold text-gray-700 hover:text-white transition-colors"
                     >
                       {link.name}
                     </Link>
@@ -216,7 +216,7 @@ export default function Footer() {
               <Link
                 key={tag._id}
                 href={`/blog/tag/${encodeURIComponent(tag.name)}`}
-                className="rounded-xl border border-gray-900 bg-gray-950/50 px-4 py-2 text-[9px] font-black text-gray-500 hover:text-primary hover:border-primary/30 hover:bg-gray-900 transition-all shadow-inner"
+                className="rounded-xl border border-gray-900 bg-gray-950/50 px-4 py-2 text-[9px] font-black text-gray-700 hover:text-primary hover:border-primary/30 hover:bg-gray-900 transition-all shadow-inner"
               >
                 #{tag.name.toUpperCase()}
               </Link>

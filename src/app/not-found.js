@@ -10,7 +10,7 @@ export default function NotFound() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center px-4 py-12">
       <div className="max-w-md w-full text-center">
         <div className="mb-8 relative">
-          <h1 className="text-9xl font-black text-gray-200 dark:text-gray-800 select-none" style={{ fontFamily: 'var(--font-display), serif' }}>
+          <h1 className="text-9xl font-black text-gray-200 dark:text-gray-500 select-none" style={{ fontFamily: 'var(--font-display), serif' }}>
             404
           </h1>
           <div className="absolute inset-0 flex items-center justify-center">
@@ -43,8 +43,8 @@ export default function NotFound() {
           </Link>
         </div>
         
-        <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800">
-          <p className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-[0.4em] font-black">
+        <div className="mt-12 pt-8 border-t border-gray-300 dark:border-gray-700">
+          <p className="text-[10px] text-gray-400 dark:text-gray-700 uppercase tracking-[0.4em] font-black">
             The Digital Manifesto Editorial
           </p>
         </div>

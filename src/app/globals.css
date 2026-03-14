@@ -74,10 +74,11 @@
   --color-secondary: var(--secondary);
   --color-accent: var(--accent);
   
-  --font-sans: var(--font-heading), system-ui, sans-serif;
-  --font-serif: var(--font-body), serif;
-  --font-display: var(--font-heading), serif;
-  --font-mono: var(--font-mono);
+  --font-display: var(--font-display), sans-serif;
+  --font-body: var(--font-body), sans-serif;
+  --font-sans: var(--font-body), sans-serif;
+  --font-serif: var(--font-body), sans-serif;
+  --font-mono: var(--font-mono), monospace;
 
   --spacing-base: var(--base-unit);
 }
@@ -94,7 +95,7 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-serif); /* Default to serif for maximum readability */
+  font-family: var(--font-body); 
   line-height: var(--line-height-base);
   font-weight: var(--body-weight, 400);
   -webkit-font-smoothing: antialiased;
@@ -103,9 +104,9 @@ body {
   font-kerning: normal;
 }
 
-/* UI Elements use Sans */
+/* UI Elements use Body Font */
 nav, button, .btn, .tag, .metadata {
-  font-family: var(--font-sans);
+  font-family: var(--font-body);
 }
 
 /* Vertical Rhythm Utilities */
@@ -134,7 +135,7 @@ nav, button, .btn, .tag, .metadata {
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   border: 1px solid transparent;
-  font-family: var(--font-sans);
+  font-family: var(--font-body);
 }
 
 .btn-primary {
@@ -152,10 +153,10 @@ nav, button, .btn, .tag, .metadata {
   transform: trangrayY(0);
 }
 
-/* Blog Content Styles (Redesigned) */
+/* Blog Content Styles */
 .blog-content {
   font-size: var(--text-base);
-  font-family: var(--font-serif);
+  font-family: var(--font-body);
 }
 
 .blog-content p {
@@ -166,11 +167,11 @@ nav, button, .btn, .tag, .metadata {
 .blog-content h2,
 .blog-content h3,
 .blog-content h4 {
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   line-height: var(--line-height-heading);
   color: var(--foreground);
-  letter-spacing: -0.02em;
-  font-weight: 800;
+  letter-spacing: -0.01em;
+  font-weight: 600; /* Requested Poppins 600 */
 }
 
 .blog-content h1 {

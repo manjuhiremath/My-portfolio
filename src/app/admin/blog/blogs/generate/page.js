@@ -84,7 +84,7 @@ function SearchableDropdown({ label, value, onChange, options, placeholder, disa
 
           <div className="py-1">
             {filteredOptions.length === 0 && !showCreateOption ? (
-              <div className="px-4 py-3 text-sm text-gray-500 text-center">
+              <div className="px-4 py-3 text-sm text-gray-700 text-center">
                 No options found
               </div>
             ) : (
@@ -484,7 +484,7 @@ export default function AIBlogGenerator() {
 
           {isSubcategory && keywordData.category && (
             <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-              <span className="text-xs text-gray-500 uppercase tracking-wide">Parent Category</span>
+              <span className="text-xs text-gray-700 uppercase tracking-wide">Parent Category</span>
               <p className="font-medium text-gray-900">{keywordData.category}</p>
             </div>
           )}
@@ -930,7 +930,7 @@ export default function AIBlogGenerator() {
               ) : step.icon}
             </div>
             <span className={`ml-2 text-sm font-medium hidden sm:inline ${
-              currentStep === step.id ? 'text-indigo-600' : 'text-gray-500'
+              currentStep === step.id ? 'text-indigo-600' : 'text-gray-700'
             }`}>
               {step.name}
             </span>
@@ -1064,7 +1064,7 @@ export default function AIBlogGenerator() {
               AI Model
             </label>
             {aiModelsLoading ? (
-              <div className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm text-gray-500">
+              <div className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm text-gray-700">
                 Loading models...
               </div>
             ) : (
@@ -1080,7 +1080,7 @@ export default function AIBlogGenerator() {
                     </option>
                   ))}
                 </select>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-gray-700 mt-1">
                   {textModels.find(m => m._id === keywordData.selectedModel)?.description || 'Select a free text model'}
                 </p>
               </>
@@ -1123,7 +1123,7 @@ export default function AIBlogGenerator() {
       
       <div className="border rounded-xl p-4 space-y-3 max-h-[400px] overflow-y-auto">
         {outline.length === 0 ? (
-          <p className="text-gray-500 text-center py-8">No outline generated yet. Go back to Step 1.</p>
+          <p className="text-gray-700 text-center py-8">No outline generated yet. Go back to Step 1.</p>
         ) : (
           outline.map((section, index) => (
             <div key={`${section.type}-${section.title}-${index}`} className="flex items-center gap-2">
@@ -1233,7 +1233,7 @@ export default function AIBlogGenerator() {
           </button>
         </div>
 
-        <div className="flex justify-between items-center mt-4 text-sm text-gray-500">
+        <div className="flex justify-between items-center mt-4 text-sm text-gray-700">
           <span>{wordCount.toLocaleString()} words</span>
           <span>{readingTime} min read</span>
         </div>
@@ -1274,7 +1274,7 @@ export default function AIBlogGenerator() {
               onChange={(e) => setSeoData({ ...seoData, metaTitle: e.target.value })}
               className="w-full px-3 py-1.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
             />
-            <span className="text-xs text-gray-500">{seoData.metaTitle.length}/60</span>
+            <span className="text-xs text-gray-700">{seoData.metaTitle.length}/60</span>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Slug</label>
@@ -1293,7 +1293,7 @@ export default function AIBlogGenerator() {
               rows={3}
               className="w-full px-3 py-1.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
             />
-            <span className="text-xs text-gray-500">{seoData.metaDescription.length}/160</span>
+            <span className="text-xs text-gray-700">{seoData.metaDescription.length}/160</span>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Focus Keyword</label>
@@ -1435,7 +1435,7 @@ export default function AIBlogGenerator() {
                 ))
               )}
             </select>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-gray-700 mt-1">
               {imageModels.find((m) => m._id === imageModel)?.description || 'Select free image-generation model'}
             </p>
           </div>
@@ -1469,7 +1469,7 @@ export default function AIBlogGenerator() {
               </button>
             </div>
             {publishData.featuredImage && (
-              <p className="mt-1 text-xs text-gray-500 break-all">
+              <p className="mt-1 text-xs text-gray-700 break-all">
                 Stored URL: {publishData.featuredImage}
               </p>
             )}
@@ -1485,7 +1485,7 @@ export default function AIBlogGenerator() {
           </div>
         </div>
 
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-gray-700">
           Use <span className="font-medium text-gray-700">Save Draft</span> or <span className="font-medium text-gray-700">Publish Blog</span> below. Status is set by the action you choose.
         </p>
 
@@ -1521,27 +1521,27 @@ export default function AIBlogGenerator() {
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Summary</h3>
           <div className="space-y-3 text-sm">
             <div>
-              <span className="text-gray-500">Title:</span>
+              <span className="text-gray-700">Title:</span>
               <p className="font-medium text-gray-900">{seoData.metaTitle || 'Not set'}</p>
             </div>
             <div>
-              <span className="text-gray-500">Slug:</span>
+              <span className="text-gray-700">Slug:</span>
               <p className="font-medium text-gray-900">/{seoData.slug || 'not-set'}</p>
             </div>
             <div>
-              <span className="text-gray-500">Category:</span>
+              <span className="text-gray-700">Category:</span>
               <p className="font-medium text-gray-900">{publishData.category || 'Not set'}</p>
             </div>
             <div>
-              <span className="text-gray-500">Tags:</span>
+              <span className="text-gray-700">Tags:</span>
               <p className="font-medium text-gray-900">{publishData.tags || 'None'}</p>
             </div>
             <div>
-              <span className="text-gray-500">Words:</span>
+              <span className="text-gray-700">Words:</span>
               <p className="font-medium text-gray-900">{wordCount.toLocaleString()}</p>
             </div>
             <div>
-              <span className="text-gray-500">SEO Score:</span>
+              <span className="text-gray-700">SEO Score:</span>
               <p className={`font-medium ${seoScore.score >= 80 ? 'text-green-600' : seoScore.score >= 60 ? 'text-yellow-600' : 'text-red-600'}`}>
                 {seoScore.score}/100
               </p>

@@ -126,7 +126,7 @@ export default function AdminLayout({ children }) {
                 {sidebarOpen ? <FiX className="h-4 w-4" /> : <FiMenu className="h-4 w-4" />}
               </button>
 
-              <div className="hidden items-center gap-1 text-xs text-gray-500 sm:flex">
+              <div className="hidden items-center gap-1 text-xs text-gray-700 sm:flex">
                 <span>Admin</span>
                 <FiChevronRight className="h-3.5 w-3.5" />
                 <span className="font-medium text-gray-700">{currentItem?.label || 'Workspace'}</span>
@@ -137,7 +137,7 @@ export default function AdminLayout({ children }) {
                 <input
                   type="text"
                   placeholder="Quick search"
-                  className="h-8 w-full rounded-md border border-gray-200 bg-white pl-8 pr-2 text-xs outline-none placeholder:text-gray-400 focus:border-gray-400"
+                  className="h-8 w-full rounded-md border border-gray-200 bg-white pl-8 pr-2 text-xs outline-none placeholder:text-gray-400 focus:border-gray-300"
                 />
               </div>
 
