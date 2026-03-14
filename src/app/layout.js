@@ -56,12 +56,7 @@ export const metadata = {
   alternates: {
     canonical: "https://www.manjuhiremath.in",
   },
-  twitter: {
-    card: "summary_large_image",
-    title: "Manjunath M | Full Stack Developer",
-    description: "Full Stack MERN Developer specializing in React.js, Next.js, and Node.js.",
-    images: ["/Profilemanju.jpeg"],
-  },
+
   robots: {
     index: true,
     follow: true,
