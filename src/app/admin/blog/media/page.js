@@ -75,7 +75,7 @@ export default function AdminMediaPage() {
   async function loadMedia() {
     try {
       setLoading(true);
-      const response = await fetch('/api/blogs?limit=300&published=all');
+      const response = await fetch('/api/blogs?limit=500&published=all');
       const data = await response.json();
       if (!response.ok || data.success === false) throw new Error(data.error || 'Failed to fetch media');
       setBlogs(data.blogs || []);

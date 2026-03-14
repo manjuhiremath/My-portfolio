@@ -344,7 +344,7 @@ export default function AdminBlogsClient() {
                       <p className="truncate text-[11px] text-slate-500">{blog.slug}</p>
                     </td>
                     <td className="px-3 py-2 text-slate-600">
-                      {blog.category?.name || blog.category || 'Uncategorized'}
+                      {typeof blog.category === 'object' ? (blog.category?.name || 'Uncategorized') : 'Uncategorized'}
                     </td>
                     <td className="px-3 py-2">
                       <AdminStatusBadge value={`${blog.seoScore}/100`} variant={getSeoVariant(blog.seoScore)} />

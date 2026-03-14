@@ -148,11 +148,13 @@ export async function getDashboardStats() {
       .sort({ updatedAt: -1 })
       .limit(18)
       .select('title slug published createdAt updatedAt category views seoTitle seoDescription excerpt content tags keywords readingTime seoScore')
+      .populate('category')
       .lean(),
     Blog.find({ published: true })
       .sort({ views: -1, publishedAt: -1 })
       .limit(15)
       .select('title slug views publishedAt category seoTitle seoDescription excerpt content tags keywords readingTime seoScore')
+      .populate('category')
       .lean(),
     Blog.aggregate([
       { $match: { published: true } },
