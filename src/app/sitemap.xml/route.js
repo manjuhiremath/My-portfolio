@@ -5,6 +5,7 @@ export async function GET() {
   const pages = [
     { url: "", priority: "1.0", changefreq: "daily" },
     { url: "/blog", priority: "0.9", changefreq: "daily" },
+    { url: "/blog/sitemap.xml", priority: "0.9", changefreq: "daily" },
     { url: "/about", priority: "0.7", changefreq: "monthly" },
     { url: "/contact", priority: "0.7", changefreq: "monthly" },
     { url: "/privacy-policy", priority: "0.5", changefreq: "monthly" },
