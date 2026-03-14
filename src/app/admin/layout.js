@@ -53,7 +53,7 @@ export default function AdminLayout({ children }) {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-slate-100 text-slate-900 antialiased">
+      <div className="min-h-screen bg-gray-100 text-gray-900 antialiased">
         <Toaster
           position="top-right"
           toastOptions={{
@@ -71,19 +71,19 @@ export default function AdminLayout({ children }) {
           <button
             type="button"
             aria-label="Close sidebar overlay"
-            className="fixed inset-0 z-40 bg-slate-900/50 lg:hidden"
+            className="fixed inset-0 z-40 bg-gray-900/50 lg:hidden"
             onClick={() => setSidebarOpen(false)}
           />
         ) : null}
 
         <aside
-          className={`fixed inset-y-0 left-0 z-50 w-[224px] border-r border-slate-800 bg-slate-950 text-slate-200 transition-transform duration-200 lg:translate-x-0 ${
-            sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          className={`fixed inset-y-0 left-0 z-50 w-[224px] border-r border-gray-800 bg-gray-950 text-gray-200 transition-transform duration-200 lg:trangray-x-0 ${
+            sidebarOpen ? 'trangray-x-0' : '-trangray-x-full'
           }`}
         >
-          <div className="flex h-11 items-center border-b border-slate-800 px-3">
+          <div className="flex h-11 items-center border-b border-gray-800 px-3">
             <Link href="/admin/blog/dashboard" className="inline-flex items-center gap-2 text-sm font-semibold tracking-tight text-white">
-              <span className="inline-flex h-6 w-6 items-center justify-center rounded bg-slate-800 text-[11px] font-bold text-emerald-300">
+              <span className="inline-flex h-6 w-6 items-center justify-center rounded bg-gray-800 text-[11px] font-bold text-emerald-300">
                 SEO
               </span>
               <span>Content Ops</span>
@@ -101,7 +101,7 @@ export default function AdminLayout({ children }) {
                       href={item.href}
                       onClick={() => setSidebarOpen(false)}
                       className={`group flex h-8 items-center gap-2 rounded-md px-2 text-xs font-medium transition-colors ${
-                        isActive ? 'bg-slate-800 text-white' : 'text-slate-300 hover:bg-slate-900 hover:text-white'
+                        isActive ? 'bg-gray-800 text-white' : 'text-gray-300 hover:bg-gray-900 hover:text-white'
                       }`}
                     >
                       <Icon className="h-4 w-4 flex-shrink-0" />
@@ -115,42 +115,42 @@ export default function AdminLayout({ children }) {
         </aside>
 
         <div className="lg:pl-[224px]">
-          <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
+          <header className="sticky top-0 z-30 border-b border-gray-200 bg-white/95 backdrop-blur">
             <div className="flex h-11 items-center gap-2 px-3 md:px-4">
               <button
                 type="button"
                 aria-label="Open sidebar"
-                className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 text-slate-700 hover:bg-slate-100 lg:hidden"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-gray-200 text-gray-700 hover:bg-gray-100 lg:hidden"
                 onClick={() => setSidebarOpen((state) => !state)}
               >
                 {sidebarOpen ? <FiX className="h-4 w-4" /> : <FiMenu className="h-4 w-4" />}
               </button>
 
-              <div className="hidden items-center gap-1 text-xs text-slate-500 sm:flex">
+              <div className="hidden items-center gap-1 text-xs text-gray-500 sm:flex">
                 <span>Admin</span>
                 <FiChevronRight className="h-3.5 w-3.5" />
-                <span className="font-medium text-slate-700">{currentItem?.label || 'Workspace'}</span>
+                <span className="font-medium text-gray-700">{currentItem?.label || 'Workspace'}</span>
               </div>
 
               <div className="relative ml-auto hidden w-full max-w-xs md:block">
-                <FiSearch className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
+                <FiSearch className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -trangray-y-1/2 text-gray-400" />
                 <input
                   type="text"
                   placeholder="Quick search"
-                  className="h-8 w-full rounded-md border border-slate-200 bg-white pl-8 pr-2 text-xs outline-none placeholder:text-slate-400 focus:border-slate-400"
+                  className="h-8 w-full rounded-md border border-gray-200 bg-white pl-8 pr-2 text-xs outline-none placeholder:text-gray-400 focus:border-gray-400"
                 />
               </div>
 
               <Link
                 href="/admin/blog/blogs/create"
-                className="inline-flex h-8 items-center rounded-md bg-slate-900 px-3 text-xs font-medium text-white hover:bg-slate-800"
+                className="inline-flex h-8 items-center rounded-md bg-gray-900 px-3 text-xs font-medium text-white hover:bg-gray-800"
               >
                 Create Blog
               </Link>
 
               <button
                 onClick={logout}
-                className="inline-flex h-8 items-center gap-2 rounded-md border border-slate-200 px-3 text-xs font-medium text-slate-600 hover:bg-slate-100"
+                className="inline-flex h-8 items-center gap-2 rounded-md border border-gray-200 px-3 text-xs font-medium text-gray-600 hover:bg-gray-100"
               >
                 <FiLogOut className="h-3.5 w-3.5" />
                 Logout

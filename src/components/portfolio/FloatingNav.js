@@ -49,7 +49,7 @@ const FloatingNav = () => {
     <motion.nav
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : -20 }}
-      className="fixed top-4 left-1/2 -translate-x-1/2 z-50 hidden sm:block"
+      className="fixed top-4 left-1/2 -trangray-x-1/2 z-50 hidden sm:block"
     >
       <div className="bg-black/80 backdrop-blur-xl border border-white/10 rounded-full px-2 py-2 shadow-lg shadow-black/20">
         <ul className="flex items-center gap-1">

@@ -10,17 +10,17 @@ export default function LatestBlogsGrid({ blogs, title = 'Latest Articles' }) {
       {/* Section Header */}
       <div className="flex items-center justify-between px-2">
         <div className="flex items-center gap-4">
-          <h2 className="text-lg font-black uppercase tracking-tight text-slate-900 dark:text-white flex items-center gap-3">
+          <h2 className="text-lg font-black uppercase tracking-tight text-gray-900 dark:text-white flex items-center gap-3">
             <span className="h-6 w-1 bg-primary rounded-full shadow-lg shadow-primary/20" />
             {title}
           </h2>
         </div>
         <Link
           href="/blog"
-          className="group hidden items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 hover:text-primary transition-all sm:flex"
+          className="group hidden items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 hover:text-primary transition-all sm:flex"
         >
           <span>Library</span>
-          <FiArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          <FiArrowRight className="h-4 w-4 transition-transform group-hover:trangray-x-1" />
         </Link>
       </div>
 
@@ -39,7 +39,7 @@ export default function LatestBlogsGrid({ blogs, title = 'Latest Articles' }) {
       <div className="flex justify-center pt-3 sm:hidden">
         <Link
           href="/blog"
-          className="inline-flex items-center gap-3 rounded-2xl bg-slate-900 dark:bg-white px-8 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-white dark:text-slate-900 transition-all hover:scale-105 active:scale-95 shadow-xl"
+          className="inline-flex items-center gap-3 rounded-2xl bg-gray-900 dark:bg-white px-8 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-white dark:text-gray-900 transition-all hover:scale-105 active:scale-95 shadow-xl"
         >
           Full Archive <FiArrowRight className="h-4 w-4" />
         </Link>

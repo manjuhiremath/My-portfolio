@@ -44,7 +44,7 @@
   --line-height-base: 1.6;
   --line-height-heading: 1.1;
 
-  --max-width-measure: 65ch;
+  --max-width-measure: 85ch;
 
   /* Effects */
   --shadow-soft: 0 4px 6px -1px oklch(0% 0 0 / 0.05), 0 2px 4px -2px oklch(0% 0 0 / 0.05);
@@ -144,19 +144,17 @@ nav, button, .btn, .tag, .metadata {
 
 .btn-primary:hover {
   filter: brightness(1.1);
-  transform: translateY(-1px);
+  transform: trangrayY(-1px);
   box-shadow: var(--shadow-md);
 }
 
 .btn-primary:active {
-  transform: translateY(0);
+  transform: trangrayY(0);
 }
 
 /* Blog Content Styles (Redesigned) */
 .blog-content {
   font-size: var(--text-base);
-  max-width: var(--max-width-measure);
-  margin-inline: auto;
   font-family: var(--font-serif);
 }
 
@@ -170,15 +168,41 @@ nav, button, .btn, .tag, .metadata {
 .blog-content h4 {
   font-family: var(--font-sans);
   line-height: var(--line-height-heading);
-  margin-top: var(--space-xl);
-  margin-bottom: var(--space-sm);
-  font-weight: 900;
   color: var(--foreground);
   letter-spacing: -0.02em;
+  font-weight: 800;
 }
 
-.blog-content h2 { font-size: var(--text-xl); }
-.blog-content h3 { font-size: var(--text-lg); }
+.blog-content h1 {
+  font-size: var(--text-2xl);
+  margin-top: var(--space-2xl);
+  margin-bottom: var(--space-md);
+}
+
+.blog-content h2 {
+  font-size: var(--text-xl);
+  margin-top: var(--space-xl);
+  margin-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--gray-200);
+  padding-bottom: 0.5rem;
+}
+
+.blog-content h3 {
+  font-size: var(--text-lg);
+  margin-top: var(--space-lg);
+  margin-bottom: var(--space-xs);
+  color: var(--primary);
+}
+
+.blog-content h4 {
+  font-size: var(--text-base);
+  margin-top: var(--space-md);
+  margin-bottom: var(--space-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--secondary);
+}
 
 .blog-content img {
   border-radius: var(--border-radius);

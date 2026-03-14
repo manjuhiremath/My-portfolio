@@ -10,7 +10,7 @@ import MultiplexAd from '@/components/ads/MultiplexAd';
 
 // Dynamic imports for components that can be lazy loaded
 const RelatedArticles = dynamic(() => import('./RelatedArticles'), {
-  loading: () => <div className="h-40 w-full animate-pulse bg-slate-100 dark:bg-slate-800 rounded-2xl" />,
+  loading: () => <div className="h-40 w-full animate-pulse bg-gray-100 dark:bg-gray-800 rounded-2xl" />,
   ssr: false
 });
 
@@ -69,18 +69,18 @@ export default function MobileBlogLayout({
   };
 
   return (
-    <div className="mobile-blog-layout md:hidden min-h-screen bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
+    <div className="mobile-blog-layout md:hidden min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       {/* Sticky Top Header */}
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 px-6 h-16 flex items-center justify-between border-b ${
-        scrolled ? 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-slate-100 dark:border-slate-800 shadow-xl shadow-black/5' : 'bg-transparent border-transparent'
+        scrolled ? 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-gray-100 dark:border-gray-800 shadow-xl shadow-black/5' : 'bg-transparent border-transparent'
       }`}>
-        <Link href="/blog" className="p-2 -ml-2 text-slate-900 dark:text-white">
+        <Link href="/blog" className="p-2 -ml-2 text-gray-900 dark:text-white">
           <FiArrowLeft className="w-6 h-6" />
         </Link>
-        <div className={`flex-1 mx-4 transition-all duration-500 transform ${scrolled ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}>
-          <h2 className="text-[10px] font-black uppercase tracking-[0.2em] truncate line-clamp-1 text-slate-400">{blog.title}</h2>
+        <div className={`flex-1 mx-4 transition-all duration-500 transform ${scrolled ? 'opacity-100 trangray-y-0' : 'opacity-0 trangray-y-2'}`}>
+          <h2 className="text-[10px] font-black uppercase tracking-[0.2em] truncate line-clamp-1 text-gray-400">{blog.title}</h2>
         </div>
-        <button onClick={copyToClipboard} className="p-2 -mr-2 text-slate-900 dark:text-white">
+        <button onClick={copyToClipboard} className="p-2 -mr-2 text-gray-900 dark:text-white">
           <FiShare2 className="w-5 h-5" />
         </button>
       </header>
@@ -93,24 +93,24 @@ export default function MobileBlogLayout({
             <Link href={`/blog?category=${encodeURIComponent(categoryName)}`} className="text-[10px] font-black uppercase tracking-[0.3em] text-orange-500">
               {categoryName}
             </Link>
-            <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700" />
-            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{readingTime} min read</span>
+            <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-700" />
+            <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{readingTime} min read</span>
           </div>
 
-          <h1 className="mobile-title text-[32px] font-black leading-[1.1] tracking-tight mb-8 text-slate-900 dark:text-white animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <h1 className="mobile-title text-[32px] font-black leading-[1.1] tracking-tight mb-8 text-gray-900 dark:text-white animate-in fade-in slide-in-from-bottom-4 duration-700">
             {blog.title}
           </h1>
 
-          <div className="flex items-center gap-4 mb-10 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
+          <div className="flex items-center gap-4 mb-10 p-4 rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800">
             <div>
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+              <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
                 Published on {new Date(blog.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
               </p>
             </div>
           </div>
 
           {blog.featuredImage && (
-            <div className="relative aspect-[4/3] mb-10 overflow-hidden rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-800 animate-in fade-in zoom-in-95 duration-1000">
+            <div className="relative aspect-[4/3] mb-10 overflow-hidden rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-800 animate-in fade-in zoom-in-95 duration-1000">
               <Image
                 src={fixUnsplashUrl(blog.featuredImage)}
                 alt={blog.title}
@@ -144,12 +144,12 @@ export default function MobileBlogLayout({
 
           {/* Tags */}
           {tagNames.length > 0 && (
-            <div className="mt-16 flex flex-wrap gap-2 pt-10 border-t border-slate-100 dark:border-slate-800">
+            <div className="mt-16 flex flex-wrap gap-2 pt-10 border-t border-gray-100 dark:border-gray-800">
               {tagNames.map((tag) => (
                 <Link
                   key={tag}
                   href={`/blog/tag/${encodeURIComponent(tag)}`}
-                  className="px-4 py-2 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400"
+                  className="px-4 py-2 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800 text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400"
                 >
                   #{tag}
                 </Link>
@@ -159,15 +159,15 @@ export default function MobileBlogLayout({
 
           {/* Related Articles Section */}
           {loadedSections === contentParts.length && (
-            <div className="mt-16 pt-10 border-t border-slate-100 dark:border-slate-800">
+            <div className="mt-16 pt-10 border-t border-gray-100 dark:border-gray-800">
               <div className="mb-12">
                 <MultiplexAd />
               </div>
               <div className="flex items-center gap-3 mb-8">
                 <span className="h-1.5 w-8 rounded-full bg-orange-500" />
-                <h2 className="text-xl font-black uppercase tracking-tight text-slate-900 dark:text-white">Recommendations</h2>
+                <h2 className="text-xl font-black uppercase tracking-tight text-gray-900 dark:text-white">Recommendations</h2>
               </div>
-              <Suspense fallback={<div className="h-40 animate-pulse bg-slate-100 dark:bg-slate-800 rounded-2xl" />}>
+              <Suspense fallback={<div className="h-40 animate-pulse bg-gray-100 dark:bg-gray-800 rounded-2xl" />}>
                 <RelatedArticles blogs={relatedBlogs} />
               </Suspense>
             </div>
@@ -176,9 +176,9 @@ export default function MobileBlogLayout({
       </main>
 
       {/* Sticky Bottom Share Bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 p-6 pb-10 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-t border-slate-100 dark:border-slate-800 animate-in slide-in-from-bottom-full duration-700 delay-500 fill-mode-both">
+      <div className="fixed bottom-0 left-0 right-0 z-50 p-6 pb-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-t border-gray-100 dark:border-gray-800 animate-in slide-in-from-bottom-full duration-700 delay-500 fill-mode-both">
         <div className="max-w-screen-sm mx-auto flex items-center justify-between gap-6">
-          <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em]">Pass it on</p>
+          <p className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.3em]">Pass it on</p>
           <div className="flex items-center gap-3">
             <button 
               onClick={shareTwitter}
@@ -194,7 +194,7 @@ export default function MobileBlogLayout({
             </button>
             <button 
               onClick={copyToClipboard}
-              className="w-12 h-12 flex items-center justify-center rounded-2xl bg-white dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-100 dark:border-slate-700 shadow-xl shadow-black/5 transition-transform"
+              className="w-12 h-12 flex items-center justify-center rounded-2xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-100 dark:border-gray-700 shadow-xl shadow-black/5 transition-transform"
             >
               {copied ? <FiCheck className="w-5 h-5 text-green-500" /> : <FiCopy className="w-5 h-5" />}
             </button>

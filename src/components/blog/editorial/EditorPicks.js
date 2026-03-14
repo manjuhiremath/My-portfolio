@@ -7,7 +7,7 @@ export default function EditorPicks({ blogs }) {
   if (!blogs || blogs.length === 0) return null;
 
   return (
-    <section className="relative overflow-hidden rounded-xl bg-slate-50 dark:bg-slate-800/30 p-8 sm:p-10 lg:p-12 border border-slate-100 dark:border-slate-800/50 shadow-sm transition-all hover:shadow-md">
+    <section className="relative overflow-hidden rounded-xl bg-gray-50 dark:bg-gray-800/30 p-8 sm:p-10 lg:p-12 border border-gray-100 dark:border-gray-800/50 shadow-sm transition-all hover:shadow-md">
       <div className="absolute top-0 right-0 p-8 opacity-10 dark:opacity-20">
         <FiStar className="h-24 w-24 text-orange-500 rotate-12" />
       </div>
@@ -18,10 +18,10 @@ export default function EditorPicks({ blogs }) {
           <FiStar className="h-6 w-6 fill-current" />
         </div>
         <div>
-          <h2 className="text-xl font-black tracking-tight text-slate-900 dark:text-white uppercase">
+          <h2 className="text-xl font-black tracking-tight text-gray-900 dark:text-white uppercase">
             Curated <span className="text-orange-500">Picks</span>
           </h2>
-          <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em]">Handpicked article collection</p>
+          <p className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.3em]">Handpicked article collection</p>
         </div>
       </div>
 
@@ -37,7 +37,7 @@ export default function EditorPicks({ blogs }) {
             <Link key={blog._id} href={href} className="group">
               <article className="space-y-5">
                 {/* Image */}
-                <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-slate-200 dark:bg-slate-700 shadow-sm transition-all duration-500">
+                <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-gray-200 dark:bg-gray-700 shadow-sm transition-all duration-500">
                   <Image
                     src={imageUrl}
                     alt={blog.title}
@@ -53,10 +53,10 @@ export default function EditorPicks({ blogs }) {
                   <p className="text-[9px] font-black text-orange-500 uppercase tracking-[0.3em]">
                     {categoryName}
                   </p>
-                  <h3 className="line-clamp-2 text-sm font-black leading-snug text-slate-900 dark:text-white transition-colors">
+                  <h3 className="line-clamp-2 text-sm font-black leading-snug text-gray-900 dark:text-white transition-colors">
                     {blog.title}
                   </h3>
-                  <p className="line-clamp-2 text-[11px] text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
+                  <p className="line-clamp-2 text-[11px] text-gray-500 dark:text-gray-400 font-medium leading-relaxed">
                     {blog.excerpt || 'Discover expert insights in this handpicked article.'}
                   </p>
                 </div>

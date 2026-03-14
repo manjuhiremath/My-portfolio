@@ -38,9 +38,9 @@ export default function BlogCard({ blog, categoryColor = 'oklch(60% 0.15 250)', 
     return (
       <Link
         href={href}
-        className="group flex gap-2 items-start py-1 border-b border-gray-200 dark:border-slate-800 last:border-0 hover:bg-slate-50 dark:hover:bg-slate-800/50 -mx-2 px-1 rounded-md transition-all"
+        className="group flex gap-2 items-start py-1 border-b border-gray-200 dark:border-gray-800 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-800/50 -mx-2 px-1 rounded-md transition-all"
       >
-        <div className="relative w-16 h-12 flex-shrink-0 overflow-hidden rounded-sm bg-slate-100 dark:bg-slate-800 shadow-sm">
+        <div className="relative w-16 h-12 flex-shrink-0 overflow-hidden rounded-sm bg-gray-100 dark:bg-gray-800 shadow-sm">
           <Image
             src={imageUrl}
             alt={blog.title || 'Manifesto'}
@@ -51,12 +51,12 @@ export default function BlogCard({ blog, categoryColor = 'oklch(60% 0.15 250)', 
           />
         </div>
         <div className="flex-1 min-w-0 space-y-1">
-          <h3 className="line-clamp-2 text-sm font-bold leading-tight text-slate-900 dark:text-slate-100 group-hover:text-primary transition-colors">
+          <h3 className="line-clamp-2 text-sm font-bold leading-tight text-gray-900 dark:text-gray-100 group-hover:text-primary transition-colors">
             {blog.title}
           </h3>
-          <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
+          <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">
             <span style={{ color: categoryColor }}>{categoryValue}</span>
-            <span className="h-1 w-1 rounded-full bg-slate-200 dark:bg-slate-700" />
+            <span className="h-1 w-1 rounded-full bg-gray-200 dark:bg-gray-700" />
             <span>{formatDate(blog.createdAt)}</span>
           </div>
         </div>
@@ -67,9 +67,9 @@ export default function BlogCard({ blog, categoryColor = 'oklch(60% 0.15 250)', 
   return (
     <Link
       href={href}
-      className="group block overflow-hidden rounded-md bg-white dark:bg-slate-800/30 border border-gray-200 dark:border-slate-800/50 shadow-soft transition-all duration-500 hover:shadow-md "
+      className="group block overflow-hidden rounded-md bg-white dark:bg-gray-800/30 border border-gray-200 dark:border-gray-800/50 shadow-soft transition-all duration-500 hover:shadow-md "
     >
-      <div className="relative aspect-[4/3] overflow-hidden bg-slate-100 dark:bg-slate-800">
+      <div className="relative aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-800">
         <Image
           src={imageUrl}
           alt={blog.title || 'Digital Manifesto'}
@@ -98,18 +98,18 @@ export default function BlogCard({ blog, categoryColor = 'oklch(60% 0.15 250)', 
       <div className="p-2 sm:p-3 space-y-1">
        
 
-        <h3 className="line-clamp-2 h-10 sm:h-12  text-base font-bold leading-snug tracking-tight text-slate-900 dark:text-white transition-colors duration-300 group-hover:text-primary">
+        <h3 className="line-clamp-2 h-10 sm:h-12  text-base font-bold leading-snug tracking-tight text-gray-900 dark:text-white transition-colors duration-300 group-hover:text-primary">
           {blog.title}
         </h3>
 
-        <p className="line-clamp-3 text-[13px] leading-relaxed text-slate-500 dark:text-slate-400 font-medium">
+        <p className="line-clamp-3 text-[13px] leading-relaxed text-gray-500 dark:text-gray-400 font-medium">
           {blog.excerpt}
         </p>
 
-        <div className="pt-3 flex items-center justify-between border-t border-gray-200 dark:border-slate-800/50">
-          <div className="flex items-center gap-3 text-[9px] font-black uppercase tracking-widest text-slate-400">
+        <div className="pt-3 flex items-center justify-between border-t border-gray-200 dark:border-gray-800/50">
+          <div className="flex items-center gap-3 text-[9px] font-black uppercase tracking-widest text-gray-400">
             <span className="flex items-center gap-1.5">
-              <FiEye className="h-3 w-3 text-gray-500 dark:text-slate-600" />
+              <FiEye className="h-3 w-3 text-gray-500 dark:text-gray-600" />
               {(blog.views || 0).toLocaleString()}
             </span>
              {/* <div className="flex items-center gap-2"> */}
@@ -118,7 +118,7 @@ export default function BlogCard({ blog, categoryColor = 'oklch(60% 0.15 250)', 
           </span>
         {/* </div> */}
           </div>
-          <span className="text-[9px] font-black uppercase tracking-[0.1em] text-primary opacity-70 -translate-x-2 group-hover:opacity-100  transition-all duration-300">
+          <span className="text-[9px] font-black uppercase tracking-[0.1em] text-primary opacity-70 -trangray-x-2 group-hover:opacity-100  transition-all duration-300">
             Access →
           </span>
         </div>

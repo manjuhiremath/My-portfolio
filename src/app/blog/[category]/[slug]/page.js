@@ -301,7 +301,17 @@ export default async function BlogPostPage({ params }) {
     const serializedBlog = JSON.parse(JSON.stringify(blog));
     const serializedRelatedBlogs = JSON.parse(JSON.stringify(relatedBlogsRaw));
 
+    const removeH1Tags = (html) => {
+      if (!html) return '';
+      // Replace h1 with div or just strip the tag but keep content. 
+      // Most bloggers accidentally put h1 in content which causes duplicate H1s.
+      // We'll strip the H1 tag but keep the text as a paragraph or similar, or just remove the tags.
+      // Based on user request "remove h1", I will strip the tag.
+      return html.replace(/<h1[^>]*>([\s\S]*?)<\/h1>/gi, '<p className="font-bold text-xl">$1</p>');
+    };
+
     let rawContent = getRenderableContent(serializedBlog.content || '');
+    rawContent = removeH1Tags(rawContent);
     rawContent = stripDuplicateFaq(rawContent, serializedBlog.faq?.length > 0);
     rawContent = injectSectionImages(rawContent, serializedBlog.sectionImages || []);
     const { html: renderableContent, headings } = addHeadingIds(rawContent);
@@ -323,7 +333,7 @@ export default async function BlogPostPage({ params }) {
     }
 
     return (
-      <div className="min-h-screen bg-white dark:bg-slate-900 transition-colors duration-500">
+      <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-500">
         <ViewTracker slug={slug} />
         <ReadingProgressBar />
 
@@ -336,64 +346,63 @@ export default async function BlogPostPage({ params }) {
           contentParts={mobileContentParts}
         />
 
-        <main className="hidden md:block mx-auto max-w-[1440px] px-6 lg:px-12 py-12">
+        <main className="hidden md:block mx-auto max-w-[1440px] px-6 lg:px-12 py-4">
           {/* Magazine Breadcrumb */}
-          <nav className="mb-12 flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">
+          <nav className="mb-4 flex items-center gap-3 text-[10px] font-semibold tracking-[0.1em] text-gray-600">
             <Link href="/blog" className="hover:text-primary transition-colors">Manifesto</Link>
-            <span className="h-1 w-1 rounded-full bg-slate-200 dark:bg-slate-800" />
+            <span className="h-1 w-1 rounded-full bg-gray-200 dark:bg-gray-800" />
             <Link href={`/blog?category=${encodeURIComponent(categoryName)}`} className="hover:text-primary transition-colors">{categoryName}</Link>
-            <span className="h-1 w-1 rounded-full bg-slate-200 dark:bg-slate-800" />
-            <span className="max-w-[200px] truncate text-slate-500 dark:text-slate-400 opacity-60">Entry {serializedBlog.slug}</span>
+            <span className="h-1 w-1 rounded-full bg-gray-200 dark:bg-gray-800" />
+            <span className="max-w-[200px] truncate text-gray-500 dark:text-gray-400 opacity-60">Entry {serializedBlog.slug}</span>
           </nav>
 
-          <div className="grid grid-cols-1 gap-16 lg:grid-cols-[80px_1fr_320px] xl:grid-cols-[100px_1fr_380px]">
+          <div className="grid grid-cols-1  lg:grid-cols-[80px_1fr_320px] xl:grid-cols-[100px_1fr_380px]">
             {/* Left Sidebar: Share & Actions */}
             <aside className="hidden lg:block">
               <div className="sticky top-32 flex flex-col items-center gap-6">
-                <span className="text-[9px] font-black uppercase tracking-[0.5em] text-slate-300 dark:text-slate-700 rotate-90 mb-12 whitespace-nowrap origin-center">Manifesto Share</span>
-                <button className="flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-100 bg-white text-slate-600 shadow-soft hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 dark:border-slate-800 dark:bg-slate-800 dark:text-slate-400"><FiTwitter className="h-5 w-5" /></button>
-                <button className="flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-100 bg-white text-slate-600 shadow-soft hover:bg-[#0077b5] hover:text-white hover:border-[#0077b5] transition-all duration-300 dark:border-slate-800 dark:bg-slate-800 dark:text-slate-400"><FiLinkedin className="h-5 w-5" /></button>
-                <button className="flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-100 bg-white text-slate-600 shadow-soft hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all duration-300 dark:border-slate-800 dark:bg-slate-800 dark:text-slate-400"><FiLink className="h-5 w-5" /></button>
+                <button className="flex h-12 w-12 items-center justify-center rounded-2xl border border-gray-100 bg-white text-gray-600 shadow-soft hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 dark:border-gray-800 dark:bg-gray-800 dark:text-gray-400"><FiTwitter className="h-5 w-5" /></button>
+                <button className="flex h-12 w-12 items-center justify-center rounded-2xl border border-gray-100 bg-white text-gray-600 shadow-soft hover:bg-[#0077b5] hover:text-white hover:border-[#0077b5] transition-all duration-300 dark:border-gray-800 dark:bg-gray-800 dark:text-gray-400"><FiLinkedin className="h-5 w-5" /></button>
+                <button className="flex h-12 w-12 items-center justify-center rounded-2xl border border-gray-100 bg-white text-gray-600 shadow-soft hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-300 dark:border-gray-800 dark:bg-gray-800 dark:text-gray-400"><FiLink className="h-5 w-5" /></button>
               </div>
             </aside>
 
             {/* Middle: Content */}
             <div className="min-w-0">
               <article>
-                <header className="mb-16 space-y-8">
+                <header className="mb-5 space-y-8">
                   <div className="flex flex-wrap gap-3">
                     <Link href={`/blog?category=${encodeURIComponent(categoryName)}`} className="rounded-full bg-primary px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-white shadow-lg shadow-primary/20">{categoryName}</Link>
                     {tagNames.slice(0, 3).map((tag) => (
-                      <Link key={tag} href={`/blog/tag/${encodeURIComponent(tag)}`} className="rounded-full bg-slate-50 dark:bg-slate-800 px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-primary transition-colors border border-slate-100 dark:border-slate-700">#{tag}</Link>
+                      <Link key={tag} href={`/blog/tag/${encodeURIComponent(tag)}`} className="rounded-full bg-gray-50 dark:bg-gray-800 px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 hover:text-primary transition-colors border border-gray-100 dark:border-gray-700">#{tag}</Link>
                     ))}
                   </div>
 
-                  <h1 className="text-3xl font-black leading-[1.05] tracking-tighter text-slate-900 dark:text-white sm:text-4xl lg:text-5xl xl:text-6xl font-display">
+                  <h1 className="text-3xl font-black leading-[1.05] tracking-tighter text-gray-900 dark:text-white sm:text-4xl lg:text-5xl xl:text-6xl font-display">
                     {serializedBlog.title}
                   </h1>
 
-                  <div className="flex flex-wrap items-center gap-6 pt-8 border-t border-slate-100 dark:border-slate-800/50 text-[11px] font-black uppercase tracking-[0.3em] text-slate-400">
+                  <div className="flex flex-wrap items-center gap-6 pt-8 border-t border-gray-100 dark:border-gray-800/50 text-[11px] font-black uppercase tracking-[0.3em] text-gray-400">
                     <span className="text-primary">{new Date(serializedBlog.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
-                    <span className="h-1 w-1 rounded-full bg-slate-200 dark:bg-slate-800" />
+                    <span className="h-1 w-1 rounded-full bg-gray-200 dark:bg-gray-800" />
                     <span className="flex items-center gap-2"><FiClock className="h-4 w-4 text-primary" /> {readingTime} MIN READ</span>
-                    <span className="h-1 w-1 rounded-full bg-slate-200 dark:bg-slate-800" />
-                    <span className="flex items-center gap-2"><FiEye className="h-4 w-4 text-slate-300 dark:text-slate-600" /> {(serializedBlog.views || 0).toLocaleString()} IMPACT</span>
+                    <span className="h-1 w-1 rounded-full bg-gray-200 dark:bg-gray-800" />
+                    <span className="flex items-center gap-2"><FiEye className="h-4 w-4 text-gray-300 dark:text-gray-600" /> {(serializedBlog.views || 0).toLocaleString()} IMPACT</span>
                   </div>
                 </header>
 
                 {serializedBlog.featuredImage ? (
-                  <div className="relative mb-16 aspect-[21/9] overflow-hidden rounded-[3rem] bg-slate-100 dark:bg-slate-800 shadow-2xl ring-1 ring-black/5 dark:ring-white/5">
+                  <div className="relative mb-16 aspect-[21/9] overflow-hidden rounded-[3rem] bg-gray-100 dark:bg-gray-800 shadow-2xl ring-1 ring-black/5 dark:ring-white/5">
                     <Image src={fixUnsplashUrl(serializedBlog.featuredImage)} alt={serializedBlog.title} fill sizes="(max-width: 1536px) 100vw, 1200px" className="object-cover" priority />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
                   </div>
                 ) : null}
 
-                <div className="blog-content prose dark:prose-invert max-w-[65ch] mx-auto transition-all duration-500">
+                <div className="blog-content transition-all duration-500">
                   {contentParts.map((part, i) => (
                     <div key={i} className="flow">
                       <div dangerouslySetInnerHTML={{ __html: part }} />
                       {i < contentParts.length - 1 && (
-                        <div className="my-16 py-12 border-y border-slate-50 dark:border-slate-800/50">
+                        <div className="my-16 py-12 border-y border-gray-50 dark:border-gray-800/50">
                           <ArticleAd />
                         </div>
                       )}
@@ -402,16 +411,16 @@ export default async function BlogPostPage({ params }) {
                 </div>
 
                 {serializedBlog.faq?.length ? (
-                  <div className="mt-24 rounded-[3rem] bg-slate-50 dark:bg-slate-800/30 p-8 lg:p-12 border border-slate-100 dark:border-slate-800/50 shadow-sm max-w-[65ch] mx-auto">
-                    <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-10 tracking-tighter uppercase font-display">Technical FAQ</h2>
+                  <div className="mt-24 rounded-[3rem] bg-gray-50 dark:bg-gray-800/30 p-8 lg:p-12 border border-gray-100 dark:border-gray-800/50 shadow-sm max-w-[65ch] mx-auto">
+                    <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-10 tracking-tighter uppercase font-display">Technical FAQ</h2>
                     <div className="space-y-4">
                       {serializedBlog.faq.map((item, i) => (
-                        <details key={i} className="group rounded-3xl border border-slate-100 dark:border-slate-700/50 bg-white dark:bg-slate-900/50 transition-all overflow-hidden shadow-sm hover:shadow-md">
-                          <summary className="cursor-pointer px-6 py-5 text-sm font-bold text-slate-900 dark:text-white hover:text-primary list-none flex items-center justify-between transition-colors">
+                        <details key={i} className="group rounded-3xl border border-gray-100 dark:border-gray-700/50 bg-white dark:bg-gray-900/50 transition-all overflow-hidden shadow-sm hover:shadow-md">
+                          <summary className="cursor-pointer px-6 py-5 text-sm font-bold text-gray-900 dark:text-white hover:text-primary list-none flex items-center justify-between transition-colors">
                             {item.question}
-                            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-50 dark:bg-slate-800 transition-transform group-open:rotate-180 group-open:bg-primary group-open:text-white shadow-sm"><svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" /></svg></span>
+                            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-50 dark:bg-gray-800 transition-transform group-open:rotate-180 group-open:bg-primary group-open:text-white shadow-sm"><svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" /></svg></span>
                           </summary>
-                          <div className="px-6 pb-6 text-sm text-slate-600 dark:text-slate-400 leading-relaxed pt-2 border-t border-slate-50 dark:border-slate-800/50">{item.answer}</div>
+                          <div className="px-6 pb-6 text-sm text-gray-600 dark:text-gray-400 leading-relaxed pt-2 border-t border-gray-50 dark:border-gray-800/50">{item.answer}</div>
                         </details>
                       ))}
                     </div>
@@ -423,18 +432,18 @@ export default async function BlogPostPage({ params }) {
 
             {/* Right Sidebar: TOC & CTA */}
             <aside className="hidden xl:block">
-              <div className="sticky top-32 space-y-10">
+              <div className="sticky  space-y-10">
                 <TableOfContents headings={headings} />
                 
-                <div className="relative overflow-hidden rounded-[2.5rem] bg-slate-900 p-8 text-white shadow-2xl border border-slate-800">
+                <div className="relative overflow-hidden rounded-[2.5rem] bg-gray-900 p-8 text-white shadow-2xl border border-gray-800">
                   <div className="absolute -top-12 -right-12 h-32 w-32 rounded-full bg-primary/20 blur-3xl" />
                   <div className="relative z-10 space-y-6">
                     <div>
                       <h3 className="text-lg font-black tracking-tight uppercase font-display leading-tight">Join the <span className="text-primary italic">Manifesto.</span></h3>
-                      <p className="mt-3 text-xs font-medium text-slate-400 leading-relaxed">Deep tech insights and architectural patterns delivered weekly.</p>
+                      <p className="mt-3 text-xs font-medium text-gray-400 leading-relaxed">Deep tech insights and architectural patterns delivered weekly.</p>
                     </div>
                     <div className="space-y-3">
-                      <input type="email" placeholder="Your email..." className="w-full rounded-2xl bg-white/5 border border-white/10 px-4 py-3 text-xs text-white placeholder:text-slate-600 outline-none focus:bg-white/10 focus:border-primary/50 transition-all" />
+                      <input type="email" placeholder="Your email..." className="w-full rounded-2xl bg-white/5 border border-white/10 px-4 py-3 text-xs text-white placeholder:text-gray-600 outline-none focus:bg-white/10 focus:border-primary/50 transition-all" />
                       <button className="btn btn-primary w-full py-3.5 text-[10px] font-black uppercase tracking-[0.3em] shadow-xl shadow-primary/20">Subscribe Now</button>
                     </div>
                   </div>
@@ -447,14 +456,14 @@ export default async function BlogPostPage({ params }) {
 
           {/* Related Articles */}
           {serializedRelatedBlogs?.length ? (
-            <section className="mt-32 border-t border-slate-100 dark:border-slate-800 pt-20">
+            <section className="mt-32 border-t border-gray-100 dark:border-gray-800 pt-20">
               <div className="mb-12 flex items-end justify-between px-2">
                 <div className="space-y-2">
                   <p className="text-[10px] font-black uppercase tracking-[0.5em] text-primary">Further Exploration</p>
-                  <h2 className="text-4xl font-black text-slate-900 dark:text-white tracking-tighter uppercase font-display">Related Manifestos</h2>
+                  <h2 className="text-4xl font-black text-gray-900 dark:text-white tracking-tighter uppercase font-display">Related Manifestos</h2>
                 </div>
-                <Link href="/blog" className="group flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.3em] text-slate-400 hover:text-primary transition-all mb-2">
-                  Library <FiArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                <Link href="/blog" className="group flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.3em] text-gray-400 hover:text-primary transition-all mb-2">
+                  Library <FiArrowRight className="h-4 w-4 transition-transform group-hover:trangray-x-1" />
                 </Link>
               </div>
               <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4">
@@ -470,13 +479,13 @@ export default async function BlogPostPage({ params }) {
                   
                   return (
                     <Link key={relatedBlog._id} href={`/blog/${slugify(relatedCatName)}/${relatedBlog.slug}`} className="group block space-y-4">
-                      <div className="relative aspect-[4/3] overflow-hidden rounded-3xl bg-slate-100 dark:bg-slate-800 shadow-sm transition-all duration-500 group-hover:shadow-xl group-hover:-translate-y-1">
+                      <div className="relative aspect-[4/3] overflow-hidden rounded-3xl bg-gray-100 dark:bg-gray-800 shadow-sm transition-all duration-500 group-hover:shadow-xl group-hover:-trangray-y-1">
                         <Image src={fixUnsplashUrl(relatedBlog.featuredImage)} alt={relatedBlog.title} fill sizes="(max-width: 768px) 50vw, 25vw" className="object-cover transition-transform duration-700 group-hover:scale-110" />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                       </div>
                       <div className="px-1 space-y-2">
                         <p className="text-[9px] font-black text-primary uppercase tracking-[0.3em]">{String(relatedCatName)}</p>
-                        <h3 className="line-clamp-2 text-sm font-black leading-tight text-slate-900 dark:text-white group-hover:text-primary transition-colors">{relatedBlog.title}</h3>
+                        <h3 className="line-clamp-2 text-sm font-black leading-tight text-gray-900 dark:text-white group-hover:text-primary transition-colors">{relatedBlog.title}</h3>
                       </div>
                     </Link>
                   );

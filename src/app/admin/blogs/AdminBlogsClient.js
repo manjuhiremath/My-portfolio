@@ -259,12 +259,12 @@ export default function AdminBlogs() {
             {/* Mobile Card View */}
             <div className="md:hidden space-y-3">
               {blogs.map((blog) => (
-                <div key={blog._id} className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                <div key={blog._id} className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
                   <div className="p-4">
                     <div className="flex items-start justify-between gap-3 mb-3">
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-sm font-semibold text-slate-900 line-clamp-2">{blog.title}</h3>
-                        <p className="text-xs text-slate-500 mt-1">{blog.category} / {blog.subcategory}</p>
+                        <h3 className="text-sm font-semibold text-gray-900 line-clamp-2">{blog.title}</h3>
+                        <p className="text-xs text-gray-500 mt-1">{blog.category} / {blog.subcategory}</p>
                       </div>
                       <span className={`flex-shrink-0 px-2.5 py-1 text-xs font-medium rounded-full ${
                         blog.published ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
@@ -272,7 +272,7 @@ export default function AdminBlogs() {
                         {blog.published ? 'Published' : 'Draft'}
                       </span>
                     </div>
-                    <div className="flex items-center gap-4 text-xs text-slate-500 mb-3">
+                    <div className="flex items-center gap-4 text-xs text-gray-500 mb-3">
                       <div className="flex items-center gap-1">
                         <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -283,12 +283,12 @@ export default function AdminBlogs() {
                       <span>Published: {blog.publishedAt ? new Date(blog.publishedAt).toLocaleDateString() : '-'}</span>
                       <span>Updated: {blog.updatedAt ? new Date(blog.updatedAt).toLocaleDateString() : new Date(blog.createdAt).toLocaleDateString()}</span>
                     </div>
-                    <div className="flex items-center justify-between pt-3 border-t border-slate-100">
+                    <div className="flex items-center justify-between pt-3 border-t border-gray-100">
                       <div className="flex gap-1">
                         <button
                           type="button"
                           onClick={() => openPreview(getBlogUrl(blog))}
-                          className="p-2 text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+                          className="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
                           title="View"
                         >
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -322,59 +322,59 @@ export default function AdminBlogs() {
             </div>
 
             {/* Desktop Table View */}
-            <div className="hidden md:block bg-white rounded-t-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="hidden md:block bg-white rounded-t-xl border border-gray-200 shadow-sm overflow-hidden">
               <table className="w-full">
-                <thead className="bg-slate-50">
+                <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase border-b border-r border-slate-200">Title</th>
-                    <th className="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase border-b border-r border-slate-200">Slug</th>
-                    <th className="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase border-b border-r border-slate-200">Category</th>
-                    <th className="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase border-b border-r border-slate-200">Status</th>
-                    <th className="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase border-b border-r border-slate-200">Views</th>
-                    <th className="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase border-b border-r border-slate-200">Published</th>
-                    <th className="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase border-b border-r border-slate-200">Updated</th>
-                    <th className="px-3 py-2 text-center bg-slate-100 text-xs font-semibold text-slate-600 uppercase border-b">Actions</th>
+                    <th className="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase border-b border-r border-gray-200">Title</th>
+                    <th className="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase border-b border-r border-gray-200">Slug</th>
+                    <th className="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase border-b border-r border-gray-200">Category</th>
+                    <th className="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase border-b border-r border-gray-200">Status</th>
+                    <th className="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase border-b border-r border-gray-200">Views</th>
+                    <th className="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase border-b border-r border-gray-200">Published</th>
+                    <th className="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase border-b border-r border-gray-200">Updated</th>
+                    <th className="px-3 py-2 text-center bg-gray-100 text-xs font-semibold text-gray-600 uppercase border-b">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-gray-100">
                   {blogs.map((blog) => (
-                    <tr key={blog._id} className="hover:bg-slate-50 transition-colors">
-                      <td className="px-3 py-2 border-r border-slate-100">
-                        <div className="text-sm font-semibold text-slate-900">{blog.title}</div>
-                        <div className="text-xs text-slate-500">{blog.subcategory}</div>
+                    <tr key={blog._id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-3 py-2 border-r border-gray-100">
+                        <div className="text-sm font-semibold text-gray-900">{blog.title}</div>
+                        <div className="text-xs text-gray-500">{blog.subcategory}</div>
                       </td>
-                      <td className="px-3 py-2 border-r border-slate-100">
-                        <span className="text-xs text-slate-500 font-mono bg-slate-100 px-2 py-0.5 rounded">{blog.slug}</span>
+                      <td className="px-3 py-2 border-r border-gray-100">
+                        <span className="text-xs text-gray-500 font-mono bg-gray-100 px-2 py-0.5 rounded">{blog.slug}</span>
                       </td>
-                      <td className="px-3 py-2 whitespace-nowrap text-sm text-slate-600 border-r border-slate-100">{blog.category}</td>
-                      <td className="px-3 py-2 whitespace-nowrap border-r border-slate-100">
+                      <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-600 border-r border-gray-100">{blog.category}</td>
+                      <td className="px-3 py-2 whitespace-nowrap border-r border-gray-100">
                         <span className={`inline-flex px-2 py-0.5 text-xs font-medium rounded-full ${
                           blog.published ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
                         }`}>
                           {blog.published ? 'Published' : 'Draft'}
                         </span>
                       </td>
-                      <td className="px-3 py-2 whitespace-nowrap text-sm text-slate-600 border-r border-slate-100">
+                      <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-600 border-r border-gray-100">
                         <div className="flex items-center gap-1">
-                          <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                           </svg>
                           {blog.views?.toLocaleString() || 0}
                         </div>
                       </td>
-                      <td className="px-3 py-2 whitespace-nowrap text-sm text-slate-500 border-r border-slate-100">
+                      <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500 border-r border-gray-100">
                         {blog.publishedAt ? new Date(blog.publishedAt).toLocaleDateString() : '-'}
                       </td>
-                      <td className="px-3 py-2 whitespace-nowrap text-sm text-slate-500 border-r border-slate-100">
+                      <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500 border-r border-gray-100">
                         {blog.updatedAt ? new Date(blog.updatedAt).toLocaleDateString() : new Date(blog.createdAt).toLocaleDateString()}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right bg-slate-100 border-l border-slate-500 text-sm">
+                      <td className="px-6 py-4 whitespace-nowrap text-right bg-gray-100 border-l border-gray-500 text-sm">
                         <div className="flex justify-end gap-2">
                           <button
                             type="button"
                             onClick={() => openPreview(getBlogUrl(blog))}
-                            className="p-2 text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+                            className="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
                             title="View"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

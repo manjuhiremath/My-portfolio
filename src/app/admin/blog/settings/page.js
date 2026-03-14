@@ -34,11 +34,11 @@ export default function AdminSettingsPage() {
       </AdminActionToolbar>
 
       <section className="grid grid-cols-1 gap-3 xl:grid-cols-2">
-        <article className="space-y-3 rounded-lg border border-slate-200 bg-white p-3">
-          <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500">Content Workflow</h2>
+        <article className="space-y-3 rounded-lg border border-gray-200 bg-white p-3">
+          <h2 className="text-xs font-semibold uppercase tracking-wide text-gray-500">Content Workflow</h2>
 
-          <label className="flex items-center justify-between rounded border border-slate-200 px-2 py-2 text-xs">
-            <span className="text-slate-700">Enable auto internal links</span>
+          <label className="flex items-center justify-between rounded border border-gray-200 px-2 py-2 text-xs">
+            <span className="text-gray-700">Enable auto internal links</span>
             <input
               type="checkbox"
               checked={settings.autoInternalLinks}
@@ -46,8 +46,8 @@ export default function AdminSettingsPage() {
             />
           </label>
 
-          <label className="flex items-center justify-between rounded border border-slate-200 px-2 py-2 text-xs">
-            <span className="text-slate-700">Enable SEO scoring</span>
+          <label className="flex items-center justify-between rounded border border-gray-200 px-2 py-2 text-xs">
+            <span className="text-gray-700">Enable SEO scoring</span>
             <input
               type="checkbox"
               checked={settings.enableSeoScoring}
@@ -55,12 +55,12 @@ export default function AdminSettingsPage() {
             />
           </label>
 
-          <label className="block text-xs text-slate-600">
+          <label className="block text-xs text-gray-600">
             Publish workflow
             <select
               value={settings.publishWorkflow}
               onChange={(event) => setSettings((state) => ({ ...state, publishWorkflow: event.target.value }))}
-              className="mt-1 h-8 w-full rounded-md border border-slate-300 px-2 text-xs outline-none focus:border-slate-500"
+              className="mt-1 h-8 w-full rounded-md border border-gray-300 px-2 text-xs outline-none focus:border-gray-500"
             >
               <option value="review">Review required</option>
               <option value="direct">Direct publish</option>
@@ -69,24 +69,24 @@ export default function AdminSettingsPage() {
           </label>
         </article>
 
-        <article className="space-y-3 rounded-lg border border-slate-200 bg-white p-3">
-          <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500">Defaults</h2>
+        <article className="space-y-3 rounded-lg border border-gray-200 bg-white p-3">
+          <h2 className="text-xs font-semibold uppercase tracking-wide text-gray-500">Defaults</h2>
 
-          <label className="block text-xs text-slate-600">
+          <label className="block text-xs text-gray-600">
             Timezone
             <input
               value={settings.timezone}
               onChange={(event) => setSettings((state) => ({ ...state, timezone: event.target.value }))}
-              className="mt-1 h-8 w-full rounded-md border border-slate-300 px-2 text-xs outline-none focus:border-slate-500"
+              className="mt-1 h-8 w-full rounded-md border border-gray-300 px-2 text-xs outline-none focus:border-gray-500"
             />
           </label>
 
-          <label className="block text-xs text-slate-600">
+          <label className="block text-xs text-gray-600">
             Default category
             <input
               value={settings.defaultCategory}
               onChange={(event) => setSettings((state) => ({ ...state, defaultCategory: event.target.value }))}
-              className="mt-1 h-8 w-full rounded-md border border-slate-300 px-2 text-xs outline-none focus:border-slate-500"
+              className="mt-1 h-8 w-full rounded-md border border-gray-300 px-2 text-xs outline-none focus:border-gray-500"
             />
           </label>
         </article>

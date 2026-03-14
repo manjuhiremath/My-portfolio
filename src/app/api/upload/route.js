@@ -1,7 +1,10 @@
 import { cloudinary } from '@/lib/cloudinary';
+import { connectDB } from '@/lib/mongodb';
+import Media from '@/models/Media';
 
 export async function POST(req) {
   try {
+    await connectDB();
     const formData = await req.formData();
     const file = formData.get('file');
 
@@ -27,9 +30,31 @@ export async function POST(req) {
       ).end(buffer);
     });
 
-    return Response.json({
+    // Save to database
+    const asset = await Media.create({
+      title: file.name || 'Uploaded Asset',
       url: result.secure_url,
       public_id: result.public_id,
+      sizeLabel: `${(file.size / 1024).toFixed(1)} KB`,
+      type: 'Upload',
+      mimeType: file.type,
+      width: result.width,
+      height: result.height,
+    });
+
+    return Response.json({
+      success: true,
+      url: asset.url,
+      public_id: asset.public_id,
+      asset: {
+        id: asset._id,
+        title: asset.title,
+        url: asset.url,
+        public_id: asset.public_id,
+        updatedAt: asset.updatedAt,
+        sizeLabel: asset.sizeLabel,
+        type: asset.type,
+      }
     });
   } catch (error) {
     console.error('Upload error:', error);

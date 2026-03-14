@@ -75,7 +75,7 @@ async function processBlog(blog) {
   }
 
   const topicIds = getImagesForTopic(blog.title, blog.slug);
-  const cloudinaryFolder = `blog-images/${blog.slug}`;
+  const cloudinaryFolder = `blog-images`;
   const uploadedUrls = [];
 
   // Always upload at least 5 images to ensure variety

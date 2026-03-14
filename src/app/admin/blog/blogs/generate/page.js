@@ -51,32 +51,32 @@ function SearchableDropdown({ label, value, onChange, options, placeholder, disa
   return (
     <div className="relative" ref={dropdownRef}>
       {label && (
-        <label className="block text-sm font-medium text-slate-700 mb-2">
+        <label className="block text-sm font-medium text-gray-700 mb-2">
           {label}
         </label>
       )}
       <div
-        className={`w-full px-3 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk bg-white cursor-pointer flex items-center justify-between ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+        className={`w-full px-3 py-1.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk bg-white cursor-pointer flex items-center justify-between ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
         onClick={() => !disabled && setIsOpen(!isOpen)}
       >
-        <span className={value ? 'text-slate-900 text-sm' : 'text-slate-400 text-sm'}>
+        <span className={value ? 'text-gray-900 text-sm' : 'text-gray-400 text-sm'}>
           {value || placeholder}
         </span>
-        <svg className={`w-4 h-4 text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className={`w-4 h-4 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
       </div>
 
       {isOpen && !disabled && (
-        <div className="absolute z-50 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg max-h-60 overflow-auto">
-          <div className="p-2 border-b border-slate-100">
+        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto">
+          <div className="p-2 border-b border-gray-100">
             <input
               ref={inputRef}
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search..."
-              className="w-full px-3 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
+              className="w-full px-3 py-1.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
               onClick={(e) => e.stopPropagation()}
               autoFocus
             />
@@ -84,7 +84,7 @@ function SearchableDropdown({ label, value, onChange, options, placeholder, disa
 
           <div className="py-1">
             {filteredOptions.length === 0 && !showCreateOption ? (
-              <div className="px-4 py-3 text-sm text-slate-500 text-center">
+              <div className="px-4 py-3 text-sm text-gray-500 text-center">
                 No options found
               </div>
             ) : (
@@ -95,7 +95,7 @@ function SearchableDropdown({ label, value, onChange, options, placeholder, disa
                     type="button"
                     onClick={() => handleSelect(option.name)}
                     className={`w-full px-4 py-2 text-left text-sm hover:bg-indigo-50 transition-colors ${
-                      value === option.name ? 'bg-indigo-50 text-indigo-700 font-medium' : 'text-slate-700'
+                      value === option.name ? 'bg-indigo-50 text-indigo-700 font-medium' : 'text-gray-700'
                     }`}
                   >
                     {option.name}
@@ -105,7 +105,7 @@ function SearchableDropdown({ label, value, onChange, options, placeholder, disa
                   <button
                     type="button"
                     onClick={handleCreateNew}
-                    className="w-full px-4 py-3 text-left text-sm text-indigo-600 hover:bg-indigo-50 border-t border-slate-100 font-medium flex items-center gap-2"
+                    className="w-full px-4 py-3 text-left text-sm text-indigo-600 hover:bg-indigo-50 border-t border-gray-100 font-medium flex items-center gap-2"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -475,24 +475,24 @@ export default function AIBlogGenerator() {
     return (
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
         <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl">
-          <h3 className="text-lg font-semibold text-slate-900 mb-2">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">
             Create New {isSubcategory ? 'Subcategory' : 'Category'}
           </h3>
-          <p className="text-sm text-slate-600 mb-4">
-            Create &quot;<span className="font-medium text-slate-900">{createModal.name}</span>&quot; as a new {isSubcategory ? 'subcategory' : 'category'}.
+          <p className="text-sm text-gray-600 mb-4">
+            Create &quot;<span className="font-medium text-gray-900">{createModal.name}</span>&quot; as a new {isSubcategory ? 'subcategory' : 'category'}.
           </p>
 
           {isSubcategory && keywordData.category && (
-            <div className="mb-4 p-3 bg-slate-50 rounded-lg">
-              <span className="text-xs text-slate-500 uppercase tracking-wide">Parent Category</span>
-              <p className="font-medium text-slate-900">{keywordData.category}</p>
+            <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+              <span className="text-xs text-gray-500 uppercase tracking-wide">Parent Category</span>
+              <p className="font-medium text-gray-900">{keywordData.category}</p>
             </div>
           )}
 
           <div className="flex gap-3">
             <button
               onClick={() => setCreateModal({ isOpen: false, type: '', name: '', loading: false })}
-              className="flex-1 py-2 px-4 border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors"
+              className="flex-1 py-2 px-4 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
               disabled={createModal.loading}
             >
               Cancel
@@ -918,8 +918,8 @@ export default function AIBlogGenerator() {
                   : currentStep > step.id
                   ? 'bg-green-500 text-white'
                   : loading
-                  ? 'bg-slate-100 text-slate-300 cursor-not-allowed'
-                  : 'bg-slate-100 text-slate-400 cursor-pointer hover:bg-slate-200'
+                  ? 'bg-gray-100 text-gray-300 cursor-not-allowed'
+                  : 'bg-gray-100 text-gray-400 cursor-pointer hover:bg-gray-200'
               }`}
               onClick={() => !loading && currentStep > step.id && setCurrentStep(step.id)}
             >
@@ -930,13 +930,13 @@ export default function AIBlogGenerator() {
               ) : step.icon}
             </div>
             <span className={`ml-2 text-sm font-medium hidden sm:inline ${
-              currentStep === step.id ? 'text-indigo-600' : 'text-slate-500'
+              currentStep === step.id ? 'text-indigo-600' : 'text-gray-500'
             }`}>
               {step.name}
             </span>
             {index < STEPS.length - 1 && (
               <div className={`w-8 sm:w-16 h-0.5 mx-2 ${
-                currentStep > step.id ? 'bg-green-500' : 'bg-slate-200'
+                currentStep > step.id ? 'bg-green-500' : 'bg-gray-200'
               }`} />
             )}
           </div>
@@ -954,8 +954,8 @@ export default function AIBlogGenerator() {
     <div className="space-y-6">
       {/* AI Keyword Research section removed */}
 
-      <div className="bg-white p-6 rounded-xl border border-slate-200 space-y-4">
-        <h2 className="text-xl font-archivo font-semibold text-slate-900 mb-4">Step 1 — Keyword Input</h2>
+      <div className="bg-white p-6 rounded-xl border border-gray-200 space-y-4">
+        <h2 className="text-xl font-archivo font-semibold text-gray-900 mb-4">Step 1 — Keyword Input</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
@@ -991,54 +991,54 @@ export default function AIBlogGenerator() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Primary Keyword *</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Primary Keyword *</label>
             <input
               type="text"
               value={keywordData.primaryKeyword}
               onChange={(e) => setKeywordData({ ...keywordData, primaryKeyword: e.target.value })}
               placeholder="Best React SEO Practices"
-              className="w-full px-3 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
+              className="w-full px-3 py-1.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Blog Title</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Blog Title</label>
             <input
               type="text"
               value={keywordData.blogTitle}
               onChange={(e) => setKeywordData({ ...keywordData, blogTitle: e.target.value })}
               placeholder="Best React SEO Practices in 2024"
-              className="w-full px-3 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
+              className="w-full px-3 py-1.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Secondary Keywords</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Secondary Keywords</label>
             <input
               type="text"
               value={keywordData.secondaryKeywords}
               onChange={(e) => setKeywordData({ ...keywordData, secondaryKeywords: e.target.value })}
               placeholder="React SEO, React Optimization, Web Performance"
-              className="w-full px-3 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
+              className="w-full px-3 py-1.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Target Audience</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Target Audience</label>
             <input
               type="text"
               value={keywordData.targetAudience}
               onChange={(e) => setKeywordData({ ...keywordData, targetAudience: e.target.value })}
               placeholder="e.g., Software developers, Marketing professionals"
-              className="w-full px-3 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
+              className="w-full px-3 py-1.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Content Tone</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Content Tone</label>
             <select
               value={keywordData.tone}
               onChange={(e) => setKeywordData({ ...keywordData, tone: e.target.value })}
-              className="w-full px-3 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
+              className="w-full px-3 py-1.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
             >
               {TONE_OPTIONS.map(tone => (
                 <option key={tone} value={tone}>{tone}</option>
@@ -1047,11 +1047,11 @@ export default function AIBlogGenerator() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Content Length</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Content Length</label>
             <select
               value={keywordData.contentLength}
               onChange={(e) => setKeywordData({ ...keywordData, contentLength: parseInt(e.target.value) })}
-              className="w-full px-3 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
+              className="w-full px-3 py-1.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
             >
               {LENGTH_OPTIONS.map(opt => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -1060,11 +1060,11 @@ export default function AIBlogGenerator() {
           </div>
 
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               AI Model
             </label>
             {aiModelsLoading ? (
-              <div className="w-full px-3 py-2 border border-slate-200 rounded-lg bg-slate-50 text-sm text-slate-500">
+              <div className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm text-gray-500">
                 Loading models...
               </div>
             ) : (
@@ -1072,7 +1072,7 @@ export default function AIBlogGenerator() {
                 <select
                   value={keywordData.selectedModel}
                   onChange={(e) => setKeywordData({ ...keywordData, selectedModel: e.target.value })}
-                  className="w-full px-3 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
+                  className="w-full px-3 py-1.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
                 >
                   {textModels.map((model, index) => (
                     <option key={model._id || model.modelId || index} value={model._id}>
@@ -1080,7 +1080,7 @@ export default function AIBlogGenerator() {
                     </option>
                   ))}
                 </select>
-                <p className="text-xs text-slate-500 mt-1">
+                <p className="text-xs text-gray-500 mt-1">
                   {textModels.find(m => m._id === keywordData.selectedModel)?.description || 'Select a free text model'}
                 </p>
               </>
@@ -1093,7 +1093,7 @@ export default function AIBlogGenerator() {
         <div className="flex gap-3">
           <button
             onClick={() => setCurrentStep(1)}
-            className="flex-1 py-3 border border-slate-200 text-slate-700 font-semibold rounded-lg hover:bg-slate-50 transition-colors cursor-pointer"
+            className="flex-1 py-3 border border-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
           >
             ← Back
           </button>
@@ -1110,9 +1110,9 @@ export default function AIBlogGenerator() {
   );
 
   const renderStep2 = () => (
-    <div className="bg-white p-6 rounded-xl border border-slate-200 space-y-4">
+    <div className="bg-white p-6 rounded-xl border border-gray-200 space-y-4">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-archivo font-semibold text-slate-900">Step 2 — AI Blog Outline</h2>
+        <h2 className="text-xl font-archivo font-semibold text-gray-900">Step 2 — AI Blog Outline</h2>
         <button
           onClick={() => setCurrentStep(1)}
           className="text-sm text-indigo-600 hover:text-indigo-800 font-medium cursor-pointer"
@@ -1123,12 +1123,12 @@ export default function AIBlogGenerator() {
       
       <div className="border rounded-xl p-4 space-y-3 max-h-[400px] overflow-y-auto">
         {outline.length === 0 ? (
-          <p className="text-slate-500 text-center py-8">No outline generated yet. Go back to Step 1.</p>
+          <p className="text-gray-500 text-center py-8">No outline generated yet. Go back to Step 1.</p>
         ) : (
           outline.map((section, index) => (
             <div key={`${section.type}-${section.title}-${index}`} className="flex items-center gap-2">
               <span className={`text-xs font-semibold px-2 py-1 rounded ${
-                section.type === 'h1' ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-600'
+                section.type === 'h1' ? 'bg-indigo-100 text-indigo-700' : 'bg-gray-100 text-gray-600'
               }`}>
                 {section.type.toUpperCase()}
               </span>
@@ -1136,7 +1136,7 @@ export default function AIBlogGenerator() {
                 type="text"
                 value={section.title}
                 onChange={(e) => updateOutlineSection(index, 'title', e.target.value)}
-                className="flex-1 px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
+                className="flex-1 px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
                 placeholder="Section title"
               />
               <button
@@ -1155,7 +1155,7 @@ export default function AIBlogGenerator() {
       <div className="flex gap-3">
         <button
           onClick={addOutlineSection}
-          className="flex-1 py-2 bg-slate-100 text-slate-700 font-medium rounded-lg hover:bg-slate-200 transition-colors cursor-pointer"
+          className="flex-1 py-2 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors cursor-pointer"
         >
           + Add Section
         </button>
@@ -1171,7 +1171,7 @@ export default function AIBlogGenerator() {
       <div className="flex gap-3">
         <button
           onClick={() => setCurrentStep(1)}
-          className="py-3 px-4 border border-slate-200 text-slate-700 font-semibold rounded-lg hover:bg-slate-50 transition-colors cursor-pointer"
+          className="py-3 px-4 border border-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
         >
           ← Back
         </button>
@@ -1188,9 +1188,9 @@ export default function AIBlogGenerator() {
 
   const renderStep3 = () => (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div className="lg:col-span-2 bg-white p-6 rounded-xl border border-slate-200">
+      <div className="lg:col-span-2 bg-white p-6 rounded-xl border border-gray-200">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-archivo font-semibold text-slate-900">Step 3 — AI Blog Generator</h2>
+          <h2 className="text-xl font-archivo font-semibold text-gray-900">Step 3 — AI Blog Generator</h2>
           <button
             onClick={() => setCurrentStep(2)}
             className="text-sm text-indigo-600 hover:text-indigo-800 font-medium cursor-pointer"
@@ -1233,7 +1233,7 @@ export default function AIBlogGenerator() {
           </button>
         </div>
 
-        <div className="flex justify-between items-center mt-4 text-sm text-slate-500">
+        <div className="flex justify-between items-center mt-4 text-sm text-gray-500">
           <span>{wordCount.toLocaleString()} words</span>
           <span>{readingTime} min read</span>
         </div>
@@ -1244,7 +1244,7 @@ export default function AIBlogGenerator() {
           <button
             onClick={() => setCurrentStep(2)}
             disabled={loading}
-            className="py-3 px-4 border border-slate-200 text-slate-700 font-semibold rounded-lg hover:bg-slate-50 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            className="py-3 px-4 border border-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             ← Back
           </button>
@@ -1262,64 +1262,64 @@ export default function AIBlogGenerator() {
 
   const renderStep4 = () => (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div className="lg:col-span-2 bg-white p-6 rounded-xl border border-slate-200 space-y-4">
-        <h2 className="text-xl font-archivo font-semibold text-slate-900 mb-4">Step 4 — SEO Optimization Panel</h2>
+      <div className="lg:col-span-2 bg-white p-6 rounded-xl border border-gray-200 space-y-4">
+        <h2 className="text-xl font-archivo font-semibold text-gray-900 mb-4">Step 4 — SEO Optimization Panel</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Meta Title</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Meta Title</label>
             <input
               type="text"
               value={seoData.metaTitle}
               onChange={(e) => setSeoData({ ...seoData, metaTitle: e.target.value })}
-              className="w-full px-3 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
+              className="w-full px-3 py-1.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
             />
-            <span className="text-xs text-slate-500">{seoData.metaTitle.length}/60</span>
+            <span className="text-xs text-gray-500">{seoData.metaTitle.length}/60</span>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Slug</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Slug</label>
             <input
               type="text"
               value={seoData.slug}
               onChange={(e) => setSeoData({ ...seoData, slug: generateSlug(e.target.value) })}
-              className="w-full px-3 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
+              className="w-full px-3 py-1.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
             />
           </div>
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-slate-700 mb-2">Meta Description</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Meta Description</label>
             <textarea
               value={seoData.metaDescription}
               onChange={(e) => setSeoData({ ...seoData, metaDescription: e.target.value })}
               rows={3}
-              className="w-full px-3 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
+              className="w-full px-3 py-1.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
             />
-            <span className="text-xs text-slate-500">{seoData.metaDescription.length}/160</span>
+            <span className="text-xs text-gray-500">{seoData.metaDescription.length}/160</span>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Focus Keyword</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Focus Keyword</label>
             <input
               type="text"
               value={seoData.focusKeyword}
               onChange={(e) => setSeoData({ ...seoData, focusKeyword: e.target.value })}
-              className="w-full px-3 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
+              className="w-full px-3 py-1.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Canonical URL</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Canonical URL</label>
             <input
               type="url"
               value={seoData.canonicalUrl}
               onChange={(e) => setSeoData({ ...seoData, canonicalUrl: e.target.value })}
               placeholder="https://www.manjuhiremath.in/blog/category/subcategory/slug"
-              className="w-full px-3 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
+              className="w-full px-3 py-1.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
             />
           </div>
         </div>
       </div>
 
       <div className="space-y-4">
-        <div className="bg-white p-6 rounded-xl border border-slate-200">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">SEO Score</h3>
+        <div className="bg-white p-6 rounded-xl border border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">SEO Score</h3>
           <div className="flex items-center justify-center mb-4">
             <div className="relative w-24 h-24">
               <svg className="w-24 h-24 transform -rotate-90">
@@ -1333,7 +1333,7 @@ export default function AIBlogGenerator() {
                   strokeLinecap="round"
                 />
               </svg>
-              <span className="absolute inset-0 flex items-center justify-center text-2xl font-bold text-slate-900">
+              <span className="absolute inset-0 flex items-center justify-center text-2xl font-bold text-gray-900">
                 {seoScore.score}
               </span>
             </div>
@@ -1341,7 +1341,7 @@ export default function AIBlogGenerator() {
           <div className="space-y-2">
             {seoScore.checks?.map((check, i) => (
               <div key={`${check.name}-${i}`} className="flex items-center justify-between text-sm">
-                <span className="text-slate-600">{check.name}</span>
+                <span className="text-gray-600">{check.name}</span>
                 <span className={`w-3 h-3 rounded-full ${
                   check.status === 'good' ? 'bg-green-500' : check.status === 'warning' ? 'bg-yellow-500' : 'bg-red-500'
                 }`} />
@@ -1353,7 +1353,7 @@ export default function AIBlogGenerator() {
         <div className="flex gap-3">
           <button
             onClick={() => setCurrentStep(3)}
-            className="py-3 px-4 border border-slate-200 text-slate-700 font-semibold rounded-lg hover:bg-slate-50 transition-colors cursor-pointer"
+            className="py-3 px-4 border border-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
           >
             ← Back
           </button>
@@ -1370,9 +1370,9 @@ export default function AIBlogGenerator() {
 
   const renderStep5 = () => (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div className="lg:col-span-2 bg-white p-6 rounded-xl border border-slate-200 space-y-4">
+      <div className="lg:col-span-2 bg-white p-6 rounded-xl border border-gray-200 space-y-4">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-archivo font-semibold text-slate-900">Step 5 — Publish Panel</h2>
+          <h2 className="text-xl font-archivo font-semibold text-gray-900">Step 5 — Publish Panel</h2>
           <button
             onClick={() => setCurrentStep(4)}
             className="text-sm text-indigo-600 hover:text-indigo-800 font-medium cursor-pointer"
@@ -1383,11 +1383,11 @@ export default function AIBlogGenerator() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Category</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
             <select
               value={publishData.category}
               onChange={(e) => setPublishData({ ...publishData, category: e.target.value })}
-              className="w-full px-3 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
+              className="w-full px-3 py-1.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
             >
               <option value="">Select Category</option>
               {categories.filter(c => !c.parent).map((cat, index) => (
@@ -1396,11 +1396,11 @@ export default function AIBlogGenerator() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Subcategory</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Subcategory</label>
             <select
               value={publishData.subcategory}
               onChange={(e) => setPublishData({ ...publishData, subcategory: e.target.value })}
-              className="w-full px-3 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
+              className="w-full px-3 py-1.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
             >
               <option value="">Select Subcategory</option>
               {categories.filter(c => c.parent).map((cat, index) => (
@@ -1409,21 +1409,21 @@ export default function AIBlogGenerator() {
             </select>
           </div>
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-slate-700 mb-2">Tags</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Tags</label>
             <input
               type="text"
               value={publishData.tags}
               onChange={(e) => setPublishData({ ...publishData, tags: e.target.value })}
               placeholder="React, SEO, Web Development"
-              className="w-full px-3 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
+              className="w-full px-3 py-1.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Image Generation Model (Free)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Image Generation Model (Free)</label>
             <select
               value={imageModel}
               onChange={(e) => setImageModel(e.target.value)}
-              className="w-full px-3 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
+              className="w-full px-3 py-1.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
             >
               {imageModels.length === 0 ? (
                 <option value="">No free image models found</option>
@@ -1435,21 +1435,21 @@ export default function AIBlogGenerator() {
                 ))
               )}
             </select>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs text-gray-500 mt-1">
               {imageModels.find((m) => m._id === imageModel)?.description || 'Select free image-generation model'}
             </p>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Featured Image URL</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Featured Image URL</label>
             <input
               type="url"
               value={publishData.featuredImage}
               onChange={(e) => setPublishData({ ...publishData, featuredImage: e.target.value })}
               placeholder="https://example.com/image.jpg"
-              className="w-full px-3 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
+              className="w-full px-3 py-1.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
             />
             <div className="mt-2 flex flex-wrap gap-2">
-              <label className="px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-200">
+              <label className="px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-100 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-200">
                 {uploadingFeaturedImage ? 'Uploading...' : 'Upload Image'}
                 <input
                   type="file"
@@ -1469,31 +1469,31 @@ export default function AIBlogGenerator() {
               </button>
             </div>
             {publishData.featuredImage && (
-              <p className="mt-1 text-xs text-slate-500 break-all">
+              <p className="mt-1 text-xs text-gray-500 break-all">
                 Stored URL: {publishData.featuredImage}
               </p>
             )}
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Publish Date</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Publish Date</label>
             <input
               type="date"
               value={publishData.publishDate}
               onChange={(e) => setPublishData({ ...publishData, publishDate: e.target.value })}
-              className="w-full px-3 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
+              className="w-full px-3 py-1.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-space-grotesk text-sm"
             />
           </div>
         </div>
 
-        <p className="text-sm text-slate-500">
-          Use <span className="font-medium text-slate-700">Save Draft</span> or <span className="font-medium text-slate-700">Publish Blog</span> below. Status is set by the action you choose.
+        <p className="text-sm text-gray-500">
+          Use <span className="font-medium text-gray-700">Save Draft</span> or <span className="font-medium text-gray-700">Publish Blog</span> below. Status is set by the action you choose.
         </p>
 
         <div className="flex gap-3 pt-4">
           <button
             type="button"
             onClick={handlePreview}
-            className="flex-1 py-3 border border-slate-200 text-slate-700 font-semibold rounded-lg hover:bg-slate-50 transition-colors cursor-pointer"
+            className="flex-1 py-3 border border-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
           >
             Preview
           </button>
@@ -1517,31 +1517,31 @@ export default function AIBlogGenerator() {
       </div>
 
       <div className="space-y-4">
-        <div className="bg-white p-6 rounded-xl border border-slate-200">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Summary</h3>
+        <div className="bg-white p-6 rounded-xl border border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Summary</h3>
           <div className="space-y-3 text-sm">
             <div>
-              <span className="text-slate-500">Title:</span>
-              <p className="font-medium text-slate-900">{seoData.metaTitle || 'Not set'}</p>
+              <span className="text-gray-500">Title:</span>
+              <p className="font-medium text-gray-900">{seoData.metaTitle || 'Not set'}</p>
             </div>
             <div>
-              <span className="text-slate-500">Slug:</span>
-              <p className="font-medium text-slate-900">/{seoData.slug || 'not-set'}</p>
+              <span className="text-gray-500">Slug:</span>
+              <p className="font-medium text-gray-900">/{seoData.slug || 'not-set'}</p>
             </div>
             <div>
-              <span className="text-slate-500">Category:</span>
-              <p className="font-medium text-slate-900">{publishData.category || 'Not set'}</p>
+              <span className="text-gray-500">Category:</span>
+              <p className="font-medium text-gray-900">{publishData.category || 'Not set'}</p>
             </div>
             <div>
-              <span className="text-slate-500">Tags:</span>
-              <p className="font-medium text-slate-900">{publishData.tags || 'None'}</p>
+              <span className="text-gray-500">Tags:</span>
+              <p className="font-medium text-gray-900">{publishData.tags || 'None'}</p>
             </div>
             <div>
-              <span className="text-slate-500">Words:</span>
-              <p className="font-medium text-slate-900">{wordCount.toLocaleString()}</p>
+              <span className="text-gray-500">Words:</span>
+              <p className="font-medium text-gray-900">{wordCount.toLocaleString()}</p>
             </div>
             <div>
-              <span className="text-slate-500">SEO Score:</span>
+              <span className="text-gray-500">SEO Score:</span>
               <p className={`font-medium ${seoScore.score >= 80 ? 'text-green-600' : seoScore.score >= 60 ? 'text-yellow-600' : 'text-red-600'}`}>
                 {seoScore.score}/100
               </p>

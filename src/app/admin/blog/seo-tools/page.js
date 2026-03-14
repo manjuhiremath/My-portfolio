@@ -125,8 +125,8 @@ export default function AdminSeoToolsPage() {
       />
 
       {/* Website Scraper Section */}
-      <section className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-soft">
-        <h2 className="mb-5 flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-slate-900 dark:text-white">
+      <section className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-soft">
+        <h2 className="mb-5 flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-gray-900 dark:text-white">
           <FiGlobe className="text-indigo-500" />
           Target Origin Scraper
         </h2>
@@ -135,16 +135,16 @@ export default function AdminSeoToolsPage() {
             value={scrapeUrl}
             onChange={(e) => setScrapeUrl(e.target.value)}
             placeholder="https://example.com/technical-manifesto"
-            className="flex-1 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50 px-4 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all dark:text-white"
+            className="flex-1 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50 px-4 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all dark:text-white"
           />
           <button
             onClick={handleScrape}
             disabled={isScraping}
-            className="flex items-center justify-center gap-2 rounded-xl bg-slate-900 dark:bg-indigo-600 px-6 py-2.5 text-sm font-bold text-white transition-all hover:bg-slate-800 dark:hover:bg-indigo-700 disabled:opacity-50"
+            className="flex items-center justify-center gap-2 rounded-xl bg-gray-900 dark:bg-indigo-600 px-6 py-2.5 text-sm font-bold text-white transition-all hover:bg-gray-800 dark:hover:bg-indigo-700 disabled:opacity-50"
           >
             {isScraping ? (
               <>
-                <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-300 border-t-white" />
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-white" />
                 Indexing...
               </>
             ) : (
@@ -175,13 +175,13 @@ export default function AdminSeoToolsPage() {
             animate={{ opacity: 1, scale: 1 }}
             className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3"
           >
-            <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-soft">
-              <h3 className="mb-2 text-[10px] font-black uppercase tracking-widest text-slate-400">Page Title</h3>
-              <p className="text-sm text-slate-900 dark:text-slate-200 font-bold leading-relaxed">{scrapedData.title || 'N/A'}</p>
+            <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 shadow-soft">
+              <h3 className="mb-2 text-[10px] font-black uppercase tracking-widest text-gray-400">Page Title</h3>
+              <p className="text-sm text-gray-900 dark:text-gray-200 font-bold leading-relaxed">{scrapedData.title || 'N/A'}</p>
             </div>
-            <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-soft xl:col-span-2">
-              <h3 className="mb-2 text-[10px] font-black uppercase tracking-widest text-slate-400">Meta Description</h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400 font-medium leading-relaxed">{scrapedData.description || 'N/A'}</p>
+            <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 shadow-soft xl:col-span-2">
+              <h3 className="mb-2 text-[10px] font-black uppercase tracking-widest text-gray-400">Meta Description</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400 font-medium leading-relaxed">{scrapedData.description || 'N/A'}</p>
             </div>
           </motion.section>
         )}
@@ -191,51 +191,51 @@ export default function AdminSeoToolsPage() {
       <AdminActionToolbar>
         <div className="flex items-center gap-3">
           <FiTarget className="h-4 w-4 text-indigo-500" />
-          <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Semantic Focus Keyword</span>
+          <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">Semantic Focus Keyword</span>
         </div>
         <input
           value={keyword}
           onChange={(event) => setKeyword(event.target.value)}
           placeholder="e.g. distributed-ledger-protocol"
-          className="h-8 w-64 rounded-lg border border-slate-200 dark:border-slate-800 px-3 text-xs outline-none focus:border-indigo-500 bg-white dark:bg-slate-900 dark:text-white transition-all"
+          className="h-8 w-64 rounded-lg border border-gray-200 dark:border-gray-800 px-3 text-xs outline-none focus:border-indigo-500 bg-white dark:bg-gray-900 dark:text-white transition-all"
         />
       </AdminActionToolbar>
 
       <section className="grid grid-cols-1 gap-4 xl:grid-cols-[1.6fr_1fr]">
-        <article className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-soft">
-          <h2 className="mb-4 text-xs font-black uppercase tracking-[0.2em] text-slate-900 dark:text-white">Content Analysis Node</h2>
+        <article className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-soft">
+          <h2 className="mb-4 text-xs font-black uppercase tracking-[0.2em] text-gray-900 dark:text-white">Content Analysis Node</h2>
           <textarea
             value={content}
             onChange={(event) => setContent(event.target.value)}
             placeholder="Input technical documentation or raw HTML for strategic audit..."
-            className="h-[500px] w-full rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/30 dark:bg-slate-800/20 p-4 text-sm leading-relaxed outline-none focus:border-indigo-500 transition-all font-medium dark:text-slate-300"
+            className="h-[500px] w-full rounded-xl border border-gray-100 dark:border-gray-800 bg-gray-50/30 dark:bg-gray-800/20 p-4 text-sm leading-relaxed outline-none focus:border-indigo-500 transition-all font-medium dark:text-gray-300"
           />
         </article>
 
         <div className="space-y-4">
-          <article className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-soft">
-            <h2 className="mb-5 text-xs font-black uppercase tracking-[0.2em] text-slate-900 dark:text-white flex items-center gap-2">
+          <article className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-soft">
+            <h2 className="mb-5 text-xs font-black uppercase tracking-[0.2em] text-gray-900 dark:text-white flex items-center gap-2">
               <FiBarChart2 className="text-indigo-500" />
               Strategic SEO Audit
             </h2>
             <div className="space-y-3">
-              <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
-                <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Lexical Count</span>
-                <span className="text-sm font-black text-slate-900 dark:text-white">{analysis.words} Words</span>
+              <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800">
+                <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">Lexical Count</span>
+                <span className="text-sm font-black text-gray-900 dark:text-white">{analysis.words} Words</span>
               </div>
-              <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
-                <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Readability Rating</span>
+              <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800">
+                <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">Readability Rating</span>
                 <AdminStatusBadge value={`${analysis.readability}/100`} variant={analysis.readability >= 80 ? 'success' : analysis.readability >= 60 ? 'info' : 'warning'} />
               </div>
-              <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
-                <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Keyword Density</span>
+              <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800">
+                <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">Keyword Density</span>
                 <span className={`text-sm font-black ${Number(analysis.density) > 2.5 || Number(analysis.density) < 0.5 ? 'text-rose-600' : 'text-emerald-600'}`}>
                   {analysis.density}%
                 </span>
               </div>
-              <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
-                <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Semantic Links</span>
-                <span className="text-sm font-black text-slate-900 dark:text-white">{analysis.internalLinks} Nodes</span>
+              <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800">
+                <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">Semantic Links</span>
+                <span className="text-sm font-black text-gray-900 dark:text-white">{analysis.internalLinks} Nodes</span>
               </div>
             </div>
 
@@ -249,28 +249,28 @@ export default function AdminSeoToolsPage() {
           </article>
 
           {/* Heading Analysis */}
-          <article className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-soft">
-            <h2 className="mb-4 text-xs font-black uppercase tracking-[0.2em] text-slate-900 dark:text-white">Hierarchical Structure</h2>
+          <article className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-soft">
+            <h2 className="mb-4 text-xs font-black uppercase tracking-[0.2em] text-gray-900 dark:text-white">Hierarchical Structure</h2>
             <div className="max-h-64 space-y-2 overflow-y-auto pr-2 custom-scrollbar">
               {scrapedData?.headings ? (
                 Object.entries(scrapedData.headings).map(([tag, texts]) => (
                   texts.map((text, i) => (
-                    <div key={`${tag}-${i}`} className="flex items-center justify-between rounded-lg border border-slate-100 dark:border-slate-800 px-3 py-2 text-[11px] font-bold bg-slate-50/50 dark:bg-slate-800/20">
-                      <span className="truncate text-slate-600 dark:text-slate-400 pr-4">{text}</span>
-                      <span className={`px-1.5 py-0.5 rounded text-[9px] font-black uppercase ${tag === 'h1' ? 'bg-indigo-100 text-indigo-600' : 'bg-slate-100 text-slate-500'}`}>{tag}</span>
+                    <div key={`${tag}-${i}`} className="flex items-center justify-between rounded-lg border border-gray-100 dark:border-gray-800 px-3 py-2 text-[11px] font-bold bg-gray-50/50 dark:bg-gray-800/20">
+                      <span className="truncate text-gray-600 dark:text-gray-400 pr-4">{text}</span>
+                      <span className={`px-1.5 py-0.5 rounded text-[9px] font-black uppercase ${tag === 'h1' ? 'bg-indigo-100 text-indigo-600' : 'bg-gray-100 text-gray-500'}`}>{tag}</span>
                     </div>
                   ))
                 ))
               ) : (
                 analysis.headings.slice(0, 15).map((heading, index) => (
-                  <div key={`${heading}-${index}`} className="flex items-center justify-between rounded-lg border border-slate-100 dark:border-slate-800 px-3 py-2 text-[11px] font-bold bg-slate-50/50 dark:bg-slate-800/20">
-                    <span className="truncate text-slate-600 dark:text-slate-400 pr-4">{heading}</span>
-                    <span className="bg-slate-100 dark:bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded text-[9px] font-black uppercase">H?</span>
+                  <div key={`${heading}-${index}`} className="flex items-center justify-between rounded-lg border border-gray-100 dark:border-gray-800 px-3 py-2 text-[11px] font-bold bg-gray-50/50 dark:bg-gray-800/20">
+                    <span className="truncate text-gray-600 dark:text-gray-400 pr-4">{heading}</span>
+                    <span className="bg-gray-100 dark:bg-gray-800 text-gray-400 px-1.5 py-0.5 rounded text-[9px] font-black uppercase">H?</span>
                   </div>
                 ))
               )}
               {!analysis.headings.length && !scrapedData?.headings && (
-                <p className="text-[10px] text-slate-400 italic text-center py-4">No hierarchical nodes detected.</p>
+                <p className="text-[10px] text-gray-400 italic text-center py-4">No hierarchical nodes detected.</p>
               )}
             </div>
           </article>
@@ -283,15 +283,15 @@ export default function AdminSeoToolsPage() {
           <motion.section 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-soft"
+            className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-soft"
           >
-            <h2 className="mb-6 flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-slate-900 dark:text-white">
+            <h2 className="mb-6 flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-gray-900 dark:text-white">
               <FiImage className="text-indigo-500" />
               Indexed Visual Assets ({scrapedData.images.length})
             </h2>
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8">
               {scrapedData.images.map((img, i) => (
-                <div key={i} className="group relative overflow-hidden rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 aspect-square">
+                <div key={i} className="group relative overflow-hidden rounded-xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50 aspect-square">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img 
                     src={img.src} 
@@ -318,7 +318,7 @@ export default function AdminSeoToolsPage() {
                     </a>
                   </div>
                   {img.alt && (
-                    <div className="absolute bottom-0 left-0 right-0 truncate bg-slate-900/90 px-2 py-1.5 text-[8px] font-black uppercase tracking-widest text-white/70">
+                    <div className="absolute bottom-0 left-0 right-0 truncate bg-gray-900/90 px-2 py-1.5 text-[8px] font-black uppercase tracking-widest text-white/70">
                       {img.alt}
                     </div>
                   )}

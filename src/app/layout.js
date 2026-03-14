@@ -76,7 +76,7 @@ export default function RootLayout({ children }) {
         <link rel="dns-prefetch" href="https://res.cloudinary.com" />
       </head>
       <body
-        className={`${inter.variable} ${lora.variable} ${jetbrainsMono.variable} antialiased bg-white dark:bg-slate-900`}
+        className={`${inter.variable} ${lora.variable} ${jetbrainsMono.variable} antialiased bg-white dark:bg-gray-900`}
       >
         {/* AdSense script using next/script component */}
         <Script 

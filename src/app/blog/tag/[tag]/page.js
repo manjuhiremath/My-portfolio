@@ -135,20 +135,20 @@ export default async function TagPage({ params, searchParams }) {
   const label = readableLabel(tag);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-white dark:from-slate-900 dark:via-slate-800 dark:to-slate-800">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-white dark:from-gray-900 dark:via-gray-800 dark:to-gray-800">
       <main className="mx-auto max-w-7xl space-y-6 px-4 py-8 sm:px-6 lg:px-8">
         {data.blogs.length > 0 && <BannerAd />}
         {/* Breadcrumbs */}
-        <nav className="flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-          <Link href="/" className="hover:text-slate-700 dark:hover:text-slate-200">Home</Link>
+        <nav className="flex flex-wrap items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+          <Link href="/" className="hover:text-gray-700 dark:hover:text-gray-200">Home</Link>
           <span>/</span>
-          <Link href="/blog" className="hover:text-slate-700 dark:hover:text-slate-200">Blog</Link>
+          <Link href="/blog" className="hover:text-gray-700 dark:hover:text-gray-200">Blog</Link>
           <span>/</span>
-          <span className="text-slate-700 dark:text-slate-200">#{label}</span>
+          <span className="text-gray-700 dark:text-gray-200">#{label}</span>
         </nav>
 
         {/* Header */}
-        <header className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6">
+        <header className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6">
           <div className="flex items-center gap-3 mb-3">
             <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-500 text-white">
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -156,10 +156,10 @@ export default async function TagPage({ params, searchParams }) {
               </svg>
             </span>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
+              <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-3xl">
                 #{label}
               </h1>
-              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                 {data.total} article{data.total === 1 ? '' : 's'} with this tag
               </p>
             </div>
@@ -168,7 +168,7 @@ export default async function TagPage({ params, searchParams }) {
 
         {/* Blog Grid */}
         {data.blogs.length === 0 ? (
-          <section className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-10 text-center text-sm text-slate-600 dark:text-slate-400">
+          <section className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-10 text-center text-sm text-gray-600 dark:text-gray-400">
             No published articles with this tag yet.
           </section>
         ) : (

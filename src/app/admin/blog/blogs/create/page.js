@@ -1119,7 +1119,7 @@ function CreateBlogInner() {
             position: absolute;
             top: -28px;
             left: 50%;
-            transform: translateX(-50%);
+            transform: trangrayX(-50%);
             background: #18181B;
             color: white;
             padding: 2px 8px;
@@ -1243,16 +1243,16 @@ function CreateBlogInner() {
 export default function CreateBlog() {
   return (
     <Suspense fallback={
-      <div className="p-8 space-y-8 animate-pulse bg-white dark:bg-slate-900 min-h-screen">
-        <div className="h-8 w-64 bg-slate-200 dark:bg-slate-800 rounded" />
+      <div className="p-8 space-y-8 animate-pulse bg-white dark:bg-gray-900 min-h-screen">
+        <div className="h-8 w-64 bg-gray-200 dark:bg-gray-800 rounded" />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
-            <div className="h-12 w-full bg-slate-100 dark:bg-slate-800 rounded" />
-            <div className="h-64 w-full bg-slate-100 dark:bg-slate-800 rounded" />
+            <div className="h-12 w-full bg-gray-100 dark:bg-gray-800 rounded" />
+            <div className="h-64 w-full bg-gray-100 dark:bg-gray-800 rounded" />
           </div>
           <div className="space-y-6">
-            <div className="h-48 w-full bg-slate-100 dark:bg-slate-800 rounded" />
-            <div className="h-48 w-full bg-slate-100 dark:bg-slate-800 rounded" />
+            <div className="h-48 w-full bg-gray-100 dark:bg-gray-800 rounded" />
+            <div className="h-48 w-full bg-gray-100 dark:bg-gray-800 rounded" />
           </div>
         </div>
       </div>

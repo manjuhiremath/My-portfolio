@@ -234,19 +234,19 @@ export default function AdminBlogsClient() {
 
       <AdminActionToolbar>
         <label className="relative">
-          <FiSearch className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
+          <FiSearch className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -trangray-y-1/2 text-gray-400" />
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search by title or slug"
-            className="h-8 w-56 rounded-md border border-slate-300 pl-8 pr-2 text-xs outline-none focus:border-slate-500"
+            className="h-8 w-56 rounded-md border border-gray-300 pl-8 pr-2 text-xs outline-none focus:border-gray-500"
           />
         </label>
 
         <select
           value={status}
           onChange={(event) => setStatus(event.target.value)}
-          className="h-8 rounded-md border border-slate-300 px-2 text-xs outline-none focus:border-slate-500"
+          className="h-8 rounded-md border border-gray-300 px-2 text-xs outline-none focus:border-gray-500"
         >
           <option value="all">All status</option>
           <option value="published">Published</option>
@@ -256,7 +256,7 @@ export default function AdminBlogsClient() {
         <select
           value={category}
           onChange={(event) => setCategory(event.target.value)}
-          className="h-8 rounded-md border border-slate-300 px-2 text-xs outline-none focus:border-slate-500"
+          className="h-8 rounded-md border border-gray-300 px-2 text-xs outline-none focus:border-gray-500"
         >
           <option value="all">All categories</option>
           {topLevelCategories.map((item) => (
@@ -266,41 +266,41 @@ export default function AdminBlogsClient() {
           ))}
         </select>
 
-        <button type="button" className="inline-flex h-8 items-center gap-1 rounded-md border border-slate-300 px-2.5 text-xs text-slate-700 hover:bg-slate-50">
+        <button type="button" className="inline-flex h-8 items-center gap-1 rounded-md border border-gray-300 px-2.5 text-xs text-gray-700 hover:bg-gray-50">
           <FiFilter className="h-3.5 w-3.5" />
           Advanced Filters
         </button>
 
-        <button type="button" className="inline-flex h-8 items-center gap-1 rounded-md border border-slate-300 px-2.5 text-xs text-slate-700 hover:bg-slate-50">
+        <button type="button" className="inline-flex h-8 items-center gap-1 rounded-md border border-gray-300 px-2.5 text-xs text-gray-700 hover:bg-gray-50">
           <FiFolderPlus className="h-3.5 w-3.5" />
           Import Content
         </button>
 
-        <button type="button" className="inline-flex h-8 items-center gap-1 rounded-md border border-slate-300 px-2.5 text-xs text-slate-700 hover:bg-slate-50">
+        <button type="button" className="inline-flex h-8 items-center gap-1 rounded-md border border-gray-300 px-2.5 text-xs text-gray-700 hover:bg-gray-50">
           Bulk Actions
         </button>
 
         <button
           type="button"
           onClick={refresh}
-          className="inline-flex h-8 items-center gap-1 rounded-md border border-slate-300 px-2.5 text-xs text-slate-700 hover:bg-slate-50"
+          className="inline-flex h-8 items-center gap-1 rounded-md border border-gray-300 px-2.5 text-xs text-gray-700 hover:bg-gray-50"
         >
           <FiRefreshCw className="h-3.5 w-3.5" />
           Refresh
         </button>
       </AdminActionToolbar>
 
-      <section className="overflow-hidden rounded-lg border border-slate-200 bg-white">
-        <div className="border-b border-slate-200 px-3 py-2 text-[11px] text-slate-500">
+      <section className="overflow-hidden rounded-lg border border-gray-200 bg-white">
+        <div className="border-b border-gray-200 px-3 py-2 text-[11px] text-gray-500">
           Showing {pagedRows.length} of {filteredRows.length} blogs
         </div>
 
         {loading ? (
-          <div className="p-8 text-center text-xs text-slate-500">Loading blogs...</div>
+          <div className="p-8 text-center text-xs text-gray-500">Loading blogs...</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
-              <thead className="bg-slate-50 text-[11px] uppercase tracking-wide text-slate-500">
+              <thead className="bg-gray-50 text-[11px] uppercase tracking-wide text-gray-500">
                 <tr>
                   <th className="px-3 py-2 text-left">
                     <button type="button" onClick={() => changeSort('title')} className="inline-flex items-center gap-1 font-medium">
@@ -336,21 +336,21 @@ export default function AdminBlogsClient() {
                   <th className="px-3 py-2 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-gray-100">
                 {pagedRows.map((blog) => (
-                  <tr key={blog._id} className="h-9 hover:bg-slate-50">
+                  <tr key={blog._id} className="h-9 hover:bg-gray-50">
                     <td className="px-3 py-2">
-                      <p className="max-w-[320px] truncate font-medium text-slate-800">{blog.title}</p>
-                      <p className="truncate text-[11px] text-slate-500">{blog.slug}</p>
+                      <p className="max-w-[320px] truncate font-medium text-gray-800">{blog.title}</p>
+                      <p className="truncate text-[11px] text-gray-500">{blog.slug}</p>
                     </td>
-                    <td className="px-3 py-2 text-slate-600">
+                    <td className="px-3 py-2 text-gray-600">
                       {typeof blog.category === 'object' ? (blog.category?.name || 'Uncategorized') : 'Uncategorized'}
                     </td>
                     <td className="px-3 py-2">
                       <AdminStatusBadge value={`${blog.seoScore}/100`} variant={getSeoVariant(blog.seoScore)} />
                     </td>
-                    <td className="px-3 py-2 text-slate-600">{formatNumber(blog.views)}</td>
-                    <td className="px-3 py-2 text-slate-600">{formatDate(blog.publishedAt || blog.createdAt)}</td>
+                    <td className="px-3 py-2 text-gray-600">{formatNumber(blog.views)}</td>
+                    <td className="px-3 py-2 text-gray-600">{formatDate(blog.publishedAt || blog.createdAt)}</td>
                     <td className="px-3 py-2">
                       <AdminStatusBadge value={blog.published ? 'Published' : 'Draft'} variant={blog.published ? 'success' : 'warning'} />
                     </td>
@@ -359,7 +359,7 @@ export default function AdminBlogsClient() {
                         <button
                           type="button"
                           onClick={() => previewBlog(blog)}
-                          className="inline-flex h-7 items-center rounded border border-slate-300 px-2 text-[11px] font-medium text-slate-700 hover:bg-slate-50"
+                          className="inline-flex h-7 items-center rounded border border-gray-300 px-2 text-[11px] font-medium text-gray-700 hover:bg-gray-50"
                         >
                           <FiExternalLink className="mr-1 h-3 w-3" />
                           Preview
@@ -368,22 +368,22 @@ export default function AdminBlogsClient() {
                           <button
                             type="button"
                             onClick={() => setActiveAction((value) => (value === blog._id ? null : blog._id))}
-                            className="inline-flex h-7 w-7 items-center justify-center rounded border border-slate-300 text-slate-700 hover:bg-slate-50"
+                            className="inline-flex h-7 w-7 items-center justify-center rounded border border-gray-300 text-gray-700 hover:bg-gray-50"
                           >
                             <FiMoreHorizontal className="h-3.5 w-3.5" />
                           </button>
                           {activeAction === blog._id ? (
-                            <div className="absolute right-0 top-8 z-10 w-36 rounded-md border border-slate-200 bg-white p-1 shadow-lg">
+                            <div className="absolute right-0 top-8 z-10 w-36 rounded-md border border-gray-200 bg-white p-1 shadow-lg">
                               <Link
                                 href={`/admin/blog/blogs/edit/${blog.slug}`}
-                                className="flex h-7 w-full items-center rounded px-2 text-left text-[11px] text-slate-700 hover:bg-slate-100"
+                                className="flex h-7 w-full items-center rounded px-2 text-left text-[11px] text-gray-700 hover:bg-gray-100"
                               >
                                 Quick Edit
                               </Link>
                               <button
                                 type="button"
                                 onClick={() => togglePublish(blog)}
-                                className="flex h-7 w-full items-center rounded px-2 text-left text-[11px] text-slate-700 hover:bg-slate-100"
+                                className="flex h-7 w-full items-center rounded px-2 text-left text-[11px] text-gray-700 hover:bg-gray-100"
                               >
                                 {blog.published ? 'Move to draft' : 'Publish now'}
                               </button>
@@ -405,7 +405,7 @@ export default function AdminBlogsClient() {
 
                 {!pagedRows.length ? (
                   <tr>
-                    <td colSpan={7} className="px-3 py-8 text-center text-xs text-slate-500">
+                    <td colSpan={7} className="px-3 py-8 text-center text-xs text-gray-500">
                       No blogs found for current filters.
                     </td>
                   </tr>
@@ -415,8 +415,8 @@ export default function AdminBlogsClient() {
           </div>
         )}
 
-        <div className="flex items-center justify-between border-t border-slate-200 px-3 py-2">
-          <p className="text-[11px] text-slate-500">
+        <div className="flex items-center justify-between border-t border-gray-200 px-3 py-2">
+          <p className="text-[11px] text-gray-500">
             Page {page} of {totalPages}
           </p>
           <div className="flex items-center gap-1">
@@ -424,7 +424,7 @@ export default function AdminBlogsClient() {
               type="button"
               onClick={() => setPage((value) => Math.max(1, value - 1))}
               disabled={page <= 1}
-              className="inline-flex h-7 items-center rounded border border-slate-300 px-2 text-[11px] text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex h-7 items-center rounded border border-gray-300 px-2 text-[11px] text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Prev
             </button>
@@ -432,7 +432,7 @@ export default function AdminBlogsClient() {
               type="button"
               onClick={() => setPage((value) => Math.min(totalPages, value + 1))}
               disabled={page >= totalPages}
-              className="inline-flex h-7 items-center rounded border border-slate-300 px-2 text-[11px] text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex h-7 items-center rounded border border-gray-300 px-2 text-[11px] text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Next
             </button>

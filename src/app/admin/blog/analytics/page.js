@@ -40,7 +40,7 @@ function formatNumber(value) {
 // since Recharts isn't in the project yet and I want to avoid adding new deps if possible
 // or implement a very clean fallback.
 
-const MiniBarChart = ({ data, max, color = 'bg-slate-800' }) => (
+const MiniBarChart = ({ data, max, color = 'bg-gray-800' }) => (
   <div className="flex items-end gap-1 h-32 w-full">
     {data.map((item, i) => (
       <div key={i} className="flex-1 group relative">
@@ -48,8 +48,8 @@ const MiniBarChart = ({ data, max, color = 'bg-slate-800' }) => (
           className={`w-full rounded-t-sm transition-all duration-300 ${color} opacity-80 group-hover:opacity-100`}
           style={{ height: `${Math.max(4, ((item.views || item.count || 0) / max) * 100)}%` }}
         />
-        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-10">
-          <div className="bg-slate-900 text-white text-[10px] px-2 py-1 rounded shadow-xl whitespace-nowrap">
+        <div className="absolute bottom-full left-1/2 -trangray-x-1/2 mb-2 hidden group-hover:block z-10">
+          <div className="bg-gray-900 text-white text-[10px] px-2 py-1 rounded shadow-xl whitespace-nowrap">
             {item.month || item._id}: {formatNumber(item.views || item.count)}
           </div>
         </div>
@@ -60,11 +60,11 @@ const MiniBarChart = ({ data, max, color = 'bg-slate-800' }) => (
 
 const HorizontalBar = ({ label, value, max, color = 'bg-indigo-500' }) => (
   <div className="space-y-1">
-    <div className="flex justify-between text-[10px] font-medium text-slate-600">
+    <div className="flex justify-between text-[10px] font-medium text-gray-600">
       <span className="truncate max-w-[180px]">{label}</span>
       <span>{formatNumber(value)}</span>
     </div>
-    <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+    <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
       <div 
         className={`h-full ${color} rounded-full transition-all duration-500`}
         style={{ width: `${(value / max) * 100}%` }}
@@ -226,9 +226,9 @@ export default function AdminAnalyticsPage() {
       />
 
       {loading ? (
-        <div className="flex flex-col items-center justify-center min-h-[400px] bg-white rounded-xl border border-slate-200">
+        <div className="flex flex-col items-center justify-center min-h-[400px] bg-white rounded-xl border border-gray-200">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mb-4" />
-          <p className="text-sm text-slate-500 font-medium">Assembling your data engine...</p>
+          <p className="text-sm text-gray-500 font-medium">Assembling your data engine...</p>
         </div>
       ) : (
         <>
@@ -269,19 +269,19 @@ export default function AdminAnalyticsPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             {/* SECTION 2: TRAFFIC & PERFORMANCE */}
             <section className="lg:col-span-2 space-y-4">
-              <article className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+              <article className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
                 <div className="flex items-center justify-between mb-6">
                   <div>
-                    <h3 className="text-sm font-bold text-slate-900">Traffic Momentum</h3>
-                    <p className="text-[11px] text-slate-500">Monthly view distribution over the last year</p>
+                    <h3 className="text-sm font-bold text-gray-900">Traffic Momentum</h3>
+                    <p className="text-[11px] text-gray-500">Monthly view distribution over the last year</p>
                   </div>
                   <div className="flex gap-1.5">
-                    <button className="h-6 px-2 text-[10px] font-bold bg-slate-100 text-slate-600 rounded">12M</button>
-                    <button className="h-6 px-2 text-[10px] font-bold text-slate-400 hover:bg-slate-50 rounded transition-colors">6M</button>
+                    <button className="h-6 px-2 text-[10px] font-bold bg-gray-100 text-gray-600 rounded">12M</button>
+                    <button className="h-6 px-2 text-[10px] font-bold text-gray-400 hover:bg-gray-50 rounded transition-colors">6M</button>
                   </div>
                 </div>
                 <MiniBarChart data={stats.monthlyViews} max={maxMonthlyViews} color="bg-indigo-600" />
-                <div className="mt-4 flex justify-between text-[10px] text-slate-400 font-medium px-1">
+                <div className="mt-4 flex justify-between text-[10px] text-gray-400 font-medium px-1">
                   <span>{stats.monthlyViews[0]?.month}</span>
                   <span>{stats.monthlyViews[Math.floor(stats.monthlyViews.length/2)]?.month}</span>
                   <span>{stats.monthlyViews[stats.monthlyViews.length-1]?.month}</span>
@@ -289,8 +289,8 @@ export default function AdminAnalyticsPage() {
               </article>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <article className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
-                  <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
+                <article className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+                  <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider mb-4 flex items-center gap-2">
                     <FiLayout className="text-indigo-500" />
                     Top Categories by Views
                   </h3>
@@ -307,28 +307,28 @@ export default function AdminAnalyticsPage() {
                   </div>
                 </article>
 
-                <article className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
-                  <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
+                <article className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+                  <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider mb-4 flex items-center gap-2">
                     <FiMousePointer className="text-emerald-500" />
                     User Engagement
                   </h3>
                   <div className="flex items-center justify-center py-4">
                     <div className="relative h-32 w-32">
                       {/* CSS-only Donut chart for SEO distribution */}
-                      <div className="absolute inset-0 rounded-full border-[12px] border-slate-100" />
+                      <div className="absolute inset-0 rounded-full border-[12px] border-gray-100" />
                       <div className="absolute inset-0 flex flex-col items-center justify-center">
-                        <span className="text-xl font-bold text-slate-900">{stats.metrics.averageSeoScore}</span>
-                        <span className="text-[8px] text-slate-400 uppercase font-bold">Avg Score</span>
+                        <span className="text-xl font-bold text-gray-900">{stats.metrics.averageSeoScore}</span>
+                        <span className="text-[8px] text-gray-400 uppercase font-bold">Avg Score</span>
                       </div>
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-2 mt-4">
                     {stats.seoScoreDistribution.map((item, i) => (
-                      <div key={i} className="flex items-center gap-2 px-2 py-1.5 rounded-lg border border-slate-50 bg-slate-50/50">
+                      <div key={i} className="flex items-center gap-2 px-2 py-1.5 rounded-lg border border-gray-50 bg-gray-50/50">
                         <div className="h-2 w-2 rounded-full" style={{ backgroundColor: item.color }} />
                         <div className="flex flex-col">
-                          <span className="text-[9px] text-slate-500 font-bold uppercase">{item.key}</span>
-                          <span className="text-xs font-bold text-slate-800">{item.count}</span>
+                          <span className="text-[9px] text-gray-500 font-bold uppercase">{item.key}</span>
+                          <span className="text-xs font-bold text-gray-800">{item.count}</span>
                         </div>
                       </div>
                     ))}
@@ -359,50 +359,50 @@ export default function AdminAnalyticsPage() {
                 </button>
               </article>
 
-              <article className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
-                <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
+              <article className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+                <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider mb-4 flex items-center gap-2">
                   <FiAlertCircle className="text-rose-500" />
                   SEO Health Checklist
                 </h3>
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100">
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-gray-50 border border-gray-100">
                     <div className="flex items-center gap-2">
-                      <FiEdit3 className="text-slate-400 h-3.5 w-3.5" />
-                      <span className="text-[11px] font-medium text-slate-600">Missing Meta</span>
+                      <FiEdit3 className="text-gray-400 h-3.5 w-3.5" />
+                      <span className="text-[11px] font-medium text-gray-600">Missing Meta</span>
                     </div>
                     <span className="text-xs font-bold text-rose-600">{stats.metrics.health.missingMeta}</span>
                   </div>
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100">
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-gray-50 border border-gray-100">
                     <div className="flex items-center gap-2">
-                      <FiImageIcon className="text-slate-400 h-3.5 w-3.5" />
-                      <span className="text-[11px] font-medium text-slate-600">Missing Images</span>
+                      <FiImageIcon className="text-gray-400 h-3.5 w-3.5" />
+                      <span className="text-[11px] font-medium text-gray-600">Missing Images</span>
                     </div>
                     <span className="text-xs font-bold text-rose-600">{stats.metrics.health.missingImages}</span>
                   </div>
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100">
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-gray-50 border border-gray-100">
                     <div className="flex items-center gap-2">
-                      <FiLink className="text-slate-400 h-3.5 w-3.5" />
-                      <span className="text-[11px] font-medium text-slate-600">No Internal Links</span>
+                      <FiLink className="text-gray-400 h-3.5 w-3.5" />
+                      <span className="text-[11px] font-medium text-gray-600">No Internal Links</span>
                     </div>
                     <span className="text-xs font-bold text-amber-600">{stats.metrics.health.missingInternalLinks}</span>
                   </div>
                 </div>
                 <div className="mt-5 space-y-2">
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Quick Actions</p>
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Quick Actions</p>
                   <div className="grid grid-cols-2 gap-2">
-                    <button onClick={handleOptimizeLowSeo} className="py-2 text-[9px] font-bold border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-50 transition-colors flex items-center justify-center gap-1">
+                    <button onClick={handleOptimizeLowSeo} className="py-2 text-[9px] font-bold border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center gap-1">
                       <FiTarget className="h-3 w-3" />
                       Fix SEO
                     </button>
-                    <button onClick={handleGenerateIdeas} className="py-2 text-[9px] font-bold border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-50 transition-colors flex items-center justify-center gap-1">
+                    <button onClick={handleGenerateIdeas} className="py-2 text-[9px] font-bold border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center gap-1">
                       <FiPlus className="h-3 w-3" />
                       Generate Ideas
                     </button>
-                    <button onClick={handleFixLinks} className="py-2 text-[9px] font-bold border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-50 transition-colors flex items-center justify-center gap-1">
+                    <button onClick={handleFixLinks} className="py-2 text-[9px] font-bold border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center gap-1">
                       <FiLink className="h-3 w-3" />
                       Fix Links
                     </button>
-                    <button onClick={handleGenerateImages} className="py-2 text-[9px] font-bold border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-50 transition-colors flex items-center justify-center gap-1">
+                    <button onClick={handleGenerateImages} className="py-2 text-[9px] font-bold border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center gap-1">
                       <FiImageIcon className="h-3 w-3" />
                       Add Images
                     </button>
@@ -414,14 +414,14 @@ export default function AdminAnalyticsPage() {
 
           {/* SECTION 4 & 5: PERFORMANCE TABLES */}
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-            <article className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-              <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
-                <h3 className="text-sm font-bold text-slate-900">Top Performing Content</h3>
+            <article className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+              <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+                <h3 className="text-sm font-bold text-gray-900">Top Performing Content</h3>
                 <div className="flex items-center gap-2">
                   <select 
                     value={seoFilter}
                     onChange={e => setSeoFilter(e.target.value)}
-                    className="h-7 px-2 bg-slate-50 border border-slate-200 rounded-md text-[10px] outline-none focus:border-indigo-500"
+                    className="h-7 px-2 bg-gray-50 border border-gray-200 rounded-md text-[10px] outline-none focus:border-indigo-500"
                   >
                     <option value="all">All SEO</option>
                     <option value="excellent">Excellent (90+)</option>
@@ -430,20 +430,20 @@ export default function AdminAnalyticsPage() {
                     <option value="poor">Poor (&lt;50)</option>
                   </select>
                   <div className="relative">
-                    <FiSearch className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3 w-3 text-slate-400" />
+                    <FiSearch className="absolute left-2.5 top-1/2 -trangray-y-1/2 h-3 w-3 text-gray-400" />
                     <input 
                       type="text"
                       value={searchQuery}
                       onChange={e => setSearchQuery(e.target.value)}
                       placeholder="Filter articles..."
-                      className="h-7 pl-8 pr-2.5 bg-slate-50 border border-slate-200 rounded-md text-[10px] outline-none focus:border-indigo-500 transition-all w-40"
+                      className="h-7 pl-8 pr-2.5 bg-gray-50 border border-gray-200 rounded-md text-[10px] outline-none focus:border-indigo-500 transition-all w-40"
                     />
                   </div>
                 </div>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-xs">
-                  <thead className="bg-slate-50/50 text-[10px] uppercase tracking-wider text-slate-500 font-bold border-b border-slate-100">
+                  <thead className="bg-gray-50/50 text-[10px] uppercase tracking-wider text-gray-500 font-bold border-b border-gray-100">
                     <tr>
                       <th 
                         className="px-5 py-3 text-left cursor-pointer hover:text-indigo-600"
@@ -471,23 +471,23 @@ export default function AdminAnalyticsPage() {
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
+                  <tbody className="divide-y divide-gray-100">
                     {topBlogs.map((item) => (
-                      <tr key={item._id} className="group hover:bg-slate-50 transition-colors">
+                      <tr key={item._id} className="group hover:bg-gray-50 transition-colors">
                         <td className="px-5 py-3">
                           <div className="flex flex-col gap-0.5">
-                            <span className="font-bold text-slate-800 line-clamp-1">{item.title}</span>
-                            <span className="text-[10px] text-slate-400 uppercase tracking-tighter">{item.category}</span>
+                            <span className="font-bold text-gray-800 line-clamp-1">{item.title}</span>
+                            <span className="text-[10px] text-gray-400 uppercase tracking-tighter">{item.category}</span>
                           </div>
                         </td>
-                        <td className="px-5 py-3 font-bold text-slate-700">{formatNumber(item.views)}</td>
+                        <td className="px-5 py-3 font-bold text-gray-700">{formatNumber(item.views)}</td>
                         <td className="px-5 py-3">
                           <AdminStatusBadge 
                             value={item.seoScore} 
                             variant={item.seoScore >= 80 ? 'success' : item.seoScore >= 60 ? 'info' : 'warning'} 
                           />
                         </td>
-                        <td className="px-5 py-3 text-slate-500 font-medium text-[10px]">
+                        <td className="px-5 py-3 text-gray-500 font-medium text-[10px]">
                           {item.publishedAt ? new Date(item.publishedAt).toLocaleDateString() : '-'}
                         </td>
                       </tr>
@@ -495,20 +495,20 @@ export default function AdminAnalyticsPage() {
                   </tbody>
                 </table>
               </div>
-              <div className="p-3 bg-slate-50/50 border-t border-slate-100 text-center">
+              <div className="p-3 bg-gray-50/50 border-t border-gray-100 text-center">
                 <Link href="/admin/blog/blogs" className="text-[10px] font-bold text-indigo-600 hover:text-indigo-700 uppercase tracking-widest">
                   View All Content
                 </Link>
               </div>
             </article>
 
-            <article className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-              <div className="px-5 py-4 border-b border-slate-100">
-                <h3 className="text-sm font-bold text-slate-900">Keyword Performance</h3>
+            <article className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+              <div className="px-5 py-4 border-b border-gray-100">
+                <h3 className="text-sm font-bold text-gray-900">Keyword Performance</h3>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-xs">
-                  <thead className="bg-slate-50/50 text-[10px] uppercase tracking-wider text-slate-500 font-bold border-b border-slate-100">
+                  <thead className="bg-gray-50/50 text-[10px] uppercase tracking-wider text-gray-500 font-bold border-b border-gray-100">
                     <tr>
                       <th className="px-5 py-3 text-left">Keyword</th>
                       <th className="px-5 py-3 text-left">Pos</th>
@@ -516,16 +516,16 @@ export default function AdminAnalyticsPage() {
                       <th className="px-5 py-3 text-right">Delta</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
+                  <tbody className="divide-y divide-gray-100">
                     {stats.keywordRankings.map((item) => (
-                      <tr key={item.keyword} className="hover:bg-slate-50 transition-colors">
+                      <tr key={item.keyword} className="hover:bg-gray-50 transition-colors">
                         <td className="px-5 py-3">
                           <div className="flex flex-col gap-0.5">
-                            <span className="font-bold text-slate-800">{item.keyword}</span>
-                            <span className="text-[9px] text-slate-400 font-mono truncate max-w-[150px]">{item.articleTitle}</span>
+                            <span className="font-bold text-gray-800">{item.keyword}</span>
+                            <span className="text-[9px] text-gray-400 font-mono truncate max-w-[150px]">{item.articleTitle}</span>
                           </div>
                         </td>
-                        <td className="px-5 py-3 font-bold text-slate-700">#{item.position}</td>
+                        <td className="px-5 py-3 font-bold text-gray-700">#{item.position}</td>
                         <td className="px-5 py-3">
                           <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase ${
                             item.intent === 'Informational' ? 'bg-blue-50 text-blue-600 border border-blue-100' : 'bg-violet-50 text-violet-600 border border-violet-100'
@@ -534,7 +534,7 @@ export default function AdminAnalyticsPage() {
                           </span>
                         </td>
                         <td className="px-5 py-3 text-right">
-                          <div className={`flex items-center justify-end gap-0.5 font-bold ${item.change > 0 ? 'text-emerald-600' : item.change < 0 ? 'text-rose-600' : 'text-slate-400'}`}>
+                          <div className={`flex items-center justify-end gap-0.5 font-bold ${item.change > 0 ? 'text-emerald-600' : item.change < 0 ? 'text-rose-600' : 'text-gray-400'}`}>
                             {item.change > 0 ? <FiArrowUp className="h-2.5 w-2.5" /> : item.change < 0 ? <FiArrowDown className="h-2.5 w-2.5" /> : null}
                             {Math.abs(item.change)}
                           </div>
@@ -544,7 +544,7 @@ export default function AdminAnalyticsPage() {
                   </tbody>
                 </table>
               </div>
-              <div className="p-3 bg-slate-50/50 border-t border-slate-100 text-center">
+              <div className="p-3 bg-gray-50/50 border-t border-gray-100 text-center">
                 <button className="text-[10px] font-bold text-indigo-600 hover:text-indigo-700 uppercase tracking-widest">
                   Explore All Keywords
                 </button>

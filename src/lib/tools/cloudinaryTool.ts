@@ -7,7 +7,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export async function uploadImage(imageUrlOrBuffer: string, folder: string = 'blog_automation'): Promise<string | null> {
+export async function uploadImage(imageUrlOrBuffer: string, folder: string = 'blog-images'): Promise<string | null> {
   try {
     if (!process.env.CLOUDINARY_API_KEY) {
       console.warn('[Cloudinary Tool] Missing API keys. Returning mock image URL.');

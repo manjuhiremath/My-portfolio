@@ -128,8 +128,8 @@ export default function AdminCategoriesClient() {
       />
 
       <div className="space-y-3">
-        <section className="rounded-lg border border-slate-200 bg-white p-3 shadow-sm">
-          <h3 className="mb-2 text-xs font-bold text-slate-900 flex items-center gap-2">
+        <section className="rounded-lg border border-gray-200 bg-white p-3 shadow-sm">
+          <h3 className="mb-2 text-xs font-bold text-gray-900 flex items-center gap-2">
             <FiFolder className="text-indigo-500 h-3.5 w-3.5" />
             Quick Add
           </h3>
@@ -138,7 +138,7 @@ export default function AdminCategoriesClient() {
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
               placeholder="Category name..."
-              className="h-8 flex-1 rounded-md border border-slate-300 px-3 text-xs outline-none focus:ring-1 focus:ring-indigo-500/20 focus:border-indigo-500"
+              className="h-8 flex-1 rounded-md border border-gray-300 px-3 text-xs outline-none focus:ring-1 focus:ring-indigo-500/20 focus:border-indigo-500"
               required
             />
             <button
@@ -152,23 +152,23 @@ export default function AdminCategoriesClient() {
           </form>
         </section>
 
-        <section className="rounded-lg border border-slate-200 bg-white shadow-sm overflow-hidden">
-          <div className="bg-slate-50/50 px-3 py-2 border-b border-slate-200 flex justify-between items-center">
-            <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Categories Inventory</h3>
+        <section className="rounded-lg border border-gray-200 bg-white shadow-sm overflow-hidden">
+          <div className="bg-gray-50/50 px-3 py-2 border-b border-gray-200 flex justify-between items-center">
+            <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider">Categories Inventory</h3>
             <div className="relative">
-              <FiFilter className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 h-3 w-3" />
+              <FiFilter className="absolute left-2.5 top-1/2 -trangray-y-1/2 text-gray-400 h-3 w-3" />
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search..."
-                className="h-7 w-36 rounded border border-slate-300 pl-7 pr-2 text-[11px] outline-none focus:border-indigo-500"
+                className="h-7 w-36 rounded border border-gray-300 pl-7 pr-2 text-[11px] outline-none focus:border-indigo-500"
               />
             </div>
           </div>
           
           <div className="overflow-x-auto">
             <table className="w-full text-left">
-              <thead className="bg-slate-50/30 text-[10px] uppercase tracking-widest text-slate-500 border-b border-slate-200">
+              <thead className="bg-gray-50/30 text-[10px] uppercase tracking-widest text-gray-500 border-b border-gray-200">
                 <tr>
                   <th className="px-3 py-2 font-bold w-1/3">Category Name</th>
                   <th className="px-3 py-2 font-bold text-center">Blogs</th>
@@ -176,9 +176,9 @@ export default function AdminCategoriesClient() {
                   <th className="px-3 py-2 font-bold text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-gray-100">
                 {filteredCategories.map((cat) => (
-                  <tr key={cat._id} className="group hover:bg-slate-50/30 transition-colors">
+                  <tr key={cat._id} className="group hover:bg-gray-50/30 transition-colors">
                     <td className="px-3 py-2">
                       {editItem?.id === cat._id ? (
                         <div className="flex gap-1 items-center py-1">
@@ -196,7 +196,7 @@ export default function AdminCategoriesClient() {
                           </button>
                           <button 
                             onClick={() => setEditingItem(null)}
-                            className="p-1 bg-slate-50 text-slate-600 rounded border border-slate-200 hover:bg-slate-100"
+                            className="p-1 bg-gray-50 text-gray-600 rounded border border-gray-200 hover:bg-gray-100"
                           >
                             <FiX className="h-3 w-3" />
                           </button>
@@ -204,8 +204,8 @@ export default function AdminCategoriesClient() {
                       ) : (
                         <div className="space-y-0.5">
                           <div className="flex items-baseline gap-2 flex-wrap">
-                            <p className="text-xs font-bold text-slate-800">{cat.name}</p>
-                            <span className="text-[10px] text-slate-400 font-mono lowercase">
+                            <p className="text-xs font-bold text-gray-800">{cat.name}</p>
+                            <span className="text-[10px] text-gray-400 font-mono lowercase">
                               /{cat.slug}
                             </span>
                           </div>
@@ -213,20 +213,20 @@ export default function AdminCategoriesClient() {
                             {(cat.tags || []).slice(0, 5).map((tag) => (
                               <span 
                                 key={tag._id || tag} 
-                                className="inline-flex items-center rounded bg-slate-50 px-1 py-0.5 text-[8px] font-medium text-slate-500 border border-slate-100"
+                                className="inline-flex items-center rounded bg-gray-50 px-1 py-0.5 text-[8px] font-medium text-gray-500 border border-gray-100"
                               >
                                 #{tag.name || tag}
                               </span>
                             ))}
                             {(cat.tags || []).length > 5 && (
-                              <span className="text-[8px] text-slate-400">+{(cat.tags || []).length - 5}</span>
+                              <span className="text-[8px] text-gray-400">+{(cat.tags || []).length - 5}</span>
                             )}
                           </div>
                         </div>
                       )}
                     </td>
                     <td className="px-3 py-2 text-center">
-                      <span className="text-xs font-bold text-slate-600">
+                      <span className="text-xs font-bold text-gray-600">
                         {cat.blogCount || 0}
                       </span>
                     </td>
@@ -239,14 +239,14 @@ export default function AdminCategoriesClient() {
                       <div className="flex justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-all">
                         <button 
                           onClick={() => setEditingItem({ id: cat._id, name: cat.name })}
-                          className="p-1.5 rounded bg-slate-50 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 transition-colors border border-slate-200"
+                          className="p-1.5 rounded bg-gray-50 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 transition-colors border border-gray-200"
                           title="Edit Name"
                         >
                           <FiEdit2 className="h-3 w-3" />
                         </button>
                         <button 
                           onClick={() => handleDeleteCategory(cat._id)}
-                          className="p-1.5 rounded bg-slate-50 text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors border border-slate-200"
+                          className="p-1.5 rounded bg-gray-50 text-gray-400 hover:text-rose-600 hover:bg-rose-50 transition-colors border border-gray-200"
                           title="Delete"
                         >
                           <FiTrash2 className="h-3 w-3" />
@@ -257,7 +257,7 @@ export default function AdminCategoriesClient() {
                 ))}
                 {!filteredCategories.length && !loading && (
                   <tr>
-                    <td colSpan={4} className="px-3 py-6 text-center text-[11px] text-slate-400 italic">
+                    <td colSpan={4} className="px-3 py-6 text-center text-[11px] text-gray-400 italic">
                       No categories found matching your search.
                     </td>
                   </tr>

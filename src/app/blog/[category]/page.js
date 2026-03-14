@@ -192,33 +192,33 @@ export default async function CategoryPage({ params, searchParams }) {
     <div className="min-h-screen bg-background">
       <main className="mx-auto max-w-7xl space-y-6 px-4 py-8 sm:px-6 lg:px-8">
         {blogs.length > 0 && <BannerAd />}
-        <nav className="flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-          <Link href="/" className="hover:text-slate-700 dark:hover:text-slate-200">
+        <nav className="flex flex-wrap items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+          <Link href="/" className="hover:text-gray-700 dark:hover:text-gray-200">
             Home
           </Link>
           <span>/</span>
-          <Link href="/blog" className="hover:text-slate-700 dark:hover:text-slate-200">
+          <Link href="/blog" className="hover:text-gray-700 dark:hover:text-gray-200">
             Blog
           </Link>
           <span>/</span>
-          <span className="text-slate-700 dark:text-slate-200">{categoryName}</span>
+          <span className="text-gray-700 dark:text-gray-200">{categoryName}</span>
         </nav>
 
-        <header className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5 shadow-sm">
+        <header className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-5 shadow-sm">
           <span
             className="inline-flex rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider text-white shadow-sm"
             style={{ backgroundColor: categoryColor }}
           >
             Category
           </span>
-          <h1 className="mt-3 text-3xl font-black tracking-tight text-slate-900 dark:text-white sm:text-4xl">{categoryName}</h1>
-          <p className="mt-2 text-sm font-medium text-slate-600 dark:text-slate-400 max-w-2xl">
+          <h1 className="mt-3 text-3xl font-black tracking-tight text-gray-900 dark:text-white sm:text-4xl">{categoryName}</h1>
+          <p className="mt-2 text-sm font-medium text-gray-600 dark:text-gray-400 max-w-2xl">
             Explore our curated collection of {totalBlogs} article{totalBlogs === 1 ? '' : 's'} in the {categoryName.toLowerCase()} category.
           </p>
         </header>
 
         {blogs.length === 0 ? (
-          <section className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-10 text-center text-sm text-slate-600 dark:text-slate-400">
+          <section className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-10 text-center text-sm text-gray-600 dark:text-gray-400">
             No published posts in this category yet.
           </section>
         ) : (

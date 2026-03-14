@@ -123,9 +123,9 @@ export default function AdminDashboardPage() {
       />
 
       {loading ? (
-        <div className="flex flex-col items-center justify-center min-h-[400px] bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800">
+        <div className="flex flex-col items-center justify-center min-h-[400px] bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-4" />
-          <p className="text-sm text-slate-500 font-medium">Synchronizing protocol data...</p>
+          <p className="text-sm text-gray-500 font-medium">Synchronizing protocol data...</p>
         </div>
       ) : (
         <>
@@ -174,20 +174,20 @@ export default function AdminDashboardPage() {
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Search recent index..."
-                className="h-8 w-64 rounded-lg border border-slate-200 dark:border-slate-800 px-3 text-xs outline-none focus:border-primary transition-all bg-white dark:bg-slate-900 dark:text-white"
+                className="h-8 w-64 rounded-lg border border-gray-200 dark:border-gray-800 px-3 text-xs outline-none focus:border-primary transition-all bg-white dark:bg-gray-900 dark:text-white"
               />
             </div>
             <select
               value={status}
               onChange={(event) => setStatus(event.target.value)}
-              className="h-8 rounded-lg border border-slate-200 dark:border-slate-800 px-2 text-xs outline-none bg-white dark:bg-slate-900 dark:text-slate-300"
+              className="h-8 rounded-lg border border-gray-200 dark:border-gray-800 px-2 text-xs outline-none bg-white dark:bg-gray-900 dark:text-gray-300"
             >
               <option value="all">All Status</option>
               <option value="published">Live</option>
               <option value="draft">Queue</option>
             </select>
-            <div className="h-4 w-px bg-slate-200 dark:bg-slate-800 mx-1" />
-            <button onClick={loadStats} className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-800 px-3 text-xs text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+            <div className="h-4 w-px bg-gray-200 dark:bg-gray-800 mx-1" />
+            <button onClick={loadStats} className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-gray-200 dark:border-gray-800 px-3 text-xs text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
               <FiRefreshCw className="h-3 w-3" />
               Sync
             </button>
@@ -195,11 +195,11 @@ export default function AdminDashboardPage() {
 
           {/* SECONDARY INSIGHTS */}
           <section className="grid grid-cols-1 gap-4 xl:grid-cols-[1.5fr_1fr]">
-            <article className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-soft">
+            <article className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 shadow-soft">
               <div className="mb-6 flex items-center justify-between">
                 <div>
-                  <h2 className="text-sm font-black uppercase tracking-widest text-slate-900 dark:text-white">Traffic Momentum</h2>
-                  <p className="text-[11px] text-slate-400 font-medium mt-0.5">Global view distribution (12M)</p>
+                  <h2 className="text-sm font-black uppercase tracking-widest text-gray-900 dark:text-white">Traffic Momentum</h2>
+                  <p className="text-[11px] text-gray-400 font-medium mt-0.5">Global view distribution (12M)</p>
                 </div>
                 <Link href="/admin/blog/analytics" className="text-[10px] font-black uppercase tracking-widest text-primary hover:underline">
                   Deep Analytics →
@@ -208,33 +208,33 @@ export default function AdminDashboardPage() {
               <div className="grid grid-cols-6 md:grid-cols-12 gap-3">
                 {monthlyViews.map((item) => (
                   <div key={item.key} className="space-y-2 group">
-                    <div className="flex h-24 items-end rounded-lg border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 px-1 py-1.5 transition-colors group-hover:bg-slate-50 dark:group-hover:bg-slate-800">
+                    <div className="flex h-24 items-end rounded-lg border border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/30 px-1 py-1.5 transition-colors group-hover:bg-gray-50 dark:group-hover:bg-gray-800">
                       <motion.div
                         initial={{ height: 0 }}
                         animate={{ height: `${Math.max(8, ((item.views || 0) / maxMonthlyViews) * 100)}%` }}
                         transition={{ duration: 1, ease: 'easeOut' }}
-                        className="w-full rounded-md bg-slate-900 dark:bg-primary shadow-glow shadow-primary/20"
+                        className="w-full rounded-md bg-gray-900 dark:bg-primary shadow-glow shadow-primary/20"
                       />
                     </div>
                     <div className="space-y-0.5 px-0.5">
-                      <p className="truncate text-[9px] font-black uppercase text-slate-400">{item.month.split(' ')[0]}</p>
-                      <p className="text-[10px] font-bold text-slate-900 dark:text-slate-300">{formatNumber(item.views)}</p>
+                      <p className="truncate text-[9px] font-black uppercase text-gray-400">{item.month.split(' ')[0]}</p>
+                      <p className="text-[10px] font-bold text-gray-900 dark:text-gray-300">{formatNumber(item.views)}</p>
                     </div>
                   </div>
                 ))}
               </div>
             </article>
 
-            <article className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-soft">
-              <h2 className="mb-6 text-sm font-black uppercase tracking-widest text-slate-900 dark:text-white">SEO Health Protocol</h2>
+            <article className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 shadow-soft">
+              <h2 className="mb-6 text-sm font-black uppercase tracking-widest text-gray-900 dark:text-white">SEO Health Protocol</h2>
               <div className="space-y-5">
                 {seoDistribution.map((item) => (
                   <div key={item.key} className="space-y-2">
                     <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-wider">
-                      <span className="text-slate-500">{item.key}</span>
-                      <span className="text-slate-900 dark:text-slate-300">{item.count} Assets</span>
+                      <span className="text-gray-500">{item.key}</span>
+                      <span className="text-gray-900 dark:text-gray-300">{item.count} Assets</span>
                     </div>
-                    <div className="h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                    <div className="h-2 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${Math.max(4, ((item.count || 0) / maxSeoDistribution) * 100)}%` }}
@@ -245,13 +245,13 @@ export default function AdminDashboardPage() {
                   </div>
                 ))}
               </div>
-              <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800 grid grid-cols-2 gap-4">
-                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
-                  <span className="text-[9px] font-black text-slate-400 uppercase block mb-1">Avg Score</span>
+              <div className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800 grid grid-cols-2 gap-4">
+                <div className="p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800">
+                  <span className="text-[9px] font-black text-gray-400 uppercase block mb-1">Avg Score</span>
                   <p className="text-xl font-black text-primary">{metrics?.averageSeoScore}</p>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
-                  <span className="text-[9px] font-black text-slate-400 uppercase block mb-1">Pass Rate</span>
+                <div className="p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800">
+                  <span className="text-[9px] font-black text-gray-400 uppercase block mb-1">Pass Rate</span>
                   <p className="text-xl font-black text-emerald-500">100%</p>
                 </div>
               </div>
@@ -260,14 +260,14 @@ export default function AdminDashboardPage() {
 
           {/* TABLES */}
           <section className="grid grid-cols-1 gap-4 xl:grid-cols-[2fr_1fr]">
-            <article className="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-soft">
-              <div className="border-b border-slate-100 dark:border-slate-800 px-5 py-4 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/20">
-                <h2 className="text-sm font-black uppercase tracking-widest text-slate-900 dark:text-white">Recent Index Activity</h2>
+            <article className="overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-soft">
+              <div className="border-b border-gray-100 dark:border-gray-800 px-5 py-4 flex items-center justify-between bg-gray-50/50 dark:bg-gray-800/20">
+                <h2 className="text-sm font-black uppercase tracking-widest text-gray-900 dark:text-white">Recent Index Activity</h2>
                 <Link href="/admin/blog/blogs" className="text-[10px] font-black text-primary uppercase tracking-widest hover:underline">View Ledger</Link>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-xs">
-                  <thead className="bg-slate-50/50 dark:bg-slate-800/50 text-[10px] uppercase tracking-[0.1em] font-black text-slate-400 border-b border-slate-100 dark:border-slate-800">
+                  <thead className="bg-gray-50/50 dark:bg-gray-800/50 text-[10px] uppercase tracking-[0.1em] font-black text-gray-400 border-b border-gray-100 dark:border-gray-800">
                     <tr>
                       <th className="px-5 py-3 text-left">Manifesto Title</th>
                       <th className="px-5 py-3 text-left">Classification</th>
@@ -276,31 +276,34 @@ export default function AdminDashboardPage() {
                       <th className="px-5 py-3 text-right">Action</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                  <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                     {filteredRecentBlogs.slice(0, 10).map((blog) => (
-                      <tr key={blog._id} className="group hover:bg-slate-50/80 dark:hover:bg-slate-800/30 transition-colors">
+                      <tr key={blog._id} className="group hover:bg-gray-50/80 dark:hover:bg-gray-800/30 transition-colors">
                         <td className="px-5 py-4">
                           <div className="flex flex-col gap-0.5">
-                            <p className="max-w-[320px] truncate font-bold text-slate-800 dark:text-slate-200">{blog.title}</p>
-                            <p className="text-[10px] text-slate-400 font-mono">ID: {blog._id.slice(-8)}</p>
+                            <p className="max-w-[320px] truncate font-bold text-gray-800 dark:text-gray-200">{blog.title}</p>
+                            <p className="text-[10px] text-gray-400 font-mono">ID: {blog._id.slice(-8)}</p>
                           </div>
                         </td>
                         <td className="px-5 py-4">
-                          <AdminStatusBadge value={blog.category?.name || 'Uncategorized'} variant="indigo" />
+                          <AdminStatusBadge 
+                            value={typeof blog.category === 'object' ? (blog.category?.name || 'Uncategorized') : 'Uncategorized'} 
+                            variant="indigo" 
+                          />
                         </td>
                         <td className="px-5 py-4">
                           <AdminStatusBadge value={`${blog.seoScore}/100`} variant={getSeoVariant(blog.seoScore)} />
                         </td>
                         <td className="px-5 py-4">
                           <div className="flex flex-col">
-                            <span className="font-bold text-slate-700 dark:text-slate-300">{formatNumber(blog.views)}</span>
-                            <span className="text-[9px] text-slate-400 uppercase font-black">{formatDate(blog.updatedAt)}</span>
+                            <span className="font-bold text-gray-700 dark:text-gray-300">{formatNumber(blog.views)}</span>
+                            <span className="text-[9px] text-gray-400 uppercase font-black">{formatDate(blog.updatedAt)}</span>
                           </div>
                         </td>
                         <td className="px-5 py-4 text-right">
                           <Link 
                             href={`/admin/blog/blogs/edit/${blog.slug}`} 
-                            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 text-slate-400 hover:text-primary hover:border-primary transition-all"
+                            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 dark:border-gray-800 text-gray-400 hover:text-primary hover:border-primary transition-all"
                           >
                             <FiArrowRight className="h-4 w-4" />
                           </Link>
@@ -312,30 +315,30 @@ export default function AdminDashboardPage() {
               </div>
             </article>
 
-            <article className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-soft overflow-hidden">
-              <div className="border-b border-slate-100 dark:border-slate-800 px-5 py-4 bg-slate-50/50 dark:bg-slate-800/20">
-                <h2 className="text-sm font-black uppercase tracking-widest text-slate-900 dark:text-white">Top Performing Assets</h2>
+            <article className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-soft overflow-hidden">
+              <div className="border-b border-gray-100 dark:border-gray-800 px-5 py-4 bg-gray-50/50 dark:bg-gray-800/20">
+                <h2 className="text-sm font-black uppercase tracking-widest text-gray-900 dark:text-white">Top Performing Assets</h2>
               </div>
-              <div className="divide-y divide-slate-100 dark:divide-slate-800 px-2">
+              <div className="divide-y divide-gray-100 dark:divide-gray-800 px-2">
                 {topArticles.slice(0, 8).map((article, index) => (
                   <Link
                     key={article._id}
                     href={`/admin/blog/blogs/edit/${article.slug}`}
-                    className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all group"
+                    className="flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all group"
                   >
                     <div className="flex items-center gap-4 min-w-0">
-                      <span className="text-xl font-black text-slate-100 dark:text-slate-800 group-hover:text-primary/20 transition-colors">{index + 1}</span>
+                      <span className="text-xl font-black text-gray-100 dark:text-gray-800 group-hover:text-primary/20 transition-colors">{index + 1}</span>
                       <div className="min-w-0">
-                        <p className="truncate text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-primary transition-colors">{article.title}</p>
-                        <p className="text-[10px] text-slate-400 font-black uppercase tracking-tighter mt-0.5">{formatNumber(article.views)} Impacts</p>
+                        <p className="truncate text-xs font-bold text-gray-800 dark:text-gray-200 group-hover:text-primary transition-colors">{article.title}</p>
+                        <p className="text-[10px] text-gray-400 font-black uppercase tracking-tighter mt-0.5">{formatNumber(article.views)} Impacts</p>
                       </div>
                     </div>
-                    <FiMoreHorizontal className="text-slate-300 group-hover:text-slate-500" />
+                    <FiMoreHorizontal className="text-gray-300 group-hover:text-gray-500" />
                   </Link>
                 ))}
               </div>
-              <div className="p-4 bg-slate-50/50 dark:bg-slate-800/20 border-t border-slate-100 dark:border-slate-800">
-                <button className="w-full py-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-primary transition-colors">
+              <div className="p-4 bg-gray-50/50 dark:bg-gray-800/20 border-t border-gray-100 dark:border-gray-800">
+                <button className="w-full py-2 text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 hover:text-primary transition-colors">
                   Recalculate Protocol Ranks
                 </button>
               </div>

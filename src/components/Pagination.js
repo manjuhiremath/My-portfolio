@@ -39,17 +39,17 @@ export default function Pagination({ currentPage, totalPages, baseUrl }) {
         aria-disabled={currentPage <= 1}
         className={`inline-flex h-12 items-center rounded-2xl border px-6 text-[10px] font-black uppercase tracking-widest transition-all ${
           currentPage <= 1
-            ? 'pointer-events-none border-slate-100 text-slate-300 dark:border-slate-800 dark:text-slate-700'
-            : 'border-slate-200 text-slate-600 hover:border-orange-500 hover:text-orange-500 dark:border-slate-700 dark:text-slate-400'
+            ? 'pointer-events-none border-gray-100 text-gray-300 dark:border-gray-800 dark:text-gray-700'
+            : 'border-gray-200 text-gray-600 hover:border-orange-500 hover:text-orange-500 dark:border-gray-700 dark:text-gray-400'
         }`}
       >
         Prev
       </Link>
 
-      <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-800/50 p-1.5 rounded-[1.5rem] border border-slate-100 dark:border-slate-800">
+      <div className="flex items-center gap-2 bg-gray-50 dark:bg-gray-800/50 p-1.5 rounded-[1.5rem] border border-gray-100 dark:border-gray-800">
         {pageNumbers.map((page, index) =>
           page === '...' ? (
-            <span key={`ellipsis-${index}`} className="px-2 text-xs font-bold text-slate-400">
+            <span key={`ellipsis-${index}`} className="px-2 text-xs font-bold text-gray-400">
               ···
             </span>
           ) : (
@@ -59,7 +59,7 @@ export default function Pagination({ currentPage, totalPages, baseUrl }) {
               className={`inline-flex h-9 min-w-9 items-center justify-center rounded-xl text-[10px] font-black transition-all ${
                 page === currentPage
                   ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/20'
-                  : 'text-slate-500 hover:bg-white dark:hover:bg-slate-700 hover:text-orange-500'
+                  : 'text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:text-orange-500'
               }`}
             >
               {page}
@@ -73,8 +73,8 @@ export default function Pagination({ currentPage, totalPages, baseUrl }) {
         aria-disabled={currentPage >= totalPages}
         className={`inline-flex h-12 items-center rounded-2xl border px-6 text-[10px] font-black uppercase tracking-widest transition-all ${
           currentPage >= totalPages
-            ? 'pointer-events-none border-slate-100 text-slate-300 dark:border-slate-800 dark:text-slate-700'
-            : 'border-slate-200 text-slate-600 hover:border-orange-500 hover:text-orange-500 dark:border-slate-700 dark:text-slate-400'
+            ? 'pointer-events-none border-gray-100 text-gray-300 dark:border-gray-800 dark:text-gray-700'
+            : 'border-gray-200 text-gray-600 hover:border-orange-500 hover:text-orange-500 dark:border-gray-700 dark:text-gray-400'
         }`}
       >
         Next

@@ -38,7 +38,7 @@ export default function TopStories({ blogs, getCategoryColor }) {
           return (
             <article key={blog._id} className="group relative">
               {/* Image Container */}
-              <Link href={href} className="relative block aspect-[25/10] overflow-hidden rounded-md bg-slate-100 dark:bg-slate-800 shadow-sm transition-all duration-500 hover:shadow-md hover:-translate-y-0.5">
+              <Link href={href} className="relative block aspect-[25/10] overflow-hidden rounded-md bg-gray-100 dark:bg-gray-800 shadow-sm transition-all duration-500 hover:shadow-md hover:-trangray-y-0.5">
                 <Image
                   src={imageUrl}
                   alt={blog.title}
@@ -75,18 +75,18 @@ export default function TopStories({ blogs, getCategoryColor }) {
                 </div>
 
                 <Link href={href} className="block group/title">
-                  <h3 className="text-sm font-bold leading-tight tracking-tight text-slate-900 dark:text-white transition-all duration-300 group-hover/title:text-primary font-display line-clamp-2">
+                  <h3 className="text-sm font-bold leading-tight tracking-tight text-gray-900 dark:text-white transition-all duration-300 group-hover/title:text-primary font-display line-clamp-2">
                     {blog.title}
                   </h3>
                 </Link>
 
-                <p className="line-clamp-2 text-[11px] leading-relaxed text-slate-500 dark:text-slate-400 font-medium max-w-prose">
+                <p className="line-clamp-2 text-[11px] leading-relaxed text-gray-500 dark:text-gray-400 font-medium max-w-prose">
                   {blog.excerpt || 'Access the technical documentation and strategic analysis behind this manifesto.'}
                 </p>
                 
                 <div className="pt-1 flex justify-end">
-                  <Link href={href} className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-slate-900 dark:text-white border-b border-primary pb-0.5 transition-all hover:gap-2 group/link">
-                    Read <FiArrowRight className="h-2.5 w-2.5 transition-transform group-hover/link:translate-x-0.5" />
+                  <Link href={href} className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-gray-900 dark:text-white border-b border-primary pb-0.5 transition-all hover:gap-2 group/link">
+                    Read <FiArrowRight className="h-2.5 w-2.5 transition-transform group-hover/link:trangray-x-0.5" />
                   </Link>
                 </div>
               </div>

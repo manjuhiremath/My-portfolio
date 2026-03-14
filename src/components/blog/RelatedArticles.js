@@ -21,7 +21,7 @@ export default function RelatedArticles({ blogs }) {
             className="flex-shrink-0 w-[280px] snap-start group"
           >
             <div className="bg-white dark:bg-[#1e293b] rounded-2xl border border-[#e5e7eb] dark:border-[#1e293b] overflow-hidden shadow-sm transition-all">
-              <div className="relative aspect-[16/10] bg-slate-100 dark:bg-slate-800">
+              <div className="relative aspect-[16/10] bg-gray-100 dark:bg-gray-800">
                 <Image
                   src={fixUnsplashUrl(blog.featuredImage)}
                   alt={blog.title}
