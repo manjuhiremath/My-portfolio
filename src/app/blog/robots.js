@@ -1,11 +1,11 @@
 export default function robots() {
-  const baseUrl = process.env.NEXT_PUBLIC_URL || 'https://www.manjuhiremath.in';
+  const baseUrl = 'https://www.manjuhiremath.in';
 
   return {
     rules: [
       {
         userAgent: '*',
-        allow: '/',
+        allow: ['/', '/blog/', '/blog/*'],
         disallow: [
           '/admin/',
           '/api/',
@@ -13,7 +13,7 @@ export default function robots() {
         ],
       }
     ],
-    sitemap: `${baseUrl}/sitemap.xml`,
+    sitemap: `${baseUrl}/blog/sitemap.xml`,
     host: baseUrl,
   };
 }
