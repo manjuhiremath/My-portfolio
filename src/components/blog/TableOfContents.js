@@ -283,7 +283,7 @@ export default function TableOfContents({ headings }) {
                 : null;
 
             return (
-              <Fragment key={item.id}>
+              <div key={item.id}>
                 {showDivider && <div className="toc-divider" />}
                 <li
                   className={`toc-item level-${item.level}`}
@@ -312,7 +312,7 @@ export default function TableOfContents({ headings }) {
                     <span className="toc-text">{item.text}</span>
                   </a>
                 </li>
-              </Fragment>
+              </div>
             );
           })}
         </ul>
