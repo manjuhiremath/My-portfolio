@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
-const ADMIN_EMAIL = 'admin@manjuhiremath.in';
-const ADMIN_PASSWORD = 'Manju@1352';
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 const COOKIE_NAME = 'admin_auth';
 
 export async function GET(request) {
