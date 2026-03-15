@@ -39,14 +39,12 @@ export default function EditorPicks({ blogs, loading = false }) {
           return (
             <Link key={blog._id} href={href} className="group">
               <article className="space-y-5">
-                {/* Image */}
-                <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-gray-200 dark:bg-gray-700 shadow-sm transition-all duration-500">
-                  <Image
+                <div className="relative aspect-video overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-800 shadow-sm transition-all group-hover:shadow-md">
+                  <img
                     src={imageUrl}
                     alt={blog.title}
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    className="object-cover"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-500" />
                 </div>

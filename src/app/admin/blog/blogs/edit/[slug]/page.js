@@ -556,6 +556,7 @@ export default function EditBlog() {
                       alt="Featured preview"
                       width={256}
                       height={128}
+                      unoptimized
                       loading="lazy"
                       className="h-32 w-auto rounded-md border border-[#3F3F46]/20"
                     />

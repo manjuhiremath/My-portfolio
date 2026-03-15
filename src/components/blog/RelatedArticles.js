@@ -22,12 +22,11 @@ export default function RelatedArticles({ blogs }) {
           >
             <div className="bg-white dark:bg-[#1e293b] rounded-2xl border border-[#e5e7eb] dark:border-[#1e293b] overflow-hidden shadow-sm transition-all">
               <div className="relative aspect-[16/10] bg-gray-100 dark:bg-gray-800">
-                <Image
+                <img
                   src={fixUnsplashUrl(blog.featuredImage)}
                   alt={blog.title}
-                  fill
-                  className="object-cover transition-transform"
-                  sizes="280px"
+                  className="w-full h-full object-cover transition-transform"
+                  loading="lazy"
                 />
               </div>
               <div className="p-4">

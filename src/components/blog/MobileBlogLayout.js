@@ -109,20 +109,15 @@ export default function MobileBlogLayout({
             </div>
           </div>
 
-          {blog.featuredImage && (
             <div className="relative aspect-[4/3] mb-10 overflow-hidden rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-800 animate-in fade-in zoom-in-95 duration-1000">
-              <Image
+              <img
                 src={fixUnsplashUrl(blog.featuredImage)}
                 alt={blog.title}
-                fill
-                className="object-cover"
-                priority
+                className="w-full h-full object-cover"
                 loading="eager"
-                sizes="(max-width: 768px) 100vw, 640px"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
             </div>
-          )}
 
           {/* Render Sections */}
           <div className="mobile-content space-y-8">

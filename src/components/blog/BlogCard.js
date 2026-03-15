@@ -44,13 +44,11 @@ export default function BlogCard({ blog, categoryColor = 'oklch(60% 0.15 250)', 
         className="group relative block h-[320px] sm:h-[400px] lg:h-[480px] w-full overflow-hidden rounded-xl bg-white dark:bg-gray-800/30 border border-gray-300 dark:border-gray-700/50 shadow-soft transition-all duration-500 hover:shadow-xl"
       >
         <div className="relative h-full w-full overflow-hidden bg-gray-100 dark:bg-gray-800">
-          <Image
+          <img
             src={imageUrl}
             alt={blog.title || 'Featured Manifesto'}
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 66vw, 50vw"
-            priority
-            className="object-cover transition-transform duration-1000 ease-out group-hover:scale-110"
+            className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110"
+            loading="eager"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent" />
           
@@ -97,13 +95,11 @@ export default function BlogCard({ blog, categoryColor = 'oklch(60% 0.15 250)', 
         className="group flex gap-3 items-center py-2 sm:py-3 border-b border-gray-100 dark:border-gray-800 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-800/30 -mx-2 px-2 rounded-lg transition-all duration-300"
       >
         <div className="relative w-14 h-14 sm:w-20 sm:h-16 flex-shrink-0 overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800 shadow-sm">
-          <Image
+          <img
             src={imageUrl}
             alt={blog.title || 'Manifesto'}
-            fill
-            sizes="(max-width: 640px) 60px, 80px"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
             loading="lazy"
-            className="object-cover transition-transform duration-500 group-hover:scale-110"
           />
         </div>
         <div className="flex-1 min-w-0 space-y-0.5 sm:space-y-1">
@@ -126,13 +122,11 @@ export default function BlogCard({ blog, categoryColor = 'oklch(60% 0.15 250)', 
       className="group flex flex-col h-full overflow-hidden rounded-xl bg-white dark:bg-gray-800/30 border border-gray-300 dark:border-gray-700/50 shadow-soft transition-all duration-500 hover:shadow-xl hover:trangray-y-[-4px]"
     >
       <div className="relative aspect-[16/10] sm:aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-800">
-        <Image
+        <img
           src={imageUrl}
           alt={blog.title || 'Digital Manifesto'}
-          fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
           loading="lazy"
-          className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
 

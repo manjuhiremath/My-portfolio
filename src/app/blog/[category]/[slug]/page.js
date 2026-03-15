@@ -389,7 +389,7 @@ export default async function BlogPostPage({ params }) {
 
                 {serializedBlog.featuredImage ? (
                   <div className="relative mb-10 aspect-video overflow-hidden rounded-2xl bg-gray-100 dark:bg-gray-800 shadow-xl border border-gray-200 dark:border-gray-800">
-                    <Image src={fixUnsplashUrl(serializedBlog.featuredImage)} alt={serializedBlog.title} fill sizes="(max-width: 1200px) 100vw, 800px" className="object-cover" priority />
+                    <img src={fixUnsplashUrl(serializedBlog.featuredImage)} alt={serializedBlog.title} className="w-full h-full object-cover" loading="eager" />
                   </div>
                 ) : null}
 
@@ -462,7 +462,7 @@ export default async function BlogPostPage({ params }) {
                   return (
                     <Link key={relatedBlog._id} href={`/blog/${slugify(relatedCatName)}/${relatedBlog.slug}`} className="group block space-y-2">
                       <div className="relative aspect-video overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-800 shadow-sm transition-all group-hover:shadow-md">
-                        <Image src={fixUnsplashUrl(relatedBlog.featuredImage)} alt={relatedBlog.title} fill sizes="(max-width: 768px) 50vw, 25vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
+                        <img src={fixUnsplashUrl(relatedBlog.featuredImage)} alt={relatedBlog.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
                       </div>
                       <div className="px-1 space-y-1">
                         <p className="text-[8px] font-black text-primary uppercase tracking-[0.3em]">{String(relatedCatName)}</p>

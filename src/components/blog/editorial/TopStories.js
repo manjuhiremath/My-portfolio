@@ -48,14 +48,12 @@ export default function TopStories({ blogs, getCategoryColor, loading = false })
 
           return (
             <article key={blog._id} className="group relative">
-              {/* Image Container */}
-              <Link href={href} className="relative block aspect-[20/10] overflow-hidden rounded-md bg-gray-100 dark:bg-gray-800 shadow-sm transition-all duration-500 hover:shadow-md hover:-trangray-y-0.5">
-                <Image
+              <Link href={href} className="relative block aspect-[20/10] overflow-hidden rounded-md bg-gray-100 dark:bg-gray-800 shadow-sm transition-all duration-500 hover:shadow-md hover:-translate-y-0.5">
+                <img
                   src={imageUrl}
                   alt={blog.title}
-                  fill
-                  sizes="(max-width: 640px) 100vw, 30vw"
-                  className="object-cover transition-transform duration-[1500ms] ease-out group-hover:scale-105"
+                  className="w-full h-full object-cover transition-transform duration-[1500ms] ease-out group-hover:scale-105"
+                  loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
 

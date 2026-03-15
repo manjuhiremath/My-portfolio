@@ -46,7 +46,7 @@ export default function CategorySection({ category, initialBlogs = [], categoryC
         <div className="flex items-center gap-3">
           <div className="h-8 w-1 rounded-full" style={{ backgroundColor: categoryColor }} />
           <div>
-            <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white uppercase font-display">
+            <h2 className="text-md font-bold tracking-tight text-gray-900 dark:text-white uppercase font-display">
               {categoryName}
             </h2>
             <div className="flex items-center gap-2 text-[9px] font-black text-primary uppercase tracking-[0.2em]">
@@ -71,13 +71,11 @@ export default function CategorySection({ category, initialBlogs = [], categoryC
           <div className="lg:col-span-7 xl:col-span-8">
             <Link href={`/blog/${categorySlug}/${featured.slug}`} className="group block h-[500px]">
               <div className="relative h-full min-h-[300px] lg:min-h-[350px] w-full overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-950 shadow-xl ring-1 ring-black/5 dark:ring-white/5">
-                <Image
+                <img
                   src={fixUnsplashUrl(featured.featuredImage)}
                   alt={featured.title}
-                  fill
-                  className="object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
-                  sizes="(max-width: 1024px) 100vw, 40vw"
-                  priority
+                  className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
+                  loading="eager"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-transparent" />
                 
@@ -115,12 +113,11 @@ export default function CategorySection({ category, initialBlogs = [], categoryC
               >
                 {/* Compact Thumbnail */}
                 <div className="relative w-20 h-14 sm:w-24 sm:h-16 flex-shrink-0 overflow-hidden rounded-sm bg-gray-100 dark:bg-gray-900 shadow-md">
-                  <Image
+                  <img
                     src={fixUnsplashUrl(blog.featuredImage)}
                     alt={blog.title}
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-110"
-                    sizes="120px"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    loading="lazy"
                   />
                   <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors" />
                 </div>

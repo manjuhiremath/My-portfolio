@@ -37,14 +37,12 @@ export default function BlogCardSmall({ blog, categoryColor = 'oklch(60% 0.15 25
       href={href}
       className="group block overflow-hidden rounded-xl bg-white dark:bg-gray-800/30 border border-gray-300 dark:border-gray-700/50 shadow-soft transition-all duration-500 hover:shadow-lg h-full"
     >
-      <div className="relative aspect-[16/9] overflow-hidden bg-gray-100 dark:bg-gray-800">
-        <Image
+      <div className="relative aspect-video overflow-hidden rounded-md bg-gray-100 dark:bg-gray-800">
+        <img
           src={imageUrl}
           alt={blog.title || 'Digital Manifesto'}
-          fill
-          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
           loading="lazy"
-          className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-40 group-hover:opacity-60 transition-opacity duration-500" />
         

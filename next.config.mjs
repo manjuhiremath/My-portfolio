@@ -16,15 +16,6 @@ const nextConfig = {
   images: {
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    domains: [
-      "res.cloudinary.com",
-      "images.unsplash.com",
-      "unsplash.com",
-      "upload.wikimedia.org",
-      "openrouter.ai",
-      "www.gravatar.com",
-      "picsum.photos",
-    ],
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 60 * 60 * 24 * 30,
     remotePatterns: [
@@ -41,6 +32,16 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "unsplash.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "plus.unsplash.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "via.placeholder.com",
         pathname: "/**",
       },
       {
@@ -66,6 +67,16 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "fastly.picsum.photos",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "images.pexels.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.pixabay.com",
         pathname: "/**",
       },
     ],
