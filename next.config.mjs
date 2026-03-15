@@ -31,6 +31,7 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "res.cloudinary.com",
+        pathname: "/**",
       },
       {
         protocol: "https",
@@ -45,14 +46,17 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "upload.wikimedia.org",
+        pathname: "/**",
       },
       {
         protocol: "https",
         hostname: "openrouter.ai",
+        pathname: "/**",
       },
       {
         protocol: "https",
         hostname: "www.gravatar.com",
+        pathname: "/**",
       },
       {
         protocol: "https",

@@ -79,7 +79,7 @@ export default function FeaturedHero({ blog, categoryColor = 'oklch(70% 0.18 45)
             alt={blog.title}
             fill
             priority
-            className="object-fit transition-transform rounded-xl duration-[2000ms] group-hover:scale-110"
+            className="object-cover transition-transform rounded-xl duration-[2000ms] group-hover:scale-110"
             sizes="(max-width: 1024px) 100vw, 60vw"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent lg:bg-gradient-to-r lg:from-gray-900 lg:via-transparent lg:to-transparent" />
